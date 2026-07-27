@@ -1,0 +1,21 @@
+{
+  "node": {
+    "0097bdc40ef768406238d176f33dda408737f5e526": {
+      "workers": {
+        "app/page": {
+          "moduleId": "[project]/.next-internal/server/app/page/actions.js { ACTIONS_MODULE0 => \"[project]/src/actions/auth.action.ts [app-rsc] (ecmascript)\" } [app-rsc] (server actions loader, ecmascript)",
+          "async": false,
+          "exportedName": "signOutAction",
+          "filename": "src/actions/auth.action.ts"
+        }
+      },
+      "layer": {
+        "app/page": "action-browser"
+      },
+      "filename": "src/actions/auth.action.ts",
+      "exportedName": "signOutAction"
+    }
+  },
+  "edge": {},
+  "encryptionKey": "CcSaCjGLhbR2Wm8Vjnc+ZP7HEt8GARovGSiQCDhXYKA="
+}

@@ -1,0 +1,67 @@
+/* [project]/src/config/fonts/yekanfont_d9747973.module.css [app-client] (css) */
+@font-face {
+  font-family: YekanFont;
+  src: url("../media/YekanBakhLight-s.p.6b149dcc.ttf") format("truetype");
+  font-display: swap;
+  font-weight: 300;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: YekanFont;
+  src: url("../media/YekanBakhRegular-s.p.7ff1550d.ttf") format("truetype");
+  font-display: swap;
+  font-weight: 400;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: YekanFont;
+  src: url("../media/YekanBakhMedium-s.p.89d8c6ae.ttf") format("truetype");
+  font-display: swap;
+  font-weight: 500;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: YekanFont;
+  src: url("../media/YekanBakhBold-s.p.7c94bc80.ttf") format("truetype");
+  font-display: swap;
+  font-weight: 600;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: YekanFont;
+  src: url("../media/YekanBakhHeavy-s.p.29c36e66.ttf") format("truetype");
+  font-display: swap;
+  font-weight: 700;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: YekanFont;
+  src: url("../media/YekanBakhFat-s.p.95966ef8.ttf") format("truetype");
+  font-display: swap;
+  font-weight: 800;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: YekanFont Fallback;
+  src: local(Arial);
+  ascent-override: 102.0%;
+  descent-override: 68.0%;
+  line-gap-override: 5.67%;
+  size-adjust: 88.23%;
+}
+
+.yekanfont_d9747973-module__YyXQ8G__className {
+  font-family: YekanFont, YekanFont Fallback;
+}
+
+.yekanfont_d9747973-module__YyXQ8G__variable {
+  --font-YekanBakh: "YekanFont", "YekanFont Fallback";
+}
+
+/*# sourceMappingURL=src_config_fonts_yekanfont_d9747973_module_css_bad6b30c._.single.css.map*/

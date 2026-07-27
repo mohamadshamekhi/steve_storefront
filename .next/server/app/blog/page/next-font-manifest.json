@@ -1,0 +1,15 @@
+{
+  "pages": {},
+  "app": {
+    "[project]/src/app/blog/page": [
+      "static/media/YekanBakhLight-s.p.6b149dcc.ttf",
+      "static/media/YekanBakhRegular-s.p.7ff1550d.ttf",
+      "static/media/YekanBakhMedium-s.p.89d8c6ae.ttf",
+      "static/media/YekanBakhBold-s.p.7c94bc80.ttf",
+      "static/media/YekanBakhHeavy-s.p.29c36e66.ttf",
+      "static/media/YekanBakhFat-s.p.95966ef8.ttf"
+    ]
+  },
+  "appUsingSizeAdjust": true,
+  "pagesUsingSizeAdjust": false
+}

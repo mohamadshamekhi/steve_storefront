@@ -1,0 +1,20 @@
+{
+  "node": {
+    "0097bdc40ef768406238d176f33dda408737f5e526": {
+      "workers": {
+        "app/phone-repair/page": {
+          "moduleId": "[project]/.next-internal/server/app/phone-repair/page/actions.js { ACTIONS_MODULE0 => \"[project]/src/actions/auth.action.ts [app-rsc] (ecmascript)\" } [app-rsc] (server actions loader, ecmascript)",
+          "async": false,
+          "exportedName": "signOutAction",
+          "filename": "src/actions/auth.action.ts"
+        }
+      },
+      "layer": {
+        "app/phone-repair/page": "action-browser"
+      },
+      "exportedName": "signOutAction",
+      "filename": "src/actions/auth.action.ts"
+    }
+  },
+  "edge": {}
+}
