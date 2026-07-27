@@ -1,0 +1,16 @@
+services:
+    steve-storefront:
+        image: storefront:latest
+        build:
+            context: .
+            dockerfile: ./Dockerfile
+        environment:
+            NODE_ENV: production
+        ports:
+            - '3000:3000'
+        restart: unless-stopped
+        networks:
+            - steve-app_steve_network
+networks:
+    steve-app_steve_network:
+        external: true

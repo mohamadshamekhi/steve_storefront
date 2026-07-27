@@ -1,0 +1,10 @@
+{
+    "app": "steve-site",
+    "port": 3000,
+    "team-id": "68b84730bd90234c583cf98b",
+    "build": {
+        "location": "iran"
+    },
+    "disks": []
+}
+
