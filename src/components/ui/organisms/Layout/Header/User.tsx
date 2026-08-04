@@ -17,13 +17,13 @@ const User = () => {
     if (statusSessionStore === 'authenticated')
         return (
             <Dropdown
-                className='ml-[16px]'
-                label={sessionStore?.profile?.name}
+                className='ml-[16px] h-[46px] '
+                label={sessionStore?.profile?.name || "نامشخص"}
                 icon={
                     <Image
                         src='/images/_general/placeholder/user.png'
                         alt='user-profile'
-                        width={45}
+                        width={42}
                         height={45}
                         className='ml-2.5 rounded-full border-3 border-transparent transition-colors delay-75 duration-200 hover:border-sky-600'
                     />
