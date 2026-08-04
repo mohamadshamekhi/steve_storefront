@@ -67,7 +67,7 @@ const ProductPriceBox = ({ product, className = '', showQuantityControls = false
                 {stockQuantity > 0 ? (
                     <>🔥{stockQuantity} عدد در انبار باقی مانده</>
                 ) : (
-                    <span className='text-red-500'>ناموجود</span>
+                    <span className='text-red-500'></span>
                 )}
             </div>
 
