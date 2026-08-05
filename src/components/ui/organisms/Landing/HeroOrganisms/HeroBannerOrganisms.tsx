@@ -50,7 +50,7 @@ const HeroBannerOrganisms = ({ fullWidth, banners }: { fullWidth?: boolean | num
                     swiper.navigation.update();
                 }}
             >
-                {topBanners.map((banner) => (
+                {topBanners.map((banner, index) => (
                     <SwiperSlide key={banner.id}>
                         <Link href={banner.link}>
                             <OptimizedImage
@@ -59,7 +59,7 @@ const HeroBannerOrganisms = ({ fullWidth, banners }: { fullWidth?: boolean | num
                                 src={banner.image_url}
                                 width={fullWidth ? 1920 : 887}
                                 height={fullWidth ? 1080 : 562}
-                                loading='lazy'
+                                {...(index === 0 ? { priority: true } : { loading: 'lazy' })}
                             />
                         </Link>
                     </SwiperSlide>

@@ -93,11 +93,11 @@ const HeaderOrganism = () => {
             <Link
               href={ROUTES.Landing}
               className="ml-4 flex items-center gap-1"
+              aria-label="استیو شاپ"
             >
               <LogoIcon />
+              <span className="sr-only">استیو شاپ</span>
             </Link>
-
-            <h1 className="sr-only">استیو</h1>
 
             <SearchProducts />
           </div>

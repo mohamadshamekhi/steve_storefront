@@ -13,20 +13,26 @@ interface Props {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
     const { catSlug: rawCatSlug } = await params;
     const catSlug = decodeURIComponent(rawCatSlug);
+
+    const categoriesResponse = await fetcher(ApiKeys.GET_ALL_CATEGORY, 'web', 'GET', { next: { revalidate: 300 } });
+    const category = categoriesResponse?.data?.categories?.find(
+        (c: { slug: string; name: string }) => c.slug === catSlug
+    );
+    const categoryName = category?.name ?? catSlug;
+
     const data: PageSeoModel = {
-        title: 'محصولات',
-        description: 'مشاهده و خرید آنلاین انواع گوشی موبایل، لوازم جانبی و کالای دیجیتال با بهترین قیمت از استیو شاپ.',
-        tags: 'محصولات, گوشی موبایل, لوازم جانبی, کالای دیجیتال, خرید آنلاین, استیو شاپ',
+        title: categoryName,
+        description: `مشاهده و خرید آنلاین ${categoryName} با بهترین قیمت، ضمانت اصالت و ارسال سریع از استیو شاپ.`,
+        tags: `${categoryName}, محصولات, گوشی موبایل, لوازم جانبی, خرید آنلاین, استیو شاپ`,
         canonical: `https://stevemobile.com/product/category/${catSlug}`,
-        og_title: 'محصولات استیو شاپ',
+        og_title: `${categoryName} | استیو شاپ`,
         og_url: `https://stevemobile.com/product/category/${catSlug}`,
-        og_description:
-            'مشاهده و خرید آنلاین انواع گوشی موبایل، لوازم جانبی و کالای دیجیتال با بهترین قیمت از استیو شاپ.',
+        og_description: `مشاهده و خرید آنلاین ${categoryName} با بهترین قیمت، ضمانت اصالت و ارسال سریع از استیو شاپ.`,
         og_sitename: 'استیو شاپ',
         noindex: false,
         nofollow: false
     };
-    return pageSeoGenerator(data, 'محصولات');
+    return pageSeoGenerator(data, categoryName);
 }
 
 const fetchProductsByCategory = async (
@@ -56,17 +62,42 @@ const CategoryProducts = async ({ params, searchParams }: Props) => {
 
     const [productsResponse, brandsResponse, categoriesResponse] = await Promise.all([
         fetchProductsByCategory(catSlug, resolvedSearchParams),
-        fetcher(ApiKeys.GET_ALL_BRAND, 'web', 'GET'),
-        fetcher(ApiKeys.GET_ALL_CATEGORY, 'web', 'GET')
+        fetcher(ApiKeys.GET_ALL_BRAND, 'web', 'GET', { next: { revalidate: 300 } }),
+        fetcher(ApiKeys.GET_ALL_CATEGORY, 'web', 'GET', { next: { revalidate: 300 } })
     ]);
 
+    const categoryName =
+        categoriesResponse.data?.categories?.find((c: { slug: string; name: string }) => c.slug === catSlug)
+            ?.name ?? catSlug;
+
+    const breadcrumbJsonLd = {
+        '@context': 'https://schema.org',
+        '@type': 'BreadcrumbList',
+        itemListElement: [
+            { '@type': 'ListItem', position: 1, name: 'خانه', item: 'https://stevemobile.com' },
+            { '@type': 'ListItem', position: 2, name: 'لیست محصولات', item: 'https://stevemobile.com/product' },
+            {
+                '@type': 'ListItem',
+                position: 3,
+                name: categoryName,
+                item: `https://stevemobile.com/product/category/${catSlug}`
+            }
+        ]
+    };
+
     return (
-        <ClientPage
-            catSlug={catSlug}
-            data={productsResponse.data?.products?.length ? productsResponse.data.products : []}
-            brands={brandsResponse.data?.brands?.length ? brandsResponse.data.brands : []}
-            categories={categoriesResponse.data?.categories?.length ? categoriesResponse.data.categories : []}
-        />
+        <>
+            <script
+                type='application/ld+json'
+                dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
+            />
+            <ClientPage
+                catSlug={catSlug}
+                data={productsResponse.data?.products?.length ? productsResponse.data.products : []}
+                brands={brandsResponse.data?.brands?.length ? brandsResponse.data.brands : []}
+                categories={categoriesResponse.data?.categories?.length ? categoriesResponse.data.categories : []}
+            />
+        </>
     );
 };
 

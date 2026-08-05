@@ -80,6 +80,7 @@ const ClientPage = ({ data }: { data: Blog[] }) => {
                         }
                     ]}
                 />
+                <h1 className='sr-only'>اخبار و مقالات استیو شاپ</h1>
                 {isLoading ? 'loading...' : ''}
                 <section className='pt-8 pb-20'>
                     <div className='grid grid-cols-12 gap-4 pb-8'>
@@ -130,7 +131,7 @@ const ClientPage = ({ data }: { data: Blog[] }) => {
                                                 height={185}
                                                 src={article.media_url}
                                                 alt={article.title}
-                                                loading='lazy'
+                                                {...(i === 0 ? { priority: true } : { loading: 'lazy' })}
                                             />
 
                                             <div

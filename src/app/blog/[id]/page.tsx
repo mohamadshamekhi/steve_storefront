@@ -6,6 +6,9 @@ import { pageSeoGenerator, PageSeoModel } from "@/seo";
 import { Metadata } from "next/types";
 import ClientPage from "./client-page";
 
+// ISR: re-render this route at most every 2 minutes instead of on every single request
+export const revalidate = 120;
+
 export async function generateMetadata({
   params,
 }: {
@@ -143,11 +146,30 @@ export default async function Page({
     data: { comments, all_approved_comments_count },
   } = await fetchBlogPostComments(article.id);
 
+  const breadcrumbJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "خانه", item: "https://stevemobile.com" },
+      { "@type": "ListItem", position: 2, name: "اخبار", item: "https://stevemobile.com/blog" },
+      {
+        "@type": "ListItem",
+        position: 3,
+        name: article.title,
+        item: `https://stevemobile.com/blog/${id}`,
+      },
+    ],
+  };
+
   return (
     <>
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
       />
       <ClientPage
         article={article}

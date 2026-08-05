@@ -37,8 +37,8 @@ const page = async () => {
         discountProduct,
         banners
     ] = await Promise.all([
-        fetcher(ApiKeys.GET_ALL_BRAND, 'web', 'GET'),
-        fetcher(ApiKeys.GET_ALL_CATEGORY, 'web', 'GET'),
+        fetcher(ApiKeys.GET_ALL_BRAND, 'web', 'GET', { next: { revalidate: 300 } }),
+        fetcher(ApiKeys.GET_ALL_CATEGORY, 'web', 'GET', { next: { revalidate: 300 } }),
         fetcher(ApiKeys.GET_BLOG_POSTS, 'web', 'GET'),
         fetcher(ApiKeys.GET_Products, 'web', 'GET', {
             params: {
@@ -53,7 +53,7 @@ const page = async () => {
         }),
         fetcher(ApiKeys.GET_PRODUCT_WITH_AUTO_DISCOUNT, 'web', 'GET'),
         fetcher(ApiKeys.GET_ALL_PRODUCT_DISCOUNT, 'web', 'GET'),
-        fetcher(ApiKeys.GET_ALL_BANNER, 'web', 'GET')
+        fetcher(ApiKeys.GET_ALL_BANNER, 'web', 'GET', { next: { revalidate: 120 } })
     ]);
 
     const categoriesList: Categories[] = categories?.data?.categories || [];

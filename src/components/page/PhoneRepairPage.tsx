@@ -26,6 +26,7 @@ const PhoneRepairPage = ({ brands }: { brands: Brand[] }) => {
     return (
         <main className='!max-w-screen !overflow-x-hidden'>
             <Container>
+                <h1 className='sr-only'>تعمیر تخصصی گوشی موبایل در استیو شاپ</h1>
                 <ManualBreadcrumb
                     items={[
                         { label: 'خانه', href: ROUTES.Landing },

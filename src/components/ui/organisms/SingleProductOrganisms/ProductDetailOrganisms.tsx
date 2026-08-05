@@ -47,7 +47,7 @@ const ProductDetailOrganisms = ({
                 />
                 <CopyLinkButton />
             </div>
-            <h2 className='text-md font-semibold lg:text-xl'>{product.name}</h2>
+            <h1 className='text-md font-semibold lg:text-xl'>{product.name}</h1>
 
             <p className='text-tiny mt-4 text-gray-500'>{product.en_title}</p>
 

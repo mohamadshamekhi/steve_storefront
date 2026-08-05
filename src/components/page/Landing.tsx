@@ -50,6 +50,9 @@ const Landing = ({
     return (
         <main>
             <Container className='mt-5 space-y-16 md:mt-10'>
+                <h1 className='sr-only'>
+                    استیو شاپ | خرید آنلاین گوشی موبایل، لوازم جانبی و کالای دیجیتال
+                </h1>
                 <HeroTemplate discountProduct={discountProduct} banners={banners} />
                 <CategoriesTemplate categories={categories} />
                 <AmazingSaleTemplate discountProduct={discountProduct} />

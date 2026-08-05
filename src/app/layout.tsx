@@ -7,12 +7,13 @@ import { NuqsAdapter } from 'nuqs/adapters/next/app';
 import ClientPage from './client-page';
 
 export const metadata: Metadata = {
+    metadataBase: new URL('https://stevemobile.com'),
     title: 'استیو شاپ | بزرگترین فروشگاه اینترنتی ایران',
     description:
         'استیو شاپ، بزرگترین فروشگاه اینترنتی ایران با تنوع گسترده کالا، ضمانت اصالت، ارسال سریع و پشتیبانی حرفه‌ای.',
     robots: {
-        index: false,
-        follow: false
+        index: true,
+        follow: true
     }
 };
 
@@ -22,7 +23,7 @@ const RootLayout = ({
     children: React.ReactNode;
 }>) => {
     return (
-        <html lang='fa'>
+        <html lang='fa' dir='rtl'>
             <head>
                 <meta name='enamad' content='8840088' />
             </head>

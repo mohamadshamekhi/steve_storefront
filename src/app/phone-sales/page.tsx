@@ -20,7 +20,7 @@ export async function generateMetadata(): Promise<Metadata> {
     return pageSeoGenerator(data, 'فروش موبایل');
 }
 
-const brands = await fetcher(ApiKeys.GET_ALL_BRAND, 'web', 'GET');
+const brands = await fetcher(ApiKeys.GET_ALL_BRAND, 'web', 'GET', { next: { revalidate: 300 } });
 
 const jsonLd = [
     {

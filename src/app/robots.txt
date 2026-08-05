@@ -1,2 +1,10 @@
 User-agent: *
-Disallow: /
+Allow: /
+Disallow: /dashboard
+Disallow: /checkout
+Disallow: /auth
+Disallow: /payment
+Disallow: /api
+Disallow: /ui
+
+Sitemap: https://stevemobile.com/sitemap.xml

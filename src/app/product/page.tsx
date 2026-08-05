@@ -53,8 +53,8 @@ const Products = async ({ searchParams }: Props) => {
     const resolvedParams = searchParams ? await searchParams : {};
     const [productsResponse, brandsResponse, categoriesResponse] = await Promise.all([
         fetchProductsPosts(resolvedParams),
-        fetcher(ApiKeys.GET_ALL_BRAND, 'web', 'GET'),
-        fetcher(ApiKeys.GET_ALL_CATEGORY, 'web', 'GET')
+        fetcher(ApiKeys.GET_ALL_BRAND, 'web', 'GET', { next: { revalidate: 300 } }),
+        fetcher(ApiKeys.GET_ALL_CATEGORY, 'web', 'GET', { next: { revalidate: 300 } })
     ]);
 
     return (

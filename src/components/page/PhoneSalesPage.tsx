@@ -29,6 +29,7 @@ const PhoneSalesPage = ({ brands }: { brands: Brand[] }) => {
     return (
         <main className='!max-w-screen !overflow-x-hidden'>
             <Container>
+                <h1 className='sr-only'>فروش گوشی موبایل دست دوم به استیو شاپ</h1>
                 <ManualBreadcrumb
                     items={[
                         { label: 'خانه', href: ROUTES.Landing },

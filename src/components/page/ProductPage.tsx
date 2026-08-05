@@ -16,9 +16,11 @@ interface ProductPageProps {
 }
 
 const ProductPage = ({ catSlug, data, brands, categories }: ProductPageProps) => {
+    const categoryName = catSlug ? (categories.find((c) => c.slug === catSlug)?.name ?? catSlug) : undefined;
 
     return (
         <Container>
+            <h1 className='sr-only'>{categoryName ? `محصولات ${categoryName}` : 'لیست محصولات استیو شاپ'}</h1>
             <ManualBreadcrumb
                 items={[
                     { label: 'خانه', href: ROUTES.Landing },

@@ -62,7 +62,7 @@ const ProductGalleryOrganisms = ({ gallery, productName }: { gallery: SingleProd
                                 alt={productName ?? `Slide ${primaryGalleryItem.media_id + 1}`}
                                 width={600}
                                 height={600}
-                                loading='lazy'
+                                priority
                                 className='mx-auto block w-full max-w-[400px] rounded-lg object-contain xl:aspect-[320/557] xl:max-w-full'
                             />
                         )}

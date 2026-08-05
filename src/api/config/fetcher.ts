@@ -12,6 +12,8 @@ interface Options {
     body?: any;
     requiredAuth?: boolean;
     forceBearer?: string;
+    /** Next.js fetch cache config, forwarded as-is (e.g. { revalidate: 300 }). Ignored by the browser fetch. */
+    next?: { revalidate?: number | false; tags?: string[] };
 }
 
 interface FetchError {
@@ -73,7 +75,8 @@ const fetcher = async (fetcherKey: string, location: LocationPath, method?: meth
     const requestInit: RequestInit = {
         method,
         headers: headersList,
-        ...(options && options.body && { body: JSON.stringify(options.body) })
+        ...(options && options.body && { body: JSON.stringify(options.body) }),
+        ...(options?.next && { next: options.next })
     };
 
     try {
