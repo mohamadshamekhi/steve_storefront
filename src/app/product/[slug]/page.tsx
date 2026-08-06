@@ -55,10 +55,14 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
             ...seo.twitter,
             images: primaryImage ? [primaryImage] : undefined
         },
-        ...(lowestPrice && {
+        ...(product?._id && {
             other: {
-                'product:price:amount': lowestPrice.toString(),
-                'product:price:currency': 'IRR'
+                // required by third-party product-comparison feeds (e.g. Torob) to identify this product
+                product_id: product._id,
+                ...(lowestPrice && {
+                    'product:price:amount': lowestPrice.toString(),
+                    'product:price:currency': 'IRR'
+                })
             }
         })
     };
