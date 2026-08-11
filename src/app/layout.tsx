@@ -3,11 +3,12 @@ import '../styles/master.css';
 
 import { ToastContainer } from '@/components/ui/molecules/Toast/ToastContainer';
 import YekanFont from '@/config/fonts/YekanFont';
+import { SITE_URL } from '@/seo';
 import { NuqsAdapter } from 'nuqs/adapters/next/app';
 import ClientPage from './client-page';
 
 export const metadata: Metadata = {
-    metadataBase: new URL('https://stevemobile.com'),
+    metadataBase: new URL(SITE_URL),
     title: 'استیو شاپ | بزرگترین فروشگاه اینترنتی ایران',
     description:
         'استیو شاپ، بزرگترین فروشگاه اینترنتی ایران با تنوع گسترده کالا، ضمانت اصالت، ارسال سریع و پشتیبانی حرفه‌ای.',

@@ -1,8 +1,9 @@
 import { fetcher } from '@/api';
 import ApiKeys from '@/api/keys';
+import { SITE_URL } from '@/seo';
 import type { MetadataRoute } from 'next';
 
-const BASE_URL = 'https://stevemobile.com';
+const BASE_URL = SITE_URL;
 
 // re-generate the sitemap at most once an hour
 export const revalidate = 3600;
