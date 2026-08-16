@@ -1,9 +1,11 @@
 import Image from 'next/image';
 
 import Brand from '@/config/types/brand.types';
+import { repairIntro } from '@/config/data/store-content.data';
 import ROUTES from '@/constants/routes/routes.constant';
 import ImageOne from '@public/images/phone-repair/1.png';
 import ImageTwo from '@public/images/phone-repair/3.png';
+import StoreContentSection from '../ui/molecules/StoreContentSection/StoreContentSection';
 import ManualBreadcrumb from '../ui/molecules/Breadcrumbs/ManualBreadcrumb';
 import Container from '../ui/organisms/Container/Container';
 import PhonRepairFormTemplate from '../ui/templates/PhoneRepairTemplate/PhonRepairFormTemplate';
@@ -26,7 +28,7 @@ const PhoneRepairPage = ({ brands }: { brands: Brand[] }) => {
     return (
         <main className='!max-w-screen !overflow-x-hidden'>
             <Container>
-                <h1 className='sr-only'>تعمیر تخصصی گوشی موبایل در استیو شاپ</h1>
+                <h1 className='sr-only'>تعمیر تخصصی گوشی موبایل در استیو موبایل</h1>
                 <ManualBreadcrumb
                     items={[
                         { label: 'خانه', href: ROUTES.Landing },
@@ -47,6 +49,9 @@ const PhoneRepairPage = ({ brands }: { brands: Brand[] }) => {
                     <Image key={alt} src={src} alt={alt} loading='lazy' className={className} />
                 ))}
             </div>
+            <Container>
+                <StoreContentSection title={repairIntro.title} body={repairIntro.body} />
+            </Container>
         </main>
     );
 };

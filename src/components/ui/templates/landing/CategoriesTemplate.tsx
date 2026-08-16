@@ -85,7 +85,7 @@ const CategoriesTemplate = ({ categories }: { categories: Categories[] }) => {
                                 />
                             </Link>
                             <Link
-                                href={`${ROUTES.Products}/${category.slug}`}
+                                href={`${ROUTES.Products}/category/${category.slug}`}
                                 className='mt-2 text-sm font-semibold sm:mt-4 sm:text-lg'
                             >
                                 {category.name}

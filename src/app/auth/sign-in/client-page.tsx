@@ -60,7 +60,7 @@ function SignInPage() {
 
     return (
         <div>
-            <h1 className='sr-only'>استیو شاپ</h1>
+            <h1 className='sr-only'>استیو موبایل</h1>
             <h2 className='text-h4-bold mb-11 font-bold text-gray-800'>ورود | ثبت نام</h2>
             <p className='text-body1-regular mb-4 text-right'>
                 سلام

@@ -75,14 +75,24 @@ const AddAddressForm = () => {
 
     const handleProvinceChange = (option: { value: string; label: string } | null) => {
         setSelectedProvinceId(option ? option.value : null);
-        formik.setFieldValue('province', option ? option.label : '');
-        formik.setFieldValue('city', '');
-        formik.setFieldTouched('province', true);
+        // `setValues` (not two separate `setFieldValue` calls) so province and
+        // city update together in a single validation pass. Two sequential
+        // setFieldValue calls each validate against a snapshot of `values`
+        // taken *before either update landed*, so the second call's validation
+        // could still see the old empty province and briefly flash its error.
+        formik.setValues({
+            ...formik.values,
+            province: option ? option.label : '',
+            city: ''
+        });
+        // `false` skips setFieldTouched's own (redundant) validation pass, which
+        // would otherwise run against that same stale, pre-update snapshot.
+        formik.setFieldTouched('province', true, false);
     };
 
     const handleCityChange = (option: { value: string; label: string } | null) => {
         formik.setFieldValue('city', option ? option.value : '');
-        formik.setFieldTouched('city', true);
+        formik.setFieldTouched('city', true, false);
     };
 
     return (

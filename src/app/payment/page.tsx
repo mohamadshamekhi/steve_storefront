@@ -3,7 +3,7 @@ import { Metadata } from 'next/types';
 import { Suspense } from 'react';
 
 export const metadata: Metadata = {
-    title: 'پرداخت | استیو شاپ',
+    title: 'پرداخت | استیو موبایل',
     robots: { index: false, follow: false }
 };
 

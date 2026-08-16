@@ -23,6 +23,7 @@ interface ICartStore {
     addItem: (payload: AddToCartPayload) => Promise<boolean>;
     removeItem: (payload: RemoveFromCartPayload) => Promise<boolean>;
     applyDiscount: (discountCode: string) => Promise<{ success: boolean; message?: string }>;
+    removeDiscount: () => Promise<void>;
     clearCart: () => void;
 
     // Helper
@@ -57,7 +58,9 @@ export const useCartStore = create<ICartStore>()(
                         itemCount: 0,
                         subtotal: 0,
                         finalPrice: 0,
-                        isReady: false
+                        isReady: false,
+                        discountCode: null,
+                        discountedSubtotal: 0
                     });
                     return;
                 }
@@ -75,14 +78,23 @@ export const useCartStore = create<ICartStore>()(
                         const itemCount = items.reduce((acc, item) => acc + item.Quantity, 0);
                         const summary = items[0]?.summary;
 
+                        const subtotal = summary?.subtotal || cart.subtotal || 0;
+                        const finalPrice = summary?.final_price || cart.subtotal || 0;
+                        // The server doesn't echo back *which* discount code is active on
+                        // this cart, only the resulting totals - so if those totals show no
+                        // discount is currently applied, drop whatever code we remembered
+                        // locally instead of leaving a stale "کد X اعمال شد" chip around.
+                        const stillDiscounted = itemCount > 0 && finalPrice < subtotal;
+
                         set({
                             cart,
                             items,
                             status: 'idle',
                             itemCount,
-                            subtotal: summary?.subtotal || cart.subtotal || 0,
-                            finalPrice: summary?.final_price || cart.subtotal || 0,
-                            isReady: summary?.is_ready ?? true
+                            subtotal,
+                            finalPrice,
+                            isReady: summary?.is_ready ?? true,
+                            ...(!stillDiscounted && { discountCode: null, discountedSubtotal: 0 })
                         });
                     } else {
                         // Cart is empty
@@ -93,7 +105,9 @@ export const useCartStore = create<ICartStore>()(
                             itemCount: 0,
                             subtotal: 0,
                             finalPrice: 0,
-                            isReady: false
+                            isReady: false,
+                            discountCode: null,
+                            discountedSubtotal: 0
                         });
                     }
                 } catch {
@@ -187,6 +201,37 @@ export const useCartStore = create<ICartStore>()(
                 }
             },
 
+            removeDiscount: async () => {
+                if (!get().isAuthenticated()) return;
+
+                set({ status: 'loading' });
+
+                try {
+                    // re-run the same cart calculation with no discount code to
+                    // get the server's undiscounted totals back
+                    const response = await fetcher(ApiKeys.CALC_CART, 'dashboard', 'POST', {
+                        requiredAuth: true,
+                        body: { discount_code: '' }
+                    });
+
+                    if (response?.success && response?.data) {
+                        const data = response.data;
+                        set({
+                            status: 'idle',
+                            subtotal: data.subtotal || 0,
+                            finalPrice: data.final_price || 0,
+                            discountedSubtotal: data.discounted_subtotal || 0,
+                            discountCode: null,
+                            isReady: data.is_ready ?? true
+                        });
+                    } else {
+                        set({ status: 'idle' });
+                    }
+                } catch {
+                    set({ status: 'error' });
+                }
+            },
+
             clearCart: () => {
                 set({
                     cart: null,
@@ -216,7 +261,9 @@ export const useCartStore = create<ICartStore>()(
                 itemCount: state.itemCount,
                 subtotal: state.subtotal,
                 finalPrice: state.finalPrice,
-                isReady: state.isReady
+                isReady: state.isReady,
+                discountCode: state.discountCode,
+                discountedSubtotal: state.discountedSubtotal
             })
         }
     )

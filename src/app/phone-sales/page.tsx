@@ -8,12 +8,12 @@ export async function generateMetadata(): Promise<Metadata> {
     const data: PageSeoModel = {
         title: 'فروش موبایل',
         description: 'گوشی  کار کرده خود را در چند مرحله ساده به استیو موبایل بفروشید. ثبت درخواست آنلاین، بررسی وضعیت دستگاه، دریافت بهترین قیمت و تسویه فوری، بدون دردسر و با بالاترین امنیت.',
-        tags: 'فروش موبایل, فروش گوشی, گوشی دست دوم, استیو شاپ',
+        tags: 'فروش موبایل, فروش گوشی, گوشی دست دوم, استیو موبایل',
         canonical: 'https://stevemobile.com/phone-sales',
-        og_title: 'فروش موبایل به استیو شاپ',
+        og_title: 'فروش موبایل به استیو موبایل',
         og_url: 'https://stevemobile.com/phone-sales',
-        og_description: 'فروش گوشی موبایل دست دوم و نو به استیو شاپ؛ ارزیابی رایگان، قیمت منصفانه و پرداخت سریع.',
-        og_sitename: 'استیو شاپ',
+        og_description: 'فروش گوشی موبایل دست دوم و نو به استیو موبایل؛ ارزیابی رایگان، قیمت منصفانه و پرداخت سریع.',
+        og_sitename: 'استیو موبایل',
         noindex: false,
         nofollow: false
     };
@@ -26,7 +26,7 @@ const jsonLd = [
     {
         '@context': 'https://schema.org',
         '@type': 'Service',
-        name: 'فروش موبایل | استیو شاپ',
+        name: 'فروش موبایل | استیو موبایل',
         description: 'گوشی کار کرده خود را در چند مرحله ساده به استیو موبایل بفروشید. ثبت درخواست آنلاین، بررسی وضعیت دستگاه، دریافت بهترین قیمت و تسویه فوری. بدون دردسر و با بالاترین امنیت.',
         provider: {
             '@type': 'MobilePhoneStore',

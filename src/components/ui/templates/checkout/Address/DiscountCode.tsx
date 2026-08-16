@@ -8,7 +8,7 @@ import { useState } from 'react';
 
 const DiscountCode = () => {
     const closeModal = useModalStore((s) => s.closeModal);
-    const { applyDiscount } = useCartStore();
+    const { applyDiscount, discountCode: activeDiscountCode } = useCartStore();
 
     const [discountCode, setDiscountCode] = useState('');
     const [isLoading, setIsLoading] = useState(false);
@@ -43,6 +43,12 @@ const DiscountCode = () => {
 
     return (
         <form onSubmit={handleSubmit} className='mt-4'>
+            {activeDiscountCode && (
+                <p className='bg-primary-50 text-primary-700 mb-3 rounded-md px-3 py-2 text-sm'>
+                    کد «{activeDiscountCode}» هم‌اکنون فعال است؛ با ثبت کد جدید جایگزین می‌شود.
+                </p>
+            )}
+
             <div className='mb-4'>
                 <Input
                     onChange={(e) => {

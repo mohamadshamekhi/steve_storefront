@@ -22,13 +22,13 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
     const data: PageSeoModel = {
         title: categoryName,
-        description: `مشاهده و خرید آنلاین ${categoryName} با بهترین قیمت، ضمانت اصالت و ارسال سریع از استیو شاپ.`,
-        tags: `${categoryName}, محصولات, گوشی موبایل, لوازم جانبی, خرید آنلاین, استیو شاپ`,
+        description: `مشاهده و خرید آنلاین ${categoryName} با بهترین قیمت، ضمانت اصالت و ارسال سریع از استیو موبایل.`,
+        tags: `${categoryName}, محصولات, گوشی موبایل, لوازم جانبی, خرید آنلاین, استیو موبایل`,
         canonical: `https://stevemobile.com/product/category/${catSlug}`,
-        og_title: `${categoryName} | استیو شاپ`,
+        og_title: `${categoryName} | استیو موبایل`,
         og_url: `https://stevemobile.com/product/category/${catSlug}`,
-        og_description: `مشاهده و خرید آنلاین ${categoryName} با بهترین قیمت، ضمانت اصالت و ارسال سریع از استیو شاپ.`,
-        og_sitename: 'استیو شاپ',
+        og_description: `مشاهده و خرید آنلاین ${categoryName} با بهترین قیمت، ضمانت اصالت و ارسال سریع از استیو موبایل.`,
+        og_sitename: 'استیو موبایل',
         noindex: false,
         nofollow: false
     };

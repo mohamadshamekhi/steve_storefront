@@ -7,13 +7,13 @@ import ClientPage from './client-page';
 export async function generateMetadata(): Promise<Metadata> {
     const data: PageSeoModel = {
         title: 'تعمیر موبایل',
-        description: 'خدمات تعمیر تخصصی گوشی موبایل در استیو شاپ؛ تعمیر انواع برندها با قطعات اصلی و ضمانت.',
-        tags: 'تعمیر موبایل, تعمیر گوشی, خدمات تعمیر, استیو شاپ',
+        description: 'خدمات تعمیر تخصصی گوشی موبایل در استیو موبایل؛ تعمیر انواع برندها با قطعات اصلی و ضمانت.',
+        tags: 'تعمیر موبایل, تعمیر گوشی, خدمات تعمیر, استیو موبایل',
         canonical: 'https://stevemobile.com/phone-repair',
-        og_title: 'تعمیر موبایل در استیو شاپ',
+        og_title: 'تعمیر موبایل در استیو موبایل',
         og_url: 'https://stevemobile.com/phone-repair',
-        og_description: 'خدمات تعمیر تخصصی گوشی موبایل در استیو شاپ؛ تعمیر انواع برندها با قطعات اصلی و ضمانت.',
-        og_sitename: 'استیو شاپ',
+        og_description: 'خدمات تعمیر تخصصی گوشی موبایل در استیو موبایل؛ تعمیر انواع برندها با قطعات اصلی و ضمانت.',
+        og_sitename: 'استیو موبایل',
         noindex: false,
         nofollow: false
     };
@@ -25,8 +25,8 @@ const brands = await fetcher(ApiKeys.GET_ALL_BRAND, 'web', 'GET', { next: { reva
 const jsonLd = {
     '@context': 'https://schema.org',
     '@type': 'Service',
-    name: 'تعمیر موبایل | استیو شاپ',
-    description: 'تعمیرات تخصصی گوشی موبایل در استیو شاپ؛ تعمیر سامسونگ، اپل، شیائومی، هواوی و سایر برندها با قطعات اصلی، هزینه منصفانه و تحویل سریع.',
+    name: 'تعمیر موبایل | استیو موبایل',
+    description: 'تعمیرات تخصصی گوشی موبایل در استیو موبایل؛ تعمیر سامسونگ، اپل، شیائومی، هواوی و سایر برندها با قطعات اصلی، هزینه منصفانه و تحویل سریع.',
     url: 'https://stevemobile.com/phone-repair',
     serviceType: 'تعمیر تخصصی گوشی موبایل (تمام برندها)',
     areaServed: {

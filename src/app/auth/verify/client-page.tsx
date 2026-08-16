@@ -83,7 +83,7 @@ const VerifyPage = () => {
 
     return (
         <div>
-            <h1 className='sr-only'>استیو شاپ</h1>
+            <h1 className='sr-only'>استیو موبایل</h1>
             <h2 className='text-h4-bold mb-5 font-bold text-gray-800 lg:mb-[45px]'>تایید دو مرحله ای</h2>
             <p className='text-body1-regular mb-4'>لطفا کد ارسال شده به شماره{phoneNumber} را وارد کنید.</p>
             <AuthFormWrapper loading={isPending} onSubmit={formik.handleSubmit}>

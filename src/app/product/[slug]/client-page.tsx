@@ -18,7 +18,6 @@ const clientPage = ({
     return (
         <Layout>
             <SingleProductPage slug={slug} product={product} comments={comments} relatedProducts={relatedProducts} />
-            <h1 className='sr-only'>{slug}</h1>
         </Layout>
     );
 };

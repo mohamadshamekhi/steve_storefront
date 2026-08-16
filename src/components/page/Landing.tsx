@@ -1,8 +1,10 @@
 'use client';
+import { homeIntro, homeOutro } from '@/config/data/store-content.data';
 import Blog from '@/config/types/blog.types';
 import Brand from '@/config/types/brand.types';
 import Categories from '@/config/types/categories.types';
 import { Banner } from '@/models/common.model';
+import StoreContentSection from '../ui/molecules/StoreContentSection/StoreContentSection';
 import Container from '../ui/organisms/Container/Container';
 import BannerOrganisms from '../ui/organisms/Landing/BannerOrganisms/BannerOrganisms';
 import RepairBannerOrganisms from '../ui/organisms/Landing/RepairBannerOrganisms/RepairBannerOrganisms';
@@ -51,7 +53,7 @@ const Landing = ({
         <main>
             <Container className='mt-5 space-y-16 md:mt-10'>
                 <h1 className='sr-only'>
-                    استیو شاپ | خرید آنلاین گوشی موبایل، لوازم جانبی و کالای دیجیتال
+                    استیو موبایل | خرید آنلاین گوشی موبایل، لوازم جانبی و کالای دیجیتال
                 </h1>
                 <HeroTemplate discountProduct={discountProduct} banners={banners} />
                 <CategoriesTemplate categories={categories} />
@@ -68,6 +70,11 @@ const Landing = ({
                 {/* <OfferProductTemplate /> */}
                 {/* -> BlogTemplate */}
                 {articles?.length > 0 && <BlogTemplate articles={articles} />}
+
+                <div className='grid grid-cols-1 gap-4 md:grid-cols-2'>
+                    <StoreContentSection title={homeIntro.title} body={homeIntro.body} />
+                    <StoreContentSection title={homeOutro.title} body={homeOutro.body} />
+                </div>
             </Container>
         </main>
     );

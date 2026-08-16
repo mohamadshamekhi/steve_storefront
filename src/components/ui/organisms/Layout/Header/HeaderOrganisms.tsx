@@ -59,14 +59,14 @@ const MenuItems: IMenuItem[] = [
     href: ROUTES.PhoneRepair,
   },
   {
-    label: "فروش به استیو شاپ",
+    label: "فروش به استیو موبایل",
     icon: (
       <FlashIcon className="group-hover:text-secondary-500 text-gray-600" />
     ),
     href: ROUTES.PhoneSales,
   },
   {
-    label: "درمورد استیو شاپ",
+    label: "درمورد استیو موبایل",
     icon: null,
     href: ROUTES.AboutUs,
   },
@@ -93,10 +93,10 @@ const HeaderOrganism = () => {
             <Link
               href={ROUTES.Landing}
               className="ml-4 flex items-center gap-1"
-              aria-label="استیو شاپ"
+              aria-label="استیو موبایل"
             >
               <LogoIcon />
-              <span className="sr-only">استیو شاپ</span>
+              <span className="sr-only">استیو موبایل</span>
             </Link>
 
             <SearchProducts />

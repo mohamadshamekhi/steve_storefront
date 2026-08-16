@@ -29,7 +29,7 @@ export async function generateMetadata({
     og_title: article?.title ?? "",
     og_url: canonicalUrl,
     og_description: article?.meta_description ?? "",
-    og_sitename: "استیو شاپ",
+    og_sitename: "استیو موبایل",
     og_image: article?.media_url
       ? {
           data: {
@@ -125,11 +125,11 @@ export default async function Page({
     dateModified: article.updated_at,
     author: {
       "@type": "Person",
-      name: article.back_office_name ?? "استیو شاپ",
+      name: article.back_office_name ?? "استیو موبایل",
     },
     publisher: {
       "@type": "Organization",
-      name: "استیو شاپ",
+      name: "استیو موبایل",
       url: "https://stevemobile.com",
     },
     url: `https://stevemobile.com/blog/${id}`,
@@ -137,7 +137,7 @@ export default async function Page({
     inLanguage: "fa-IR",
     isPartOf: {
       "@type": "Blog",
-      name: "بلاگ استیو شاپ",
+      name: "بلاگ استیو موبایل",
       url: "https://stevemobile.com/blog",
     },
   };

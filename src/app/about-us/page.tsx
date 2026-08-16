@@ -5,13 +5,13 @@ import ClientPage from './client-page';
 export async function generateMetadata(): Promise<Metadata> {
     const data: PageSeoModel = {
         title: 'درباره ما',
-        description: 'با استیو شاپ آشنا شوید؛ بزرگترین فروشگاه اینترنتی ایران با سال‌ها تجربه در ارائه محصولات دیجیتال با ضمانت اصالت.',
-        tags: 'درباره ما, استیو شاپ, فروشگاه اینترنتی',
+        description: 'با استیو موبایل آشنا شوید؛ بزرگترین فروشگاه اینترنتی ایران با سال‌ها تجربه در ارائه محصولات دیجیتال با ضمانت اصالت.',
+        tags: 'درباره ما, استیو موبایل, فروشگاه اینترنتی',
         canonical: 'https://stevemobile.com/about-us',
-        og_title: 'درباره استیو شاپ',
+        og_title: 'درباره استیو موبایل',
         og_url: 'https://stevemobile.com/about-us',
-        og_description: 'با استیو شاپ آشنا شوید؛ بزرگترین فروشگاه اینترنتی ایران با سال‌ها تجربه در ارائه محصولات دیجیتال با ضمانت اصالت.',
-        og_sitename: 'استیو شاپ',
+        og_description: 'با استیو موبایل آشنا شوید؛ بزرگترین فروشگاه اینترنتی ایران با سال‌ها تجربه در ارائه محصولات دیجیتال با ضمانت اصالت.',
+        og_sitename: 'استیو موبایل',
         noindex: false,
         nofollow: false
     };

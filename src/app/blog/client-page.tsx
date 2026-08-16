@@ -80,7 +80,7 @@ const ClientPage = ({ data }: { data: Blog[] }) => {
                         }
                     ]}
                 />
-                <h1 className='sr-only'>اخبار و مقالات استیو شاپ</h1>
+                <h1 className='sr-only'>اخبار و مقالات استیو موبایل</h1>
                 {isLoading ? 'loading...' : ''}
                 <section className='pt-8 pb-20'>
                     <div className='grid grid-cols-12 gap-4 pb-8'>

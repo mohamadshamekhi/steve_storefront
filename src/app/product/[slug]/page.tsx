@@ -2,6 +2,7 @@ import { fetcher } from '@/api';
 import ApiKeys from '@/api/keys';
 import { SingleProductItem } from '@/models/product.model';
 import { pageSeoGenerator, PageSeoModel } from '@/seo';
+import { truncateText } from '@/utils/string.util';
 import { Metadata } from 'next';
 import ClientPage from './client-page';
 
@@ -17,16 +18,19 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     const lowestPrice = product?.variants?.length
         ? Math.min(...product.variants.map((v) => v.price))
         : undefined;
+    // word-boundary truncation instead of a raw char slice, so the meta
+    // description doesn't get cut off mid-word/mid-sentence
+    const plainDescription = product?.description ? truncateText(product.description.replace(/<[^>]*>/g, '').trim(), 160) : '';
 
     const data: PageSeoModel = {
         title: product?.name ?? 'جزییات محصول',
-        description: product?.description?.replace(/<[^>]*>/g, '').slice(0, 160) ?? '',
-        tags: [product?.brand?.name, product?.category?.name, 'خرید', 'استیو شاپ'].filter(Boolean).join(', '),
+        description: plainDescription,
+        tags: [product?.brand?.name, product?.category?.name, 'خرید', 'استیو موبایل'].filter(Boolean).join(', '),
         canonical: `https://stevemobile.com/product/${slug}`,
         og_title: product?.name ?? '',
         og_url: `https://stevemobile.com/product/${slug}`,
-        og_description: product?.description?.replace(/<[^>]*>/g, '').slice(0, 160) ?? '',
-        og_sitename: 'استیو شاپ',
+        og_description: plainDescription,
+        og_sitename: 'استیو موبایل',
         og_image: primaryImage
             ? {
                   data: {
@@ -99,7 +103,7 @@ export default async function Page({ params }: { params: Promise<{ slug: string 
               '@context': 'https://schema.org',
               '@type': 'Product',
               name: product.name,
-              description: product.description?.replace(/<[^>]*>/g, '').slice(0, 500) ?? '',
+              description: product.description ? truncateText(product.description.replace(/<[^>]*>/g, '').trim(), 500) : '',
               image: product.gallery?.map((item) => item.url) ?? [],
               sku: product._id,
               url: `https://stevemobile.com/product/${slug}`,

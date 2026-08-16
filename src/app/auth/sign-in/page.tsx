@@ -6,13 +6,13 @@ import ClientPage from './client-page';
 export async function generateMetadata(): Promise<Metadata> {
     const data: PageSeoModel = {
         title: 'ورود',
-        description: 'ورود به حساب کاربری استیو شاپ',
+        description: 'ورود به حساب کاربری استیو موبایل',
         tags: '',
         canonical: 'https://stevemobile.com/auth/sign-in',
-        og_title: 'ورود | استیو شاپ',
+        og_title: 'ورود | استیو موبایل',
         og_url: 'https://stevemobile.com/auth/sign-in',
-        og_description: 'ورود به حساب کاربری استیو شاپ',
-        og_sitename: 'استیو شاپ',
+        og_description: 'ورود به حساب کاربری استیو موبایل',
+        og_sitename: 'استیو موبایل',
         noindex: true,
         nofollow: true
     };
