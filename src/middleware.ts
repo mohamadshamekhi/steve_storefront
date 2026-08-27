@@ -1,8 +1,17 @@
 import { NextRequest } from 'next/server';
 import { authMiddleware } from './app/core/middleware/auth';
+import { ensureVisitorCookie } from './app/core/middleware/visitor';
 
-export function middleware(request: NextRequest) {
-    return authMiddleware(request);
+export async function middleware(request: NextRequest) {
+    const visitorSetCookie = await ensureVisitorCookie(request);
+
+    const response = await authMiddleware(request);
+
+    if (visitorSetCookie) {
+        response.headers.append('set-cookie', visitorSetCookie);
+    }
+
+    return response;
 }
 
 export const config = {

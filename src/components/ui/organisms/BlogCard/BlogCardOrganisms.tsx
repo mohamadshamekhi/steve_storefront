@@ -43,6 +43,12 @@ const BlogCardOrganisms = ({ article }: { article: Blog }) => {
             <Link href={`${ROUTES.Blog}/${article.slug}`} className='text-caption2-bold block py-3'>
                 {article.title}
             </Link>
+
+            {typeof article.view_count === 'number' && (
+                <span className='text-xs-plus font-normal text-gray-400'>
+                    {article.view_count.toLocaleString('fa-IR')} بازدید
+                </span>
+            )}
         </div>
     );
 };

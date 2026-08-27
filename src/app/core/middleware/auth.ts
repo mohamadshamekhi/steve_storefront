@@ -10,7 +10,9 @@ export async function authMiddleware(request: NextRequest) {
     const protectedRoutes = ['/dashboard'];
 
     const { nextUrl } = request;
-    const nextResponse = NextResponse.next();
+    // Pass `request` through so cookies set upstream on it (e.g. by
+    // ensureVisitorCookie) are visible to the Server Components downstream.
+    const nextResponse = NextResponse.next({ request: { headers: request.headers } });
 
     const signInRoute = request.nextUrl.clone();
 

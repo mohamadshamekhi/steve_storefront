@@ -72,9 +72,35 @@ const fetcher = async (fetcherKey: string, location: LocationPath, method?: meth
         headersList.Authorization = `Bearer ${access_token}`;
     }
 
+    // Forward cookies (e.g. steve_visitor_id) so the API can tell unique
+    // visitors apart. In the browser this is native fetch behavior; on the
+    // server there is no cookie jar, so the incoming request's Cookie header
+    // has to be relayed by hand. Some server-side callers (e.g. module-level
+    // fetches used for static generation) run outside any request scope, in
+    // which case `next/headers` throws — there's no visitor to forward for
+    // anyway, so just skip it.
+    if (typeof window === 'undefined') {
+        try {
+            const { headers: nextHeaders } = await import('next/headers');
+            const incomingCookie = (await nextHeaders()).get('cookie');
+            if (incomingCookie) {
+                headersList.Cookie = incomingCookie;
+            }
+        } catch {
+            // No request scope (static generation, build-time fetch, etc.) — skip.
+        }
+    }
+
     const requestInit: RequestInit = {
         method,
         headers: headersList,
+        // NOT credentials: 'include' - the API's CORS config sends
+        // `Access-Control-Allow-Origin: *` with no `Allow-Credentials`
+        // header, so a credentialed browser request gets rejected by CORS
+        // outright (breaks every client-side call, not just article ones).
+        // The article view-count cookie is instead relayed server-side (see
+        // the Cookie-forwarding block above and app/core/middleware/visitor.ts),
+        // which is a plain server-to-server fetch and isn't subject to CORS.
         ...(options && options.body && { body: JSON.stringify(options.body) }),
         ...(options?.next && { next: options.next })
     };

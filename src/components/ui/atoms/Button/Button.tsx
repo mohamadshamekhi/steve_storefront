@@ -20,7 +20,13 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
     ref
   ) => {
     const baseClasses = cn(
-      "cursor-pointer disabled:bg-gray-400  disabled:cursor-not-allowed text-center",
+      "cursor-pointer disabled:cursor-not-allowed text-center",
+      // `bg-gray-400` only makes sense for the solid `fill` variant - forcing
+      // it on `text`/`outline`/`light` buttons paints an unwanted background
+      // behind what's normally a transparent button, while leaving the
+      // variant's own text color untouched (e.g. red text on a grey pill).
+      // Fade those out instead.
+      variant === "fill" ? "disabled:bg-gray-400" : "disabled:opacity-50",
       className
     );
     const variantClasses = buttonStyle.getVariantClasses({

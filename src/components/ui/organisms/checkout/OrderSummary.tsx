@@ -19,14 +19,12 @@ interface OrderSummaryProps {
 function OrderSummary({ selectedShipping }: OrderSummaryProps) {
   const selectedShippingId = selectedShipping?.id ?? null;
   const shippingCost = selectedShipping?.cost ?? 0;
-  const { itemCount, subtotal, finalPrice, discountCode, removeDiscount } =
-    useCartStore();
+  const { itemCount, subtotal, finalPrice, discountCode } = useCartStore();
   const { activeAddressId } = useUserPreferencesStore();
   const openModal = useModalStore((s) => s.openModal);
   const closeModal = useModalStore((s) => s.closeModal);
 
   const [isLoading, setIsLoading] = useState(false);
-  const [isRemovingDiscount, setIsRemovingDiscount] = useState(false);
   const [warningMessage, setWarningMessage] = useState<string | null>(null);
 
   const formatPrice = (price: number) => {
@@ -67,6 +65,10 @@ function OrderSummary({ selectedShipping }: OrderSummaryProps) {
           body: {
             address_id: activeAddressId,
             shipping_id: selectedShippingId,
+            // without this, the order (and the amount the payment gateway
+            // charges) was registered at full price - the discount only ever
+            // existed in the cart preview, never reached the actual order.
+            ...(discountCode && { discount_code: discountCode }),
           },
         }
       );

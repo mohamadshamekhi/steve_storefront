@@ -2,4 +2,5 @@ node_modules
 .next-env.d.ts
 .next
 /deploy.sh
+/deploy.env
 .next/

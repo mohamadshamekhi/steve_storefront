@@ -45,6 +45,12 @@ function ClientPage({
             <span>{formatJalali(new Date(article.created_at))}</span>
           </div>
 
+          {typeof article.view_count === "number" && (
+            <div className="flex items-center gap-1.5 rounded-full bg-gray-100 px-3 py-1 text-xs font-medium text-gray-600">
+              <span>{article.view_count.toLocaleString("fa-IR")} بازدید</span>
+            </div>
+          )}
+
           <Link href="#comments">
             <div className="hover:bg-primary-50 hover:text-primary-600 flex items-center gap-1 rounded-full bg-gray-100 px-3 py-1 text-xs font-medium text-gray-600 transition">
               <span>{all_approved_comments_count} دیدگاه</span>
@@ -64,7 +70,7 @@ function ClientPage({
             src={article.media_url}
             alt={article.alt}
             priority
-            className="aspect-video h-full w-full "
+            className="aspect-video h-full w-full object-cover "
           />
         </div>
 

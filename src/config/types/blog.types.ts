@@ -12,6 +12,7 @@ interface Blog {
     back_office_id?: string;
     back_office_name?: string;
     alt: string;
+    view_count?: number;
 }
 
 export default Blog;

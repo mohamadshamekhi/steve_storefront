@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import '../styles/master.css';
 
+import { GoogleAnalytics } from '@/components/ui/molecules/Analytics/GoogleAnalytics';
 import { ToastContainer } from '@/components/ui/molecules/Toast/ToastContainer';
 import YekanFont from '@/config/fonts/YekanFont';
 import { SITE_URL } from '@/seo';
@@ -29,6 +30,8 @@ const RootLayout = ({
                 <meta name='enamad' content='8840088' />
             </head>
             <body className={`${YekanFont.variable} bg-gray-50`}>
+                <GoogleAnalytics />
+
                 <NuqsAdapter>
                     <ClientPage components={children} />
                 </NuqsAdapter>
