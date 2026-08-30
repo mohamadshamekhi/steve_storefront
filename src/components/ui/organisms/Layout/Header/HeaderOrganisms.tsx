@@ -4,6 +4,7 @@ import LogoIcon from "@/components/icons/LogoIcon";
 import BlogIcon from "@/components/icons/Menu/BlogIcon";
 import DiamondIcon from "@/components/icons/Menu/DiamondIcon";
 import FlashIcon from "@/components/icons/Menu/FlashIcon";
+import HandshakeIcon from "@/components/icons/Menu/HandshakeIcon";
 import PercentIcon from "@/components/icons/Menu/PercentIcon";
 import ToolIcon from "@/components/icons/Menu/ToolIcon";
 import MegaMenuMobile from "@/components/ui/molecules/Nav/MegaMenuMobile";
@@ -64,6 +65,13 @@ const MenuItems: IMenuItem[] = [
       <FlashIcon className="group-hover:text-secondary-500 text-gray-600" />
     ),
     href: ROUTES.PhoneSales,
+  },
+  {
+    label: "فروش همکاری",
+    icon: (
+      <HandshakeIcon className="group-hover:text-secondary-500 text-gray-600" />
+    ),
+    href: ROUTES.PartnerSales,
   },
   {
     label: "درمورد استیو موبایل",

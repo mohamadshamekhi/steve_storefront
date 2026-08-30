@@ -16,7 +16,8 @@ const staticRoutes: MetadataRoute.Sitemap = [
     { url: `${BASE_URL}/contact-us`, changeFrequency: 'monthly', priority: 0.4 },
     { url: `${BASE_URL}/faq`, changeFrequency: 'monthly', priority: 0.4 },
     { url: `${BASE_URL}/phone-repair`, changeFrequency: 'weekly', priority: 0.7 },
-    { url: `${BASE_URL}/phone-sales`, changeFrequency: 'weekly', priority: 0.7 }
+    { url: `${BASE_URL}/phone-sales`, changeFrequency: 'weekly', priority: 0.7 },
+    { url: `${BASE_URL}/partner-sales`, changeFrequency: 'weekly', priority: 0.7 }
 ];
 
 // The API may silently cap page_size (we've seen this bite the sitemap before -

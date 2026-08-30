@@ -50,6 +50,14 @@ const MegaMenuMobile = () => {
                 </div>
                 <div className='mb-4'>
                     <Link
+                        href={ROUTES.PartnerSales}
+                        onClick={() => toggle('mobile')}
+                        className='text-primary-600 flex items-center py-2 text-sm font-semibold'
+                    >
+                        <span>فروش همکاری</span>
+                        <ChevronLeft className='mr-1.5 h-2 w-2' />
+                    </Link>
+                    <Link
                         href={ROUTES.FAQ}
                         onClick={() => toggle('mobile')}
                         className='text-primary-600 flex items-center py-2 text-sm font-semibold'

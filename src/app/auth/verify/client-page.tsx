@@ -20,6 +20,10 @@ type authModel = z.infer<typeof authOTPValidationSchema>;
 const VerifyPage = () => {
     const searchParams = useSearchParams();
     const phoneNumber = searchParams.get('phone_number');
+    const redirectParam = searchParams.get('redirect') || searchParams.get('callbackUrl');
+    // فقط مسیرهای داخلی مجاز است (جلوگیری از open redirect)
+    const redirect =
+        redirectParam && redirectParam.startsWith('/') && !redirectParam.startsWith('//') ? redirectParam : null;
 
     const [isPending, startTransition] = useTransition();
     const { showToast } = useToast();
@@ -55,7 +59,7 @@ const VerifyPage = () => {
                         type: 'success'
                     });
                     await updateSession();
-                    router.push('/dashboard');
+                    router.push(redirect || '/dashboard');
                 } else {
                     showToast({
                         title: 'احراز هویت | تاییدیه ورود',

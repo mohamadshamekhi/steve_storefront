@@ -10,7 +10,7 @@ import ROUTES from '@/constants/routes/routes.constant';
 import { useToast } from '@/hooks/useToast';
 import { useFormik } from 'formik';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { useTransition } from 'react';
 import z from 'zod';
 import { toFormikValidationSchema } from 'zod-formik-adapter';
@@ -21,6 +21,9 @@ function SignInPage() {
     const { showToast } = useToast();
     const [isPending, startTransition] = useTransition();
     const router = useRouter();
+    const searchParams = useSearchParams();
+    // میدلور با callbackUrl ریدایرکت می‌کند؛ redirect هم برای سازگاری پشتیبانی می‌شود
+    const redirect = searchParams.get('callbackUrl') || searchParams.get('redirect');
 
     const submitHandler = async (data: authModel) => {
         startTransition(async () => {
@@ -32,7 +35,11 @@ function SignInPage() {
                         message: message,
                         type: 'success'
                     });
-                    router.push(`/auth/verify?phone_number=${data.phone_number}`);
+                    router.push(
+                        `/auth/verify?phone_number=${data.phone_number}${
+                            redirect ? `&redirect=${encodeURIComponent(redirect)}` : ''
+                        }`
+                    );
                 } else {
                     showToast({
                         title: 'احراز هویت | ورود',

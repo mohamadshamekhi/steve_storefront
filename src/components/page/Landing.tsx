@@ -15,6 +15,7 @@ import BestSellersTemplate from '../ui/templates/landing/BestSellersTemplate';
 import BrandTemplate from '../ui/templates/landing/BrandTemplate';
 import CategoriesTemplate from '../ui/templates/landing/CategoriesTemplate';
 import HeroTemplate from '../ui/templates/landing/HeroTemplate';
+import PartnerCtaTemplate from '../ui/templates/landing/PartnerCtaTemplate';
 // import OfferProductTemplate from '../ui/templates/landing/OfferProductTemplate';
 import RecommendedProductsTemplate from '../ui/templates/landing/RecommendedProductsTemplate';
 import SecondHandTemplate from '../ui/templates/landing/SecondHandProductTemplate';
@@ -70,6 +71,8 @@ const Landing = ({
                 {/* <OfferProductTemplate /> */}
                 {/* -> BlogTemplate */}
                 {articles?.length > 0 && <BlogTemplate articles={articles} />}
+
+                <PartnerCtaTemplate />
 
                 <div className='grid grid-cols-1 gap-4 md:grid-cols-2'>
                     <StoreContentSection title={homeIntro.title} body={homeIntro.body} />

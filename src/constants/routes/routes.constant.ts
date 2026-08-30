@@ -8,6 +8,7 @@ const ROUTES = {
     Payment: '/payment',
     PhoneRepair: '/phone-repair',
     PhoneSales: '/phone-sales',
+    PartnerSales: '/partner-sales',
     Login: '/auth/sign-in',
     Verify: '/auth/verify',
     Dashboard: '/dashboard',
