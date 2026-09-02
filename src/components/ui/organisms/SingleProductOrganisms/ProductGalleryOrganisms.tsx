@@ -45,12 +45,12 @@ const ProductGalleryOrganisms = ({ gallery, productName }: { gallery: SingleProd
     const primaryGalleryItem = mappedGallery.find((item) => item.is_primary);
 
     return (
-        <div className='overflow-hidden rounded-md bg-white p-4 lg:col-span-12 xl:col-span-3'>
+        <div className='overflow-hidden rounded-2xl bg-white p-4 shadow-[0_1px_3px_rgba(16,24,40,0.06)] sm:p-5 lg:col-span-5 lg:sticky lg:top-4 lg:self-start'>
             {primaryGalleryItem && (
                 <div className='relative'>
                     <ProductCountDownTimer expiresAt={discount?.expires_at} />
                     <button
-                        className='w-full cursor-pointer'
+                        className='block w-full cursor-zoom-in overflow-hidden rounded-xl bg-linear-to-b from-gray-50 to-gray-100/50'
                         onClick={() => {
                             setOpen(true);
                             setCurrentIndex(1);
@@ -63,13 +63,13 @@ const ProductGalleryOrganisms = ({ gallery, productName }: { gallery: SingleProd
                                 width={600}
                                 height={600}
                                 priority
-                                className='mx-auto block w-full max-w-[400px] rounded-lg object-contain xl:aspect-[320/557] xl:max-w-full'
+                                className='mx-auto block aspect-square w-full max-w-115 object-contain lg:max-w-none'
                             />
                         )}
                         {primaryGalleryItem.type === 'video' && primaryGalleryItem.sources && (
                             <video
                                 controls
-                                className='mx-auto block w-full max-w-[400px] rounded-lg object-contain xl:aspect-[320/557] xl:max-w-full'
+                                className='mx-auto block aspect-square w-full max-w-115 object-contain lg:max-w-none'
                             >
                                 <source
                                     src={primaryGalleryItem.sources[0].src}
@@ -82,40 +82,39 @@ const ProductGalleryOrganisms = ({ gallery, productName }: { gallery: SingleProd
                 </div>
             )}
 
-            <div className='flex w-full justify-center gap-2'>
+            <div className='mt-4 flex w-full flex-wrap justify-center gap-2.5 lg:justify-start'>
                 {mappedGallery.slice(0, 4).map((item, index) => (
-                    <div key={index}>
-                        <div
-                            className='h-full max-w-[51px] overflow-hidden rounded-md border border-gray-200'
-                            onClick={() => {
-                                setOpen(true);
-                                setCurrentIndex(index);
-                            }}
-                        >
-                            {item.type === 'image' && item.src ? (
-                                <OptimizedImage
-                                    src={item.src}
-                                    alt={productName ?? `Thumb ${index + 1}`}
-                                    className='mx-auto block h-full w-full cursor-pointer rounded-md object-cover'
-                                    width={52}
-                                    height={52}
-                                    loading='lazy'
-                                />
-                            ) : (
-                                <div className='relative mx-auto flex h-[52px] w-[52px] cursor-pointer items-center justify-center overflow-hidden rounded-md object-cover backdrop-blur-lg before:absolute before:z-10 before:h-full before:w-full before:bg-[#fffffff9]'>
-                                    {item.type === 'video' && item.sources && (
-                                        <OptimizedImage
-                                            src={item.sources[0].src}
-                                            alt={productName ?? 'Video thumbnail'}
-                                            width={52}
-                                            height={52}
-                                            className='w-full'
-                                        />
-                                    )}
-                                    <PlayIcon className='absolute z-10 text-gray-700' />
-                                </div>
-                            )}
-                        </div>
+                    <div
+                        key={index}
+                        className='hover:border-primary-400 h-16 w-16 shrink-0 cursor-pointer overflow-hidden rounded-xl border border-gray-200 bg-gray-50 transition-colors'
+                        onClick={() => {
+                            setOpen(true);
+                            setCurrentIndex(index);
+                        }}
+                    >
+                        {item.type === 'image' && item.src ? (
+                            <OptimizedImage
+                                src={item.src}
+                                alt={productName ?? `Thumb ${index + 1}`}
+                                className='block h-full w-full cursor-pointer object-cover'
+                                width={64}
+                                height={64}
+                                loading='lazy'
+                            />
+                        ) : (
+                            <div className='relative flex h-full w-full cursor-pointer items-center justify-center overflow-hidden backdrop-blur-lg before:absolute before:z-10 before:h-full before:w-full before:bg-[#fffffff9]'>
+                                {item.type === 'video' && item.sources && (
+                                    <OptimizedImage
+                                        src={item.sources[0].src}
+                                        alt={productName ?? 'Video thumbnail'}
+                                        width={64}
+                                        height={64}
+                                        className='w-full'
+                                    />
+                                )}
+                                <PlayIcon className='absolute z-10 text-gray-700' />
+                            </div>
+                        )}
                     </div>
                 ))}
 
@@ -124,7 +123,7 @@ const ProductGalleryOrganisms = ({ gallery, productName }: { gallery: SingleProd
                         onClick={() => {
                             setOpen(true);
                         }}
-                        className='relative flex h-[52px] w-[52px] max-w-[51px] cursor-pointer items-center justify-center overflow-hidden rounded-md border border-gray-200 object-cover backdrop-blur-lg before:absolute before:z-10 before:h-full before:w-full before:bg-[#fffffff9]'
+                        className='relative flex h-16 w-16 shrink-0 cursor-pointer items-center justify-center overflow-hidden rounded-xl border border-gray-200 bg-gray-50 backdrop-blur-lg before:absolute before:z-10 before:h-full before:w-full before:bg-[#fffffff9]'
                     >
                         <MoreIcon className='absolute z-10 text-gray-700' />
                     </div>

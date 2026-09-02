@@ -114,7 +114,9 @@ const fetcher = async (fetcherKey: string, location: LocationPath, method?: meth
             constructUrl.push(`?${stringify(options.params)}`);
         }
 
-        console.log(`${method} -> ${location} -> ${requiredAuth ? '🔒' : ''} ${constructUrl.join('')} `);
+        if (process.env.NODE_ENV === 'development') {
+            console.log(`${method} -> ${location} -> ${requiredAuth ? '🔒' : ''} ${constructUrl.join('')} `);
+        }
 
         // send a request
         const response = await fetch(constructUrl.join(''), requestInit);
@@ -137,7 +139,6 @@ const fetcher = async (fetcherKey: string, location: LocationPath, method?: meth
             };
             if (typeof window !== 'undefined') {
                 const { message } = await response.json();
-                console.log(message, 'message');
                 useToastStore.getState().showToast({
                     message: message,
                     type: 'error',

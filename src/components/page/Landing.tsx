@@ -52,7 +52,7 @@ const Landing = ({
 }) => {
     return (
         <main>
-            <Container className='mt-5 space-y-16 md:mt-10'>
+            <Container className='mt-5 space-y-12 md:mt-10 md:space-y-16'>
                 <h1 className='sr-only'>
                     استیو موبایل | خرید آنلاین گوشی موبایل، لوازم جانبی و کالای دیجیتال
                 </h1>

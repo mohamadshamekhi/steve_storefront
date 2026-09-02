@@ -78,7 +78,7 @@ function SecondHandTemplate({ secondHandProducts }: { secondHandProducts: Produc
                 </div>
                 <div className='flex items-center gap-1'>
                     {icon}
-                    <h2 className='mr-1 text-sm font-bold text-gray-800 md:text-lg lg:text-2xl'>
+                    <h2 className='mr-1 text-base font-bold text-gray-800 md:text-lg lg:text-2xl'>
                         منتخب محصولات دست دوم
                     </h2>
                 </div>

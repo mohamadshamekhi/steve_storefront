@@ -33,7 +33,7 @@ const AuctionTemplate = ({ products }: { products: ProductProps[] }) => {
                         <ChevronLeft className='text-primary-900' />
                     </Button>
                 </div>
-                <h2 className='flex items-center justify-center gap-2 text-center text-sm font-semibold md:text-xl'>
+                <h2 className='flex items-center justify-center gap-2 text-center text-base font-semibold md:text-xl'>
                     <TicketIcon className='text-secondary-500' />
 
                     <span>منتخب محصولات تخفیف و حراج</span>

@@ -28,7 +28,7 @@ function AddressBox() {
 
     if (!displayAddress) {
         return (
-            <div className='border-primary-400 mb-8 flex flex-wrap items-center gap-5 rounded-md border bg-white p-2.5 sm:p-6'>
+            <div className='border-primary-100 flex flex-wrap items-center gap-4 rounded-2xl border bg-white p-4 shadow-[0_1px_3px_rgba(16,24,40,0.06)] sm:p-5'>
                 <TruckIcon />
                 <div className='grow'>
                     <div className='text-primary-600 mb-2.5 text-sm font-medium'>آدرسی ثبت نشده است</div>
@@ -51,7 +51,7 @@ function AddressBox() {
         .join(' - ');
 
     return (
-        <div className='border-primary-400 mb-8 flex cursor-pointer flex-wrap items-center gap-5 rounded-md border bg-white p-2.5 sm:p-6'>
+        <div className='border-primary-100 flex flex-wrap items-center gap-4 rounded-2xl border bg-white p-4 shadow-[0_1px_3px_rgba(16,24,40,0.06)] sm:p-5'>
             <TruckIcon />
 
             <div className='grow'>

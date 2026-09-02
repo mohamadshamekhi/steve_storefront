@@ -82,10 +82,10 @@ const SingleProductFormOrganisms = ({ productId, rate }: { productId: string; ra
         }
     });
     return (
-        <div className='col-span-12 rounded-md bg-white p-4 md:col-span-4 lg:col-span-4'>
+        <div className='col-span-12 rounded-2xl bg-white p-4 shadow-[0_1px_3px_rgba(16,24,40,0.06)] sm:p-5 md:col-span-4 lg:col-span-4'>
             <div className='mb-6'>
                 <div className='mb-3 flex flex-wrap justify-between gap-2'>
-                    <span className='text-sm font-semibold'>ثبت امتیاز و دیدگاه </span>
+                    <span className='text-sm font-bold text-gray-800'>ثبت امتیاز و دیدگاه</span>
                     <Rating
                         value={rate}
                         readOnly

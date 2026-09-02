@@ -99,7 +99,7 @@ const SearchProducts = () => {
     const showResults = isFocused && !!debouncedValue;
 
     return (
-        <div className='relative max-w-[716px] grow'>
+        <div className='relative w-full min-w-0 max-w-[716px] grow'>
             <div className='relative flex items-center'>
                 <Input
                     type='text'

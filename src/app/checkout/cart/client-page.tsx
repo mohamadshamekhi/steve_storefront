@@ -3,6 +3,7 @@
 import ManualBreadcrumb from '@/components/ui/molecules/Breadcrumbs/ManualBreadcrumb';
 import AddressBox from '@/components/ui/organisms/checkout/AddressBox';
 import CartItem from '@/components/ui/organisms/checkout/CartItem';
+import MobileCheckoutBar from '@/components/ui/organisms/checkout/MobileCheckoutBar';
 import OrderSummary from '@/components/ui/organisms/checkout/OrderSummary';
 import ShippingMethodBox from '@/components/ui/organisms/checkout/ShippingMethodBox';
 import Container from '@/components/ui/organisms/Container/Container';
@@ -97,24 +98,22 @@ const Checkout = () => {
                         </Modal.Body>
                     </Modal> */}
 
-                    <section className='flex flex-col gap-8 py-10 lg:flex-row'>
-                        <div className='w-full lg:w-8/12'>
+                    <section className='flex flex-col gap-5 pt-6 pb-[calc(var(--app-bottom-nav,0px)+var(--app-bottom-bar,0px)+1rem)] lg:flex-row lg:gap-6 lg:py-10'>
+                        <div className='w-full space-y-4 lg:w-8/12'>
                             <AddressBox />
 
-                            <div className='space-y-8'>
-                                {items.length === 0 ? (
-                                    <div className='rounded-md bg-white p-8 text-center text-gray-500'>
-                                        سبد خرید شما خالی است
-                                    </div>
-                                ) : (
-                                    items.map((item) => (
-                                        <CartItem key={`${item.product_id}-${item.variant_id}`} item={item} />
-                                    ))
-                                )}
-                            </div>
+                            {items.length === 0 ? (
+                                <div className='rounded-2xl bg-white p-8 text-center text-sm text-gray-400 shadow-[0_1px_3px_rgba(16,24,40,0.06)]'>
+                                    سبد خرید شما خالی است
+                                </div>
+                            ) : (
+                                items.map((item) => (
+                                    <CartItem key={`${item.product_id}-${item.variant_id}`} item={item} />
+                                ))
+                            )}
                         </div>
                         <div className='w-full lg:w-4/12'>
-                            <div className='sticky top-[40px]'>
+                            <div className='space-y-4 lg:sticky lg:top-4'>
                                 <ShippingMethodBox
                                     selectedShippingId={selectedShipping?.id ?? null}
                                     onSelect={(id, cost) => setSelectedShipping({ id, cost })}
@@ -125,6 +124,8 @@ const Checkout = () => {
                     </section>
                 </Container>
             </main>
+
+            <MobileCheckoutBar selectedShipping={selectedShipping} />
         </Layout>
     );
 };

@@ -87,7 +87,6 @@ const fetchBlogPostComments = async (
   };
 }> => {
   const res = await fetcher(ApiKeys.GET_ARTICLE_COMMENTS(id), "web", "GET");
-  console.log(res, "ressss");
   return res;
 };
 

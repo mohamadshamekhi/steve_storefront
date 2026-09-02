@@ -4,7 +4,6 @@ import MinusIcon from '@/components/icons/MinusIcon';
 import PlusIcon from '@/components/icons/PlusIcon';
 import TomanIcon from '@/components/icons/TomanIcon';
 import TrashIcon from '@/components/icons/TrashIcon';
-// import WarrantyIcon from '@/components/icons/checkout/WarrantyIcon';
 import Badge from '@/components/ui/atoms/Badge/Badge';
 import ROUTES from '@/constants/routes/routes.constant';
 import { useCartStore } from '@/state/stores/cart';
@@ -12,14 +11,12 @@ import { CartItem as CartItemType } from '@/state/stores/cart/cart.types';
 import OptimizedImage from '@/utils/imageLoader';
 import Link from 'next/link';
 import { useState } from 'react';
-import Button from '../../atoms/Button/Button';
 
 interface IProps {
     item: CartItemType;
 }
 
 const CartItem = ({ item }: IProps) => {
-    console.log(item, 'item');
     const { addItem, removeItem } = useCartStore();
     const [isAdding, setIsAdding] = useState(false);
     const [isRemoving, setIsRemoving] = useState(false);
@@ -56,95 +53,53 @@ const CartItem = ({ item }: IProps) => {
     const productLink = `${ROUTES.Products}/${item.slug || item.product_id}`;
 
     return (
-        <div className='gap-5 rounded-md bg-white p-2 md:p-4 lg:p-8'>
-            <div className='mb-4 flex flex-wrap items-center justify-center gap-5 sm:flex-nowrap sm:justify-normal lg:mb-[45px]'>
+        <div className='flex gap-3 rounded-2xl bg-white p-3 shadow-[0_1px_3px_rgba(16,24,40,0.06)] sm:gap-4 sm:p-5'>
+            <Link href={productLink} className='shrink-0'>
+                <OptimizedImage
+                    className='aspect-square w-20 rounded-xl border border-gray-100 bg-gray-50 object-cover sm:w-28'
+                    src={item.url}
+                    alt={item.ProductName}
+                    width={112}
+                    height={112}
+                />
+            </Link>
+
+            <div className='flex min-w-0 flex-1 flex-col'>
                 <Link href={productLink}>
-                    <OptimizedImage
-                        className='aspect-square w-full max-w-[146px] rounded-lg object-cover'
-                        src={item.url}
-                        alt={item.ProductName}
-                        width={146}
-                        height={146}
-                    />
+                    <h3 className='hover:text-primary-700 line-clamp-2 text-sm font-semibold text-gray-800 transition-colors sm:text-base'>
+                        {item.ProductName}
+                    </h3>
                 </Link>
 
-                <div className='mb-6'>
-                    <Link href={productLink}>
-                        <h3 className='text-body2-bold md:text-subtitle2-bold mb-4 text-gray-800'>
-                            {item.ProductName}
-                        </h3>
-                    </Link>
-
-                    {colorAttribute && (
-                        <div className='mb-4 flex items-center'>
-                            <span
-                                className='ml-2 inline-block h-4 w-4 rounded-full border border-gray-200'
-                                style={{ backgroundColor: colorAttribute.value }}
-                            ></span>
-                            <span className='text-base font-semibold'>{colorAttribute.label}</span>
-                        </div>
-                    )}
-
-                    {item.VariantAttributes?.filter((attr) => attr.key !== 'رنگ').map((attr) => (
-                        <div key={attr.key} className='mb-2 flex items-center text-sm text-gray-600'>
-                            <span className='ml-1'>{attr.key}:</span>
-                            <span>{attr.label}</span>
-                        </div>
-                    ))}
-
-                    {/* Warranty section - for future use
-                    <div className='flex items-center'>
-                        <span className='ml-2'>
-                            <WarrantyIcon />
-                        </span>
-                        <span className='text-body1-bold text-gray-800'>گارانتی ۱۸ ماهه شرکتی</span>
+                {(colorAttribute || (item.VariantAttributes && item.VariantAttributes.length > 0)) && (
+                    <div className='mt-1.5 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-gray-500'>
+                        {colorAttribute && (
+                            <span className='flex items-center gap-1.5'>
+                                <span
+                                    className='inline-block h-3 w-3 rounded-full border border-gray-200'
+                                    style={{ backgroundColor: colorAttribute.value }}
+                                />
+                                {colorAttribute.label}
+                            </span>
+                        )}
+                        {item.VariantAttributes?.filter((attr) => attr.key !== 'رنگ').map((attr) => (
+                            <span key={attr.key}>
+                                {attr.key}: {attr.label}
+                            </span>
+                        ))}
                     </div>
-                    */}
-                </div>
-            </div>
+                )}
 
-            <div>
-                <div className='flex flex-wrap items-center gap-5 sm:flex-nowrap'>
-                    <div className='ml-20 flex items-center justify-between'>
-                        <Button
-                            variant='light'
-                            color='green'
-                            className='flex aspect-square justify-center rounded-md p-2!'
-                            onClick={handleAdd}
-                            disabled={isLoading}
-                            loading={isAdding}
-                        >
-                            {!isAdding && <PlusIcon />}
-                        </Button>
-
-                        <div className='text-subtitle1-regular min-w-[50px] grow text-center'>{item.Quantity}</div>
-
-                        <Button
-                            variant='light'
-                            color='danger'
-                            className='flex aspect-square justify-center rounded-md p-2!'
-                            onClick={handleRemove}
-                            disabled={isLoading}
-                            loading={isRemoving}
-                        >
-                            {!isRemoving &&
-                                (item.Quantity === 1 ? (
-                                    <TrashIcon className='text-secondary-500' />
-                                ) : (
-                                    <MinusIcon className='text-secondary-500' />
-                                ))}
-                        </Button>
-                    </div>
-
-                    <div className='grow text-left'>
+                <div className='mt-auto flex flex-wrap items-end justify-between gap-3 pt-4'>
+                    <div className='text-left'>
                         {hasDiscount && (
-                            <div className='flex flex-wrap items-center gap-2'>
-                                <span className='text-sm text-gray-400 line-through decoration-gray-300'>
+                            <div className='flex items-center gap-1.5'>
+                                <span className='text-xs text-gray-400 line-through decoration-gray-300'>
                                     {formatPrice(totalPrice)}
                                 </span>
                                 <Badge
                                     color='danger'
-                                    className='!flex !min-w-[40px] justify-center !rounded-[3px] !px-[6px] !py-[1px] !leading-[18px]'
+                                    className='flex! min-w-10! justify-center rounded-[3px]! px-1.5! py-px! text-[11px] leading-4.5!'
                                 >
                                     {formatPrice(totalDiscount)}-
                                 </Badge>
@@ -152,17 +107,39 @@ const CartItem = ({ item }: IProps) => {
                         )}
 
                         {item.Quantity > 1 && (
-                            <div className='flex flex-wrap items-center gap-2'>
-                                <span className='text-sm text-gray-400'>
-                                    {item.Quantity} عدد × {formatPrice(item.PriceAtTime)}
-                                </span>
+                            <div className='text-[11px] text-gray-400'>
+                                {item.Quantity} عدد × {formatPrice(item.PriceAtTime)}
                             </div>
                         )}
 
-                        <div className='text-subtitle1-bold flex items-center text-gray-800'>
-                            <span className='ml-1.5'>{formatPrice(hasDiscount ? finalPrice : totalPrice)}</span>
+                        <div className='flex items-center gap-1 text-base font-bold text-gray-900'>
+                            <span>{formatPrice(hasDiscount ? finalPrice : totalPrice)}</span>
                             <TomanIcon />
                         </div>
+                    </div>
+
+                    <div className='inline-flex items-center divide-x divide-gray-200 rounded-lg border border-gray-200'>
+                        <button
+                            type='button'
+                            onClick={handleAdd}
+                            disabled={isLoading}
+                            aria-label='افزودن یکی'
+                            className='text-primary-600 hover:bg-primary-50 flex h-9 w-9 items-center justify-center rounded-r-lg transition-colors disabled:opacity-40'
+                        >
+                            <PlusIcon />
+                        </button>
+                        <span className='min-w-9 self-stretch px-1 py-2 text-center text-sm font-semibold'>
+                            {item.Quantity}
+                        </span>
+                        <button
+                            type='button'
+                            onClick={handleRemove}
+                            disabled={isLoading}
+                            aria-label={item.Quantity === 1 ? 'حذف از سبد' : 'کاهش یکی'}
+                            className='text-secondary-500 hover:bg-secondary-50 flex h-9 w-9 items-center justify-center rounded-l-lg transition-colors disabled:opacity-40'
+                        >
+                            {item.Quantity === 1 ? <TrashIcon /> : <MinusIcon />}
+                        </button>
                     </div>
                 </div>
             </div>

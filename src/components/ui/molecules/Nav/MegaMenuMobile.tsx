@@ -1,84 +1,95 @@
-import CellPhoneIcon from '@/components/icons/CellPhoneIcon';
+'use client';
+
 import ChevronLeft from '@/components/icons/ChevronLeft';
 import CrossIcon from '@/components/icons/CrossIcon';
 import ROUTES from '@/constants/routes/routes.constant';
+import useCategories from '@/hooks/useCategories';
 import { useMenuStore } from '@/state/stores/menu';
+import OptimizedImage from '@/utils/imageLoader';
 import Link from 'next/link';
-import Button from '../../atoms/Button/Button';
-import { Accordion } from '../../organisms/CAccordion/CAccordion';
+
+const quickLinks = [
+    { label: 'مشاهده همه محصولات', href: ROUTES.Products },
+    { label: 'شگفت‌انگیزها', href: `${ROUTES.Products}?order_by=most_sold` },
+    { label: 'محصولات دست دوم', href: `${ROUTES.Products}?is_second_hand=true` },
+    { label: 'فروش همکاری', href: ROUTES.PartnerSales },
+    { label: 'تعمیرات موبایل', href: ROUTES.PhoneRepair },
+    { label: 'سوالات متداول', href: ROUTES.FAQ }
+];
 
 const MegaMenuMobile = () => {
     const { toggle } = useMenuStore();
+    const close = () => toggle('mobile');
 
-    const categories = Array.from({ length: 20 }, () => ({
-        label: 'موبایل',
-        href: '#',
-        icon: <CellPhoneIcon className='mb-1 w-4 text-gray-500' />
-    }));
+    const { rootCategories, isLoading } = useCategories();
 
-    const categoryItem = Array.from({ length: 20 }, () => ({
-        title: 'برند های مختلف گوشی',
-        id: `id-cat-${Math.random().toString(36).substring(2)}`,
-        content: 'exmpty'
-    }));
     return (
-        <div className='grid h-full grid-cols-12 pt-2 pb-[80px]'>
-            <div className='bg-primary-100 col-span-3 h-full'>
-                <ul className='scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-transparent h-full max-h-[800px] overflow-y-auto'>
-                    {categories.map((item, index) => {
-                        return (
-                            <li
-                                key={`${item.label}-${index}`}
-                                className='flex flex-col items-center border-b border-gray-300 px-4 py-7 text-base font-normal text-gray-600 transition ease-in hover:bg-white hover:font-medium hover:text-gray-800'
-                            >
-                                {item.icon}
-                                <span className='font-medium text-gray-600'>{item.label}</span>
-                            </li>
-                        );
-                    })}
-                </ul>
+        <div className='pb-28'>
+            <div className='mb-1 flex items-center justify-between border-b border-gray-100 px-4 py-3'>
+                <span className='text-sm font-bold text-gray-800'>دسته‌بندی‌ها</span>
+                <button
+                    type='button'
+                    onClick={close}
+                    aria-label='بستن منو'
+                    className='bg-primary-50 text-primary-600 flex h-8 w-8 items-center justify-center rounded-full'
+                >
+                    <CrossIcon />
+                </button>
             </div>
-            <div className='scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-transparent col-span-9 max-h-[800px] overflow-y-auto p-6'>
-                <div className='mb-8 flex items-center justify-between'>
-                    <Link href='#' className='text-primary-600 flex items-center'>
-                        <span className='text-sm font-semibold'>همه محصولات موبایل</span>
-                        <ChevronLeft className='mr-1.5 h-2 w-2' />
-                    </Link>
-                    <Button variant='light' onClick={() => toggle('mobile')}>
-                        <CrossIcon />
-                    </Button>
-                </div>
-                <div className='mb-4'>
-                    <Link
-                        href={ROUTES.PartnerSales}
-                        onClick={() => toggle('mobile')}
-                        className='text-primary-600 flex items-center py-2 text-sm font-semibold'
-                    >
-                        <span>فروش همکاری</span>
-                        <ChevronLeft className='mr-1.5 h-2 w-2' />
-                    </Link>
-                    <Link
-                        href={ROUTES.FAQ}
-                        onClick={() => toggle('mobile')}
-                        className='text-primary-600 flex items-center py-2 text-sm font-semibold'
-                    >
-                        <span>سوالات متداول</span>
-                        <ChevronLeft className='mr-1.5 h-2 w-2' />
-                    </Link>
-                </div>
-                <div>
-                    <Accordion defaultActiveKey='0' type='single'>
-                        {categoryItem.map((item, index) => (
-                            <Accordion.Item eventKey={index.toString()} key={item.id}>
-                                <Accordion.Header eventKey={index.toString()}>
-                                    <div className='text-sm-plus font-semibold text-gray-800'> {item.title}</div>
-                                </Accordion.Header>
-                                {item.content && (
-                                    <Accordion.Body eventKey={index.toString()}>{item.content}</Accordion.Body>
-                                )}
-                            </Accordion.Item>
+
+            <div>
+                <ul className='divide-y divide-gray-100'>
+                    {isLoading &&
+                        Array.from({ length: 8 }).map((_, i) => (
+                            <li key={i} className='flex items-center gap-3 px-4 py-3'>
+                                <span className='h-10 w-10 shrink-0 animate-pulse rounded-lg bg-gray-100' />
+                                <span className='h-3.5 w-32 animate-pulse rounded bg-gray-100' />
+                            </li>
                         ))}
-                    </Accordion>
+
+                    {!isLoading &&
+                        rootCategories.map((category) => (
+                            <li key={category.id}>
+                                <Link
+                                    href={`${ROUTES.Products}/category/${category.slug}`}
+                                    onClick={close}
+                                    className='flex items-center gap-3 px-4 py-3 transition-colors active:bg-gray-50'
+                                >
+                                    <span className='flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-lg bg-gray-100'>
+                                        {category.url && (
+                                            <OptimizedImage
+                                                src={category.url}
+                                                alt={category.name}
+                                                width={40}
+                                                height={40}
+                                                loading='lazy'
+                                                className='h-full w-full object-cover'
+                                            />
+                                        )}
+                                    </span>
+                                    <span className='grow text-sm font-medium text-gray-800'>{category.name}</span>
+                                    <ChevronLeft className='h-3 w-3 text-gray-400' />
+                                </Link>
+                            </li>
+                        ))}
+
+                    {!isLoading && rootCategories.length === 0 && (
+                        <li className='px-4 py-12 text-center text-sm text-gray-400'>دسته‌بندی‌ای یافت نشد</li>
+                    )}
+                </ul>
+
+                <div className='mt-2 border-t border-gray-100 pt-2'>
+                    {quickLinks.map((item) => (
+                        <Link
+                            key={item.label}
+                            href={item.href}
+                            onClick={close}
+                            className='text-primary-600 flex items-center justify-between px-4 py-3 text-sm font-semibold'
+                        >
+                            <span>{item.label}</span>
+                            <ChevronLeft className='h-3 w-3' />
+                        </Link>
+                    ))}
                 </div>
             </div>
         </div>

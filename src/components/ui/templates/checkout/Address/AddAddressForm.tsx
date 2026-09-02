@@ -96,9 +96,9 @@ const AddAddressForm = () => {
     };
 
     return (
-        <div className='flex flex-col gap-4'>
+        <div className='flex flex-col gap-3.5'>
             <Fieldset name='title' errors={formik.errors} touched={formik.touched}>
-                <label className='mb-1 block text-sm font-medium text-gray-700'>عنوان آدرس</label>
+                <label className='mb-1.5 block text-xs-plus font-medium text-gray-700'>عنوان آدرس</label>
                 <Input
                     name='title'
                     value={formik.values.title}
@@ -110,7 +110,7 @@ const AddAddressForm = () => {
             </Fieldset>
             <div className='grid grid-cols-2 gap-4'>
                 <Fieldset name='province' errors={formik.errors} touched={formik.touched}>
-                    <label className='mb-1 block text-sm font-medium text-gray-700'>استان</label>
+                    <label className='mb-1.5 block text-xs-plus font-medium text-gray-700'>استان</label>
                     <CSelect
                         name='province'
                         options={provinces}
@@ -126,7 +126,7 @@ const AddAddressForm = () => {
                     />
                 </Fieldset>
                 <Fieldset name='city' errors={formik.errors} touched={formik.touched}>
-                    <label className='mb-1 block text-sm font-medium text-gray-700'>شهر</label>
+                    <label className='mb-1.5 block text-xs-plus font-medium text-gray-700'>شهر</label>
                     <CSelect
                         name='city'
                         options={cityOptions}
@@ -144,7 +144,7 @@ const AddAddressForm = () => {
                 </Fieldset>
             </div>
             <Fieldset name='street' errors={formik.errors} touched={formik.touched}>
-                <label className='mb-1 block text-sm font-medium text-gray-700'>آدرس کامل</label>
+                <label className='mb-1.5 block text-xs-plus font-medium text-gray-700'>آدرس کامل</label>
                 <Input
                     name='street'
                     value={formik.values.street}
@@ -155,7 +155,7 @@ const AddAddressForm = () => {
                 />
             </Fieldset>
             <Fieldset name='postcode' errors={formik.errors} touched={formik.touched}>
-                <label className='mb-1 block text-sm font-medium text-gray-700'>کد پستی</label>
+                <label className='mb-1.5 block text-xs-plus font-medium text-gray-700'>کد پستی</label>
                 <Input
                     name='postcode'
                     value={formik.values.postcode}
@@ -168,11 +168,21 @@ const AddAddressForm = () => {
                 />
             </Fieldset>
 
-            <div className='mt-2 grid grid-cols-12 gap-2'>
-                <Button onClick={() => closeModal('addAddress')} className='col-span-4' variant='outline'>
+            <div className='mt-2 flex gap-3 border-t border-gray-100 pt-4'>
+                <Button
+                    onClick={() => closeModal('addAddress')}
+                    className='w-28 shrink-0'
+                    variant='outline'
+                    size='lg'
+                >
                     لغو
                 </Button>
-                <Button className='col-span-8' onClick={() => formik.handleSubmit()} loading={formik.isSubmitting}>
+                <Button
+                    className='flex-1'
+                    size='lg'
+                    onClick={() => formik.handleSubmit()}
+                    loading={formik.isSubmitting}
+                >
                     ذخیره آدرس
                 </Button>
             </div>

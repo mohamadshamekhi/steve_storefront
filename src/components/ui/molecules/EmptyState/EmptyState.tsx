@@ -13,7 +13,15 @@ const EmptyState = ({
     subtitleClass = '',
     loading = false
 }: EmptyStateProps) => {
-    if (loading) return <>loading empty state...</>;
+    if (loading) {
+        return (
+            <div className={cn('flex animate-pulse flex-col items-center gap-4 py-6', className)}>
+                <div className='h-30 w-40 rounded-lg bg-gray-200' />
+                <div className='h-4 w-40 rounded bg-gray-200' />
+                <div className='h-3 w-56 rounded bg-gray-200' />
+            </div>
+        );
+    }
     return (
         <div className={cn('space-y-4 py-6 text-center', className)}>
             <Image

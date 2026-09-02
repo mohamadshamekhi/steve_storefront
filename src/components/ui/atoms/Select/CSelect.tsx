@@ -16,14 +16,15 @@ const customStyles = {
     }),
     control: (base: any, state: any) => ({
         ...base,
-        backgroundColor: '#F6F6FF',
-        borderColor: state.isFocused ? '#E5E7EB' : '#E5E7EB',
-        boxShadow: state.isFocused ? '0 0 0 1px #fff' : 'none',
-        borderRadius: '6px',
+        backgroundColor: state.isDisabled ? '#F9FAFB' : '#FFFFFF',
+        borderColor: state.isFocused ? '#5A4FCF' : '#D1D5DB',
+        boxShadow: state.isFocused ? '0 0 0 2px #ECEBFF' : 'none',
+        borderRadius: '8px',
+        transition: 'border-color 0.15s, box-shadow 0.15s',
         '&:hover': {
-            borderColor: '#DBEAFE'
+            borderColor: state.isFocused ? '#5A4FCF' : '#9CA3AF'
         },
-        minHeight: '2.5rem'
+        minHeight: '2.625rem'
     }),
     option: (base: any, state: any) => ({
         ...base,
@@ -96,9 +97,10 @@ const CSelect: React.FC<CSelectProps> = ({
         ...customStyles,
         control: (base: any, state: any) => ({
             ...customStyles.control(base, state),
-            borderColor: error ? '#EF4444' : state.isFocused ? '#E5E7EB' : '#E5E7EB',
+            borderColor: error ? '#EF4444' : state.isFocused ? '#5A4FCF' : '#D1D5DB',
+            boxShadow: state.isFocused ? `0 0 0 2px ${error ? '#FEE2E2' : '#ECEBFF'}` : 'none',
             '&:hover': {
-                borderColor: error ? '#EF4444' : '#DBEAFE'
+                borderColor: error ? '#EF4444' : state.isFocused ? '#5A4FCF' : '#9CA3AF'
             }
         })
     };

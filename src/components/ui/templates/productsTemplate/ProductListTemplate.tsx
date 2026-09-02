@@ -29,7 +29,9 @@ const ProductListTemplate = ({ data: initialData, brands, categories, catSlug }:
         return `${base}${searchParams.toString()}`;
     }, [searchParams, catSlug]);
 
-    const { data, isLoadingMore, isLoadingInitial, isFilterLoading, isEmpty, isReachingEnd, loadMore } = useInfiniteScroll<ProductProps>(
+    const categoryName = catSlug ? (categories.find((c) => c.slug === catSlug)?.name ?? catSlug) : 'همه محصولات';
+
+    const { data, totalItems, isLoadingMore, isLoadingInitial, isFilterLoading, isEmpty, isReachingEnd, loadMore } = useInfiniteScroll<ProductProps>(
         apiKey,
         async ([, params]) => {
             const requestParams: Record<string, string | string[]> = {
@@ -85,6 +87,15 @@ const ProductListTemplate = ({ data: initialData, brands, categories, catSlug }:
     return (
         <div className='lg:col-span-9'>
             <div>
+                <div className='mb-3 flex items-baseline gap-2 lg:mb-4'>
+                    <h2 className='text-base font-bold text-gray-800 lg:text-lg'>{categoryName}</h2>
+                    {totalItems > 0 && (
+                        <span className='text-xs text-gray-400 lg:text-sm'>
+                            {totalItems.toLocaleString('fa-IR')} کالا
+                        </span>
+                    )}
+                </div>
+
                 <ProductSortTemplate
                     onChange={handleOrderByChange}
                     activeFilter={orderBy}
@@ -96,9 +107,9 @@ const ProductListTemplate = ({ data: initialData, brands, categories, catSlug }:
                 {!isLoadingInitial && !isFilterLoading && isEmpty ? (
                     <EmptyState title='محصولی یافت نشد' subtitle='فیلترهای انتخابی با هیچ محصولی مطابقت ندارد.' />
                 ) : (
-                    <ul className='grid grid-cols-1 gap-4 px-[18px] py-4 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-3'>
+                    <ul className='grid grid-cols-2 gap-3 py-4 sm:grid-cols-3 sm:gap-4 xl:grid-cols-4'>
                         {isFilterLoading
-                            ? Array.from({ length: 6 }).map((_, i) => <ProductCardSkeleton key={i} />)
+                            ? Array.from({ length: 12 }).map((_, i) => <ProductCardSkeleton key={i} />)
                             : displayData.map((product, index) => (
                                   <ProductCardOrganisms product={product} key={index} />
                               ))}
@@ -106,9 +117,15 @@ const ProductListTemplate = ({ data: initialData, brands, categories, catSlug }:
                 )}
 
                 {!isReachingEnd && (
-                    <div ref={loadMoreRef} className='py-4 text-center'>
-                        {isLoadingMore && <p>در حال بارگذاری...</p>}
+                    <div ref={loadMoreRef} className='flex items-center justify-center py-6'>
+                        {isLoadingMore && (
+                            <span className='border-primary-200 border-t-primary-600 h-6 w-6 animate-spin rounded-full border-2' />
+                        )}
                     </div>
+                )}
+
+                {isReachingEnd && !isEmpty && displayData.length > 0 && (
+                    <p className='py-6 text-center text-xs text-gray-400'>همه محصولات نمایش داده شد</p>
                 )}
             </div>
         </div>

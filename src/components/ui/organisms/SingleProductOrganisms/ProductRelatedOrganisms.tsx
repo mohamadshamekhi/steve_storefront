@@ -22,9 +22,11 @@ type ProductRelatedOrganismsProps = {
 };
 
 const ProductRelatedOrganisms = ({ relatedProducts }: ProductRelatedOrganismsProps) => {
+    if (!relatedProducts || relatedProducts.length === 0) return null;
+
     return (
-        <div className='mt-[52px]'>
-            <h2 className='flex gap-2 text-xl font-semibold'>
+        <div className='rounded-2xl bg-white p-4 shadow-[0_1px_3px_rgba(16,24,40,0.06)] sm:p-6'>
+            <h2 className='flex items-center gap-2 text-base font-bold sm:text-xl'>
                 <PuzzleIcon className='text-secondary-500' />
                 <span>کالا مشابه یا برای نیاز تو</span>
             </h2>

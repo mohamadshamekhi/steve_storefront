@@ -4,8 +4,11 @@ import CommentItem from '../../organisms/SingleProductOrganisms/Comment/CommentI
 const SingleProductListComment = ({ comments }: { comments: Comment[] }) => {
     if (comments.length === 0) {
         return (
-            <div className='col-span-12 rounded-md bg-white p-2 sm:p-6 md:col-span-8 lg:col-span-8' id='comments'>
-                <p className='text-center text-gray-500'>هنوز دیدگاهی ثبت نشده است.</p>
+            <div
+                className='col-span-12 rounded-2xl bg-white p-4 shadow-[0_1px_3px_rgba(16,24,40,0.06)] sm:p-6 md:col-span-8 lg:col-span-8'
+                id='comments'
+            >
+                <p className='py-8 text-center text-sm text-gray-400'>هنوز دیدگاهی ثبت نشده است.</p>
             </div>
         );
     }

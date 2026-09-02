@@ -51,6 +51,56 @@ body {
 html {
     scroll-behavior: smooth;
 }
+
+.no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+.no-scrollbar::-webkit-scrollbar {
+    display: none;
+}
+
+/* Make every slide the height of the tallest one (Swiper defaults to
+   content-height slides, which leaves product cards in a row uneven). */
+.swiper-equal-height .swiper-slide {
+    height: auto;
+}
+
+/* Styling for CMS/rich-text HTML injected via dangerouslySetInnerHTML
+   (product description, blog body) - preflight strips default element styles. */
+.prose-product :where(h1, h2, h3, h4) {
+    @apply mt-6 mb-2 font-semibold text-gray-800;
+}
+.prose-product h2 {
+    @apply text-lg;
+}
+.prose-product h3 {
+    @apply text-base;
+}
+.prose-product p {
+    @apply mb-4;
+}
+.prose-product :where(ul, ol) {
+    @apply mb-4 pr-5;
+}
+.prose-product ul {
+    @apply list-disc;
+}
+.prose-product ol {
+    @apply list-decimal;
+}
+.prose-product li {
+    @apply mb-1;
+}
+.prose-product a {
+    @apply text-primary-600 underline;
+}
+.prose-product img {
+    @apply my-4 rounded-lg;
+}
+.prose-product :where(strong, b) {
+    @apply font-semibold text-gray-800;
+}
 #amazingSales,
 #bestSellers,
 #contactForm,

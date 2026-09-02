@@ -3,8 +3,8 @@ import InputTextProps from './input.types';
 
 const size = {
     sm: 'py-2 px-3',
-    md: 'py-1.5 px-3',
-    lg: 'py-2.5 px-3'
+    md: 'py-2 px-3.5',
+    lg: 'py-2.5 px-3.5'
 };
 
 const Input: React.FC<InputTextProps> = ({
@@ -23,7 +23,7 @@ const Input: React.FC<InputTextProps> = ({
 
             <input
                 name={name}
-                className={`w-full max-w-[283px] rounded-md border border-gray-300 active:border-[#2563EB] ${className} ${size[inputSize]} ${leftIcon ? 'pl-10' : ''} ${rightIcon ? 'pr-10' : ''} ${disabled ? 'cursor-not-allowed border-gray-300' : ''} `}
+                className={`focus:border-primary-500 focus:ring-primary-100 w-full max-w-[283px] rounded-lg border border-gray-300 transition-colors placeholder:text-gray-400 focus:ring-2 focus:outline-none ${className} ${size[inputSize]} ${leftIcon ? 'pl-10' : ''} ${rightIcon ? 'pr-10' : ''} ${disabled ? 'cursor-not-allowed bg-gray-50 text-gray-400' : ''} `}
                 type={type}
                 disabled={disabled}
                 {...rest}

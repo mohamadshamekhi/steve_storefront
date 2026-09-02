@@ -22,40 +22,46 @@ const AddressList = () => {
     };
 
     return (
-        <div className='space-y-4'>
-            <div
+        <div className='space-y-3'>
+            <button
+                type='button'
                 onClick={handleAddAddress}
-                className='bg-primary-100 flex cursor-pointer items-center rounded-md p-4 transition-colors hover:bg-primary-200'
+                className='border-primary-300 bg-primary-50 text-primary-700 hover:bg-primary-100 flex w-full items-center justify-center gap-2 rounded-xl border border-dashed py-3 text-sm font-medium transition-colors'
             >
-                <PlusSquareIcon className='text-primary-900 ml-2' />
-                <span>افزودن آدرس</span>
-            </div>
+                <PlusSquareIcon className='h-5 w-5' />
+                افزودن آدرس جدید
+            </button>
 
             {addresses.length === 0 ? (
-                <div className='py-8 text-center text-gray-500'>آدرسی ثبت نشده است</div>
+                <p className='py-8 text-center text-sm text-gray-400'>آدرسی ثبت نشده است</p>
             ) : (
                 addresses.map((item) => {
                     const isActive = activeAddressId === item.id;
                     const addressText = [item.province, item.city, item.street].filter(Boolean).join(' - ');
 
                     return (
-                        <div
+                        <button
+                            type='button'
                             onClick={() => handleSelectAddress(item)}
-                            className={`flex cursor-pointer items-center justify-between rounded-md p-4 transition-colors ${
-                                isActive ? 'bg-primary-200 border-primary-500 border' : 'bg-primary-100 hover:bg-primary-150'
+                            className={`flex w-full items-start gap-3 rounded-xl border p-4 text-right transition-colors ${
+                                isActive
+                                    ? 'border-primary-500 bg-primary-50'
+                                    : 'border-gray-200 bg-white hover:border-gray-300'
                             }`}
                             key={item.id}
                         >
-                            <div className='flex items-center'>
-                                <LocationIcon className='text-primary-900 ml-2' />
-                                <div>
-                                    <div className='text-sm font-medium text-gray-900'>{item.title}</div>
-                                    <span className='text-sm font-normal text-gray-600'>{addressText}</span>
+                            <LocationIcon
+                                className={`mt-0.5 shrink-0 ${isActive ? 'text-primary-600' : 'text-gray-400'}`}
+                            />
+                            <div className='min-w-0 flex-1'>
+                                <div className='text-sm font-semibold text-gray-800'>
+                                    {item.title || 'آدرس'}
                                 </div>
+                                <div className='mt-0.5 line-clamp-2 text-xs text-gray-500'>{addressText}</div>
                             </div>
                             {isActive && (
                                 <svg
-                                    className='text-primary-600 h-5 w-5'
+                                    className='text-primary-600 mt-0.5 h-5 w-5 shrink-0'
                                     fill='none'
                                     viewBox='0 0 24 24'
                                     stroke='currentColor'
@@ -68,7 +74,7 @@ const AddressList = () => {
                                     />
                                 </svg>
                             )}
-                        </div>
+                        </button>
                     );
                 })
             )}

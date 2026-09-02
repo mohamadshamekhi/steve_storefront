@@ -21,8 +21,10 @@ const PartnerCtaTemplate = () => {
                 </div>
             </div>
 
-            <Link href={ROUTES.PartnerSales} className='shrink-0'>
-                <Button size='lg'>اطلاعات بیشتر و ثبت درخواست</Button>
+            <Link href={ROUTES.PartnerSales} className='w-full shrink-0 md:w-auto'>
+                <Button size='lg' className='w-full md:w-auto'>
+                    اطلاعات بیشتر و ثبت درخواست
+                </Button>
             </Link>
         </section>
     );

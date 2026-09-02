@@ -76,7 +76,7 @@ const FooterOrganisms = () => {
     };
 
     return (
-        <footer className="bg-opacity-1/2 relative bg-white bg-[url('/images/_general/bg/footer-bg.jpg')] bg-cover bg-top px-4 pt-3 pb-[90px] text-sm text-gray-700 md:px-10 lg:px-[143px] lg:pt-15 lg:pb-0">
+        <footer className="bg-opacity-1/2 relative bg-white bg-[url('/images/_general/bg/footer-bg.jpg')] bg-cover bg-top px-4 pt-3 pb-[calc(var(--app-bottom-nav,0px)+var(--app-bottom-bar,0px)+1.5rem)] text-sm text-gray-700 md:px-10 lg:px-[143px] lg:pt-15 lg:pb-0">
             <Button
                 onClick={scrollToTop}
                 variant='light'

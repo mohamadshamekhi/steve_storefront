@@ -47,7 +47,7 @@ function ShippingMethodBox({ selectedShippingId, onSelect }: ShippingMethodBoxPr
 
     if (loading) {
         return (
-            <div className='border-primary-400 mb-8 rounded-md border bg-white p-6'>
+            <div className='rounded-2xl bg-white p-4 shadow-[0_1px_3px_rgba(16,24,40,0.06)] sm:p-5'>
                 <span className='text-sm text-gray-400'>در حال بارگذاری روش‌های ارسال...</span>
             </div>
         );
@@ -55,15 +55,15 @@ function ShippingMethodBox({ selectedShippingId, onSelect }: ShippingMethodBoxPr
 
     if (methods.length === 0) {
         return (
-            <div className='border-primary-400 mb-8 rounded-md border bg-white p-6'>
+            <div className='rounded-2xl bg-white p-4 shadow-[0_1px_3px_rgba(16,24,40,0.06)] sm:p-5'>
                 <span className='text-sm text-gray-500'>روش ارسالی یافت نشد</span>
             </div>
         );
     }
 
     return (
-        <div className='border-primary-400 mb-8 rounded-md border bg-white p-4 sm:p-6'>
-            <h3 className='text-primary-600 mb-4 text-sm font-medium'>انتخاب روش ارسال</h3>
+        <div className='rounded-2xl bg-white p-4 shadow-[0_1px_3px_rgba(16,24,40,0.06)] sm:p-5'>
+            <h3 className='mb-4 text-sm font-bold text-gray-800'>انتخاب روش ارسال</h3>
 
             <div className='flex flex-col gap-3'>
                 {methods.map((method) => {

@@ -33,7 +33,7 @@ const BrandTemplate = ({ brands }: { brands: Brand[] }) => {
                     </Button>
                 </div>
 
-                <h2 className='flex items-center justify-center gap-2 text-center text-sm font-bold text-gray-800 md:text-lg lg:text-2xl'>
+                <h2 className='flex items-center justify-center gap-2 text-center text-base font-bold text-gray-800 md:text-lg lg:text-2xl'>
                     <HeartIcon className='text-secondary-500' />
                     <span>محبوب ترین برند ها</span>
                 </h2>
@@ -55,7 +55,7 @@ const BrandTemplate = ({ brands }: { brands: Brand[] }) => {
                     1024: { slidesPerView: 8 },
                     768: { slidesPerView: 6 },
                     640: { slidesPerView: 4 },
-                    0: { slidesPerView: 3 }
+                    0: { slidesPerView: 3.5 }
                 }}
                 onInit={(swiper) => {
                     // eslint-disable-next-line @typescript-eslint/ban-ts-comment

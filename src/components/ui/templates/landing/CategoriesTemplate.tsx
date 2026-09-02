@@ -35,7 +35,7 @@ const CategoriesTemplate = ({ categories }: { categories: Categories[] }) => {
                     </Button>
                 </div>
 
-                <h2 className='text-center text-sm font-bold text-gray-800 md:text-lg lg:text-2xl'>
+                <h2 className='text-center text-base font-bold text-gray-800 md:text-lg lg:text-2xl'>
                     دسته‌بندی‌ها
                 </h2>
 
@@ -58,7 +58,7 @@ const CategoriesTemplate = ({ categories }: { categories: Categories[] }) => {
                     1024: { slidesPerView: 6 },
                     768: { slidesPerView: 4 },
                     640: { slidesPerView: 3 },
-                    0: { slidesPerView: 2 }
+                    0: { slidesPerView: 2.2 }
                 }}
                 onInit={(swiper) => {
                     // eslint-disable-next-line @typescript-eslint/ban-ts-comment

@@ -333,21 +333,21 @@ const ProductFilterTemplate = ({ brands, categories, catSlug }: ProductFilterTem
 
     return (
         <>
-            <div className='mt-3 flex items-center justify-between p-6'>
-                <span className='text-base font-semibold'>فیلتر</span>
+            <div className='flex items-center justify-between border-b border-gray-100 px-5 py-4'>
+                <span className='text-base font-bold text-gray-800'>فیلترها</span>
                 <Button
                     variant='text'
                     color='secondary'
-                    className='p-0!'
+                    className='p-0! text-sm!'
                     onClick={clearAllFilters}
                     disabled={activeFilters.length === 0}
                 >
-                    حذف فیلتر ها
+                    حذف همه
                 </Button>
             </div>
 
             {activeFilters.length > 0 && (
-                <ul className='flex flex-wrap items-center gap-3 px-[23px]'>
+                <ul className='flex flex-wrap items-center gap-2 px-5 pt-4'>
                     {activeFilters.map((filter, index) => (
                         <li key={index} className='text-caption1-regular rounded-md bg-gray-100 px-3 py-1 text-gray-800'>
                             <button

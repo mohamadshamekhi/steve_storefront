@@ -7,7 +7,7 @@ import { ScrollTabsProps } from './types';
 export function ScrollTabs({
     items,
     className,
-    activeClassName = 'text-blue-600 font-semibold',
+    activeClassName = 'text-primary-600 font-semibold',
     scrollOffset = 0
 }: ScrollTabsProps) {
     const [activeId, setActiveId] = useState<string | null>(null);
@@ -22,28 +22,28 @@ export function ScrollTabs({
     };
 
     return (
-        <div className={clsx('sticky top-0 flex gap-5 rounded-md bg-white', className)}>
+        <div
+            className={clsx(
+                'no-scrollbar flex gap-1 overflow-x-auto rounded-md bg-white sm:gap-5',
+                className
+            )}
+        >
             {items.map((item) => (
                 <button
                     key={item.targetId}
                     onClick={() => handleClick(item.targetId)}
                     className={clsx(
-                        'hover:text-primary-600 relative px-2 py-3.5 text-base font-normal text-gray-600 transition-all cursor-pointer',
+                        'hover:text-primary-600 relative shrink-0 grow cursor-pointer px-2 py-3 text-sm whitespace-nowrap text-gray-600 transition-colors sm:grow-0 sm:text-base',
                         activeId === item.targetId && activeClassName
                     )}
                 >
                     {item.label}
-                    {activeId === item.targetId && (
-                        <span
-                            className='bg-primary-600 absolute bottom-0 left-1/2 h-[2px] w-2/3 -translate-x-1/2'
-                            style={{
-                                borderBottomLeftRadius: '0px',
-                                borderBottomRightRadius: '0px',
-                                borderTopLeftRadius: '1000px',
-                                borderTopRightRadius: '1000px'
-                            }}
-                        />
-                    )}
+                    <span
+                        className={clsx(
+                            'bg-primary-600 absolute bottom-0 left-1/2 h-0.5 -translate-x-1/2 rounded-t-full transition-all',
+                            activeId === item.targetId ? 'w-2/3' : 'w-0'
+                        )}
+                    />
                 </button>
             ))}
         </div>

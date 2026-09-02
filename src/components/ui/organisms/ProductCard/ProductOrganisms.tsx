@@ -67,7 +67,7 @@ const ProductOrganisms = ({
             dir='rtl'
             className={cn(
                 'relative flex h-full flex-col rounded-md bg-white',
-                cardType === 'default' ? 'p-3' : 'px-6 pt-[26px] pb-[32px]'
+                cardType === 'default' ? 'p-3' : 'px-4 pt-5 pb-6 sm:px-6 sm:pt-6.5 sm:pb-8'
             )}
         >
             <div className='relative'>

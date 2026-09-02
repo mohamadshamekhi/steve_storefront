@@ -48,7 +48,7 @@ const ProductPage = ({ catSlug, data, brands, categories }: ProductPageProps) =>
             <ProductCategoryTemplate categories={categories} activeCatSlug={catSlug} />
 
             <div className='grid grid-cols-1 gap-4 lg:grid-cols-12'>
-                <div className='hidden h-fit rounded-md bg-white pb-10 lg:col-span-3 lg:block'>
+                <div className='no-scrollbar hidden h-fit rounded-xl bg-white pb-6 shadow-[0_1px_3px_rgba(16,24,40,0.06)] lg:sticky lg:top-4 lg:col-span-3 lg:block lg:max-h-[calc(100vh-2rem)] lg:overflow-y-auto'>
                     <ProductFilterTemplate brands={brands} categories={categories} catSlug={catSlug} />
                 </div>
 

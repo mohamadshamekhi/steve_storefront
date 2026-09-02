@@ -43,7 +43,7 @@ const BestSellersTemplate = ({ products }: { products: ProductProps[] }) => {
                     </Button>
                 </div>
 
-                <h2 className='flex items-center justify-center gap-2 text-center text-sm font-bold text-gray-800 md:text-lg lg:text-2xl'>
+                <h2 className='flex items-center justify-center gap-2 text-center text-base font-bold text-gray-800 md:text-lg lg:text-2xl'>
                     <StarsIcon className='text-secondary-500' />
 
                     <span>پرفروش ترین کالا ها</span>

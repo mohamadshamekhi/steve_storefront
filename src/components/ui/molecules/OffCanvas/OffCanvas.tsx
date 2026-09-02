@@ -18,17 +18,13 @@ const OffCanvas = ({
     className = ''
 }: IOffcanvasProps) => {
     const baseClass =
-        ' overflow-auto h-screen fixed top-0 bottom-0 z-[120] overflow-auto py-5 px-8 transition-transform ease-in-out bg-white';
+        'fixed top-0 bottom-0 z-[120] h-screen overflow-auto bg-white px-8 py-5 transition-transform ease-in-out';
 
     const positionClass = position === 'left' ? 'left-0' : 'right-0';
-    const translateClass =
-        position === 'left'
-            ? isOpen
-                ? 'translate-x-0'
-                : '-translate-x-full'
-            : isOpen
-              ? 'translate-x-0'
-              : 'translate-x-full';
+    // fully removed from the layout when closed — an always-mounted full-screen
+    // z-[120] panel (even translated off-screen) can intercept touches and, on
+    // some mobile browsers, nudge layout / show up in the a11y + inspector tree
+    const stateClass = isOpen ? 'translate-x-0' : 'hidden';
 
     return (
         <>
@@ -42,7 +38,7 @@ const OffCanvas = ({
             )}
 
             <div
-                className={clsx(baseClass, positionClass, translateClass, className)}
+                className={clsx(baseClass, positionClass, stateClass, className)}
                 style={{
                     width,
                     transitionDuration,

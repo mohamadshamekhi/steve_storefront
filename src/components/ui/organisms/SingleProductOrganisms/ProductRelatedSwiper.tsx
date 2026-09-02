@@ -17,7 +17,7 @@ type ProductRelatedSwiperProps = {
 const ProductRelatedSwiper = ({ relatedProducts }: ProductRelatedSwiperProps) => {
     return (
         <SwiperComponent
-            className='mt-8 mb-12'
+            className='swiper-equal-height mt-4 px-1 py-2'
             modules={[Navigation]}
             spaceBetween={20}
             slidesPerView={5}
@@ -28,7 +28,7 @@ const ProductRelatedSwiper = ({ relatedProducts }: ProductRelatedSwiperProps) =>
                 1024: { slidesPerView: 4 },
                 992: { slidesPerView: 3 },
                 768: { slidesPerView: 2 },
-                0: { slidesPerView: 1 }
+                0: { slidesPerView: 2.2 }
             }}
         >
             {relatedProducts.map((product: any, index) => (

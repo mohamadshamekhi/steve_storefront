@@ -10,6 +10,7 @@ import ToolIcon from "@/components/icons/Menu/ToolIcon";
 import MegaMenuMobile from "@/components/ui/molecules/Nav/MegaMenuMobile";
 import OffCanvas from "@/components/ui/molecules/OffCanvas/OffCanvas";
 import ROUTES from "@/constants/routes/routes.constant";
+import useElementHeightVar from "@/hooks/useElementHeightVar";
 import useMediaQuery from "@/hooks/useMediaQuery";
 import { useMenuStore } from "@/state/stores/menu";
 import Link from "next/link";
@@ -93,25 +94,31 @@ const MenuItems: IMenuItem[] = [
 const HeaderOrganism = () => {
   const { isOpen, close } = useMenuStore();
   const isMobile = useMediaQuery("lg");
+  const headerRef = useElementHeightVar<HTMLElement>("--app-header-h", isMobile);
   return (
-    <header className="bg-white pt-[16px] pb-3 md:pb-0">
-      <div className="mx-auto max-w-[1500px] px-5">
-        <div className="flex flex-wrap items-center justify-between gap-3">
-          <div className="flex grow items-center">
-            <Link
-              href={ROUTES.Landing}
-              className="ml-4 flex items-center gap-1"
-              aria-label="استیو موبایل"
-            >
-              <LogoIcon />
-              <span className="sr-only">استیو موبایل</span>
-            </Link>
+    <>
+    <header
+      ref={headerRef}
+      className="sticky top-0 z-40 bg-white pt-3 pb-3 shadow-[0_1px_3px_rgba(16,24,40,0.06)] md:static md:pt-4 md:pb-0 md:shadow-none"
+    >
+      <div className="mx-auto max-w-[1500px] px-4 md:px-5">
+        <div className="flex items-center gap-2 md:gap-3">
+          <Link
+            href={ROUTES.Landing}
+            className="shrink-0"
+            aria-label="استیو موبایل"
+          >
+            <LogoIcon className="h-7 w-auto md:h-9" />
+            <span className="sr-only">استیو موبایل</span>
+          </Link>
 
+          <div className="min-w-0 flex-1">
             <SearchProducts />
           </div>
-          <div className="flex items-center">
-            <User />
+
+          <div className="flex shrink-0 items-center gap-1.5 md:gap-2">
             <Cart />
+            <User />
           </div>
         </div>
 
@@ -139,26 +146,28 @@ const HeaderOrganism = () => {
           })}
         </ul>
 
-        {isMobile && (
-          <OffCanvas
-            onClose={close}
-            isOpen={isOpen}
-            width="100%"
-            className="z-[20] !px-0 !py-2"
-            titleSection={
-              <div className="flex items-center px-2 py-1!">
-                <Link href={ROUTES.Landing}>
-                  <LogoIcon className="ml-4 max-w-[75px] sm:max-w-[90px]" />
-                </Link>
-                <SearchProducts />
-              </div>
-            }
-          >
-            <MegaMenuMobile />
-          </OffCanvas>
-        )}
       </div>
     </header>
+
+    {isMobile && (
+      <OffCanvas
+        onClose={close}
+        isOpen={isOpen}
+        width="100%"
+        className="px-0! py-2!"
+        titleSection={
+          <div className="flex items-center gap-2 px-2 py-1!">
+            <Link href={ROUTES.Landing} className="shrink-0">
+              <LogoIcon className="h-7 w-auto" />
+            </Link>
+            <SearchProducts />
+          </div>
+        }
+      >
+        <MegaMenuMobile />
+      </OffCanvas>
+    )}
+    </>
   );
 };
 
