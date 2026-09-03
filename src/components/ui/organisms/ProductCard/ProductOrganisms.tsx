@@ -116,13 +116,13 @@ const ProductOrganisms = ({
                         loading='lazy'
                         src={product.gallery[0].url}
                         alt={product.name ? product.name : 'product'}
-                        width={224}
-                        height={121}
+                        width={cardType === 'default' ? 300 : 383}
+                        height={cardType === 'default' ? 300 : 250}
                         className={cn(
                             'mx-auto w-full object-cover',
                             cardType === 'default'
-                                ? 'aspect-square max-w-[300] leading-[30px]'
-                                : 'aspect-[383/250] max-w-[383]'
+                                ? 'aspect-square max-w-75 leading-[30px]'
+                                : 'aspect-[383/250] max-w-[383px]'
                         )}
                     />
                 </Link>

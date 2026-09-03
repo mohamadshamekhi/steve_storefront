@@ -27,6 +27,17 @@ const RootLayout = ({
   return (
     <html lang="fa" dir="rtl">
       <head>
+        {/* Warm up the sockets for the image CDN, the API and analytics so the
+            LCP image / first data call don't pay DNS+TLS on the critical path. */}
+        <link
+          rel="preconnect"
+          href="https://storage.c2.liara.space"
+          crossOrigin="anonymous"
+        />
+        <link rel="dns-prefetch" href="https://storage.c2.liara.space" />
+        <link rel="preconnect" href="https://api.stevemobile.com" />
+        <link rel="dns-prefetch" href="https://api.stevemobile.com" />
+        <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
         <meta name="enamad" content="8840088" />
         <meta
           name="google-site-verification"

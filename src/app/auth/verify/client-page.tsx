@@ -1,6 +1,7 @@
 'use client';
 import { signInAction, signInVerifyAction } from '@/actions/auth.action';
 import ChevronLeft from '@/components/icons/ChevronLeft';
+import Input from '@/components/ui/atoms/Input/Input';
 import Fieldset from '@/components/ui/molecules/Fieldset/Fieldset';
 import AuthFormWrapper from '@/components/ui/organisms/auth/AuthFormWrapper';
 import { authOTPValidationSchema } from '@/config/schema/auth';
@@ -10,9 +11,9 @@ import { useSessionStore } from '@/state';
 import { useFormik } from 'formik';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { useEffect, useTransition } from 'react';
+import { useEffect, useState, useTransition } from 'react';
 import OtpInput from 'react-otp-input';
-import { clearStoredRef, getStoredRef } from '@/utils/referral.util';
+import { clearStoredRef, getStoredRef, isValidRef, setStoredRef } from '@/utils/referral.util';
 import { toEnglishDigits } from '@/utils/string.util';
 import z from 'zod';
 import { toFormikValidationSchema } from 'zod-formik-adapter';
@@ -22,6 +23,8 @@ type authModel = z.infer<typeof authOTPValidationSchema>;
 const VerifyPage = () => {
     const searchParams = useSearchParams();
     const phoneNumber = searchParams.get('phone_number');
+    // send-otp پاسخِ is_new_user را داده و sign-in آن را با ?new=1 پاس کرده
+    const isNewUser = searchParams.get('new') === '1';
     const redirectParam = searchParams.get('redirect') || searchParams.get('callbackUrl');
     // فقط مسیرهای داخلی مجاز است (جلوگیری از open redirect)
     const redirect =
@@ -32,6 +35,29 @@ const VerifyPage = () => {
     const router = useRouter();
 
     const updateSession = useSessionStore((state) => state.updateSession);
+
+    // کد دعوت (اختیاری) کنار OTP — فقط برای کاربر جدید، یا وقتی از لینک دعوت آمده.
+    const [refCode, setRefCode] = useState('');
+    const [hasStoredRef, setHasStoredRef] = useState(false);
+    const showRefField = isNewUser || hasStoredRef;
+
+    useEffect(() => {
+        const stored = getStoredRef();
+        if (stored) {
+            setRefCode(stored);
+            setHasStoredRef(true);
+        }
+    }, []);
+
+    /** کدِ مؤثر: مقدار تایپ‌شده اگر معتبر باشد، وگرنه کدِ ذخیره‌شده از لینک دعوت */
+    const resolveRef = () => {
+        const typed = refCode.trim().toUpperCase();
+        if (isValidRef(typed)) {
+            setStoredRef(typed);
+            return typed;
+        }
+        return getStoredRef();
+    };
 
     const { start, isDisabled, formatted } = useOtpCountdown({
         duration: 180,
@@ -56,7 +82,7 @@ const VerifyPage = () => {
                 const res = await signInVerifyAction({
                     phone_number: phoneNumber,
                     ...data,
-                    ref: getStoredRef()
+                    ref: resolveRef()
                 });
                 if (res.success) {
                     clearStoredRef();
@@ -132,6 +158,31 @@ const VerifyPage = () => {
                         renderInput={(props) => <input dir='ltr' {...props} inputMode='numeric' />}
                     />
                 </Fieldset>
+
+                {showRefField && (
+                    <div className='w-full'>
+                        <label htmlFor='ref_code' className='mb-1.5 block text-sm font-medium text-gray-700'>
+                            کد دعوت <span className='font-normal text-gray-400'>(اختیاری)</span>
+                        </label>
+                        <Input
+                            id='ref_code'
+                            name='ref_code'
+                            dir='ltr'
+                            placeholder='مثلاً STV-8K3QP'
+                            autoCapitalize='characters'
+                            className='max-w-full! text-left uppercase placeholder:normal-case placeholder:text-gray-400'
+                            value={refCode}
+                            onChange={(e) => setRefCode(e.target.value)}
+                        />
+                        {refCode.trim() && !isValidRef(refCode.trim().toUpperCase()) ? (
+                            <p className='mt-1 text-xs text-red-500'>فرمت کد دعوت درست نیست.</p>
+                        ) : (
+                            <p className='mt-1 text-xs text-gray-400'>
+                                اگر دوستی کد دعوت به شما داده اینجا وارد کنید تا هر دو تخفیف بگیرید.
+                            </p>
+                        )}
+                    </div>
+                )}
             </AuthFormWrapper>
 
             <div className='mt-6 flex items-center justify-between gap-3'>

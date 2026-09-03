@@ -38,8 +38,8 @@ const RecommendedProductOrganisms: React.FC<Props> = ({ recommendedProducts }) =
                                     >
                                         <OptimizedImage
                                             alt={product.name || 'محصول'}
-                                            width={130}
-                                            height={130}
+                                            width={200}
+                                            height={230}
                                             src={primaryImage || '/images/placeholder.png'}
                                             loading='lazy'
                                             className='aspect-[2/2.3] w-full object-cover'
@@ -52,6 +52,7 @@ const RecommendedProductOrganisms: React.FC<Props> = ({ recommendedProducts }) =
 
                     <Link
                         href={category.url || ROUTES.Products}
+                        aria-label={`مشاهده همه محصولات ${category.title}`}
                         className='text-body1-regular mt-5 flex items-center justify-center gap-2 text-center'
                     >
                         <span className='text-sm md:text-lg'>مشاهده همه</span>

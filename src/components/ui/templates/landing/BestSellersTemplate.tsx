@@ -34,11 +34,11 @@ const BestSellersTemplate = ({ products }: { products: ProductProps[] }) => {
         <section>
             <div className='mb-10 flex flex-row-reverse flex-wrap items-center justify-between gap-2 sm:flex-row'>
                 <div className='flex items-center gap-2'>
-                    <Button ref={prevRef} variant='light' color='primary' size='sm' className='!rounded-full px-2 py-2'>
+                    <Button ref={prevRef} aria-label='مورد قبلی' variant='light' color='primary' size='sm' className='!rounded-full px-2 py-2'>
                         <ChevronRight className='text-primary-900' />
                     </Button>
 
-                    <Button ref={nextRef} variant='light' color='primary' size='sm' className='!rounded-full px-2 py-2'>
+                    <Button ref={nextRef} aria-label='مورد بعدی' variant='light' color='primary' size='sm' className='!rounded-full px-2 py-2'>
                         <ChevronLeft className='text-primary-900' />
                     </Button>
                 </div>

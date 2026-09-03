@@ -29,6 +29,7 @@ const BlogTemplate = ({ articles }: { articles: Blog[] }) => {
                     <div className='flex items-center gap-2'>
                         <Button
                             ref={prevRef}
+                            aria-label='مقاله قبلی'
                             variant='light'
                             color='primary'
                             size='sm'
@@ -39,6 +40,7 @@ const BlogTemplate = ({ articles }: { articles: Blog[] }) => {
 
                         <Button
                             ref={nextRef}
+                            aria-label='مقاله بعدی'
                             variant='light'
                             color='primary'
                             size='sm'

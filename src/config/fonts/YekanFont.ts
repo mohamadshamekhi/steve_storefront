@@ -34,6 +34,11 @@ const YekanFont = localFont({
         }
     ],
     display: 'swap',
+    // Cut CLS while the webfont loads: fall back to the platform Persian/Arabic
+    // system fonts (very close metrics to Yekan Bakh) instead of Times.
+    fallback: ['Tahoma', 'system-ui', 'Segoe UI', 'Arial', 'sans-serif'],
+    adjustFontFallback: false,
+    preload: true,
     variable: '--font-YekanBakh'
 });
 

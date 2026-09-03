@@ -76,6 +76,7 @@ const HeroBannerOrganisms = ({ fullWidth, banners }: { fullWidth?: boolean | num
                 <div className='absolute right-6 bottom-16 z-50 flex items-center gap-2 sm:bottom-6'>
                     <Button
                         ref={prevRef2}
+                        aria-label='بنر قبلی'
                         variant='light'
                         color='primary'
                         size='sm'
@@ -86,6 +87,7 @@ const HeroBannerOrganisms = ({ fullWidth, banners }: { fullWidth?: boolean | num
 
                     <Button
                         ref={nextRef2}
+                        aria-label='بنر بعدی'
                         variant='light'
                         color='primary'
                         size='sm'

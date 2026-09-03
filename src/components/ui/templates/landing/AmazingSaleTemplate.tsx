@@ -6,8 +6,10 @@ const AmazingSaleTemplate = ({ discountProduct }: { discountProduct: ProductProp
     return (
         <section
             id='amazingSales'
+            aria-label='شگفت‌انگیزهای استیو موبایل'
             className="bg-secondary-500 relative rounded-md bg-[url('/images/_general/bg/amazing-sale-banner.png')] bg-size-[400px] bg-repeat"
         >
+            <h2 className='sr-only'>شگفت‌انگیزها</h2>
             {discountProduct && discountProduct.length > 0 && (
                 <div className='grid grid-cols-1 pt-5 lg:grid-cols-10 lg:pt-0'>
                     <AmazingSaleTimerOrganisms />

@@ -141,6 +141,8 @@ const SearchProducts = () => {
                                             {term}
                                         </button>
                                         <button
+                                            type='button'
+                                            aria-label={`حذف «${term}» از تاریخچه جستجو`}
                                             onClick={() => removeHistoryItem(term)}
                                             className='text-xs leading-none text-gray-400 hover:text-red-500'
                                         >

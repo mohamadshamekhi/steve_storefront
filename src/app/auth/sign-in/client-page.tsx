@@ -28,22 +28,22 @@ function SignInPage() {
     const submitHandler = async (data: authModel) => {
         startTransition(async () => {
             try {
-                const { success, message } = await signInAction(data);
-                if (success) {
+                const res = await signInAction(data);
+                if (res?.success) {
                     showToast({
                         title: 'احراز هویت | ورود',
-                        message: message,
+                        message: res.message,
                         type: 'success'
                     });
-                    router.push(
-                        `/auth/verify?phone_number=${data.phone_number}${
-                            redirect ? `&redirect=${encodeURIComponent(redirect)}` : ''
-                        }`
-                    );
+                    const query = new URLSearchParams({ phone_number: data.phone_number });
+                    // فقط برای کاربر جدید، صفحهٔ بعد فیلد «کد دعوت» را نشان می‌دهد
+                    if (res.data?.is_new_user) query.set('new', '1');
+                    if (redirect) query.set('redirect', redirect);
+                    router.push(`/auth/verify?${query.toString()}`);
                 } else {
                     showToast({
                         title: 'احراز هویت | ورود',
-                        message: message,
+                        message: res?.message,
                         type: 'error'
                     });
                 }
@@ -104,4 +104,3 @@ function SignInPage() {
 }
 
 export default SignInPage;
-

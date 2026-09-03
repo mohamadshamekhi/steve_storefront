@@ -157,8 +157,9 @@ const HeaderOrganism = () => {
         className="px-0! py-2!"
         titleSection={
           <div className="flex items-center gap-2 px-2 py-1!">
-            <Link href={ROUTES.Landing} className="shrink-0">
+            <Link href={ROUTES.Landing} className="shrink-0" aria-label="استیو موبایل">
               <LogoIcon className="h-7 w-auto" />
+              <span className="sr-only">استیو موبایل</span>
             </Link>
             <SearchProducts />
           </div>
