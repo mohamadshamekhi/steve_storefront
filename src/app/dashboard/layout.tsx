@@ -1,6 +1,6 @@
 'use client';
 import { signOutAction } from '@/actions/auth.action';
-import EditIcon from '@/components/icons/dashboard/EditIcon';
+import GiftIcon from '@/components/icons/dashboard/GiftIcon';
 import HomeIcon from '@/components/icons/dashboard/HomeIcon';
 import LocationIcon from '@/components/icons/dashboard/LocationIcon';
 import LogoutIcon from '@/components/icons/dashboard/LogoutIcon';
@@ -35,11 +35,6 @@ const menuItems = [
         label: 'سفارش ها',
         href: '/dashboard/order'
     },
-    // {
-    //     icon: <NotificationIcon />,
-    //     label: 'پیام ها',
-    //     href: '/dashboard/notification'
-    // },
     {
         icon: <RepairIcon />,
         label: 'تعمیرات',
@@ -51,20 +46,113 @@ const menuItems = [
         href: '/dashboard/sells'
     },
     {
+        icon: <GiftIcon />,
+        label: 'دعوت دوستان',
+        href: '/dashboard/referral'
+    },
+    {
         icon: <LocationIcon />,
         label: 'آدرس ها',
         href: '/dashboard/addresses'
     }
-    // {
-    //     icon: <LogoutIcon />,
-    //     label: 'خروج',
-    //     href: '#',
-    //     className: 'text-red-850'
-    // }
 ];
 
 interface IProps {
     children: React.ReactNode;
+}
+
+interface SidebarProps {
+    name?: string;
+    phone?: string;
+    isActive: (href: string) => boolean;
+    onLogout: () => void;
+    onNavigate?: () => void;
+}
+
+function ProfileCard({ name, phone, onNavigate }: Pick<SidebarProps, 'name' | 'phone' | 'onNavigate'>) {
+    return (
+        <div className='from-primary-600 to-primary-500 relative overflow-hidden bg-linear-to-br px-5 pt-6 pb-7'>
+            <div
+                aria-hidden
+                className='absolute -top-10 -left-10 size-32 rounded-full bg-white/10'
+            />
+            <div className='relative flex items-center gap-3'>
+                <Image
+                    src='/images/_general/placeholder/user.png'
+                    alt='تصویر پروفایل'
+                    width={56}
+                    height={56}
+                    className='size-14 shrink-0 rounded-full bg-white/20 object-cover ring-3 ring-white/30'
+                />
+                <div className='min-w-0 flex-1 text-white'>
+                    <p className='truncate text-sm-plus font-bold'>{name ?? 'کاربر استیو'}</p>
+                    <p className='mt-1 truncate text-caption1-regular text-white/80'>{phone ?? '—'}</p>
+                </div>
+            </div>
+            <Link
+                href='/dashboard/profile'
+                onClick={onNavigate}
+                className='mt-4 inline-flex items-center gap-1 rounded-lg bg-white/15 px-3 py-1.5 text-caption1-medium text-white transition hover:bg-white/25'
+            >
+                ویرایش اطلاعات
+            </Link>
+        </div>
+    );
+}
+
+function SidebarNav({ isActive, onLogout, onNavigate }: Omit<SidebarProps, 'name' | 'phone'>) {
+    return (
+        <nav className='p-3'>
+            <ul className='space-y-1'>
+                {menuItems.map(({ label, icon, href }) => {
+                    const active = isActive(href);
+                    return (
+                        <li key={label}>
+                            <Link
+                                href={href}
+                                onClick={onNavigate}
+                                aria-current={active ? 'page' : undefined}
+                                className={cn(
+                                    'group focus-visible:ring-primary-400/50 relative flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-gray-500 transition outline-none hover:bg-gray-50 hover:text-gray-800 focus-visible:ring-2',
+                                    active && 'bg-primary-50 text-primary-700 font-semibold hover:bg-primary-50 hover:text-primary-700'
+                                )}
+                            >
+                                <span
+                                    aria-hidden
+                                    className={cn(
+                                        'bg-primary-600 absolute top-1/2 right-0 h-5 w-1 -translate-y-1/2 rounded-full transition-opacity',
+                                        active ? 'opacity-100' : 'opacity-0'
+                                    )}
+                                />
+                                <span
+                                    className={cn(
+                                        'flex size-9 shrink-0 items-center justify-center rounded-lg border border-gray-100 bg-white text-gray-500 transition group-hover:text-gray-700',
+                                        active && 'border-primary-100 text-primary-600'
+                                    )}
+                                >
+                                    {icon}
+                                </span>
+                                <span>{label}</span>
+                            </Link>
+                        </li>
+                    );
+                })}
+            </ul>
+
+            <div className='my-2 border-t border-gray-100' />
+
+            <button
+                type='button'
+                onClick={onLogout}
+                className='text-secondary-500 hover:bg-secondary-50 focus-visible:ring-secondary-400/50 flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition outline-none focus-visible:ring-2'
+            >
+                <span className='border-secondary-100 text-secondary-500 flex size-9 shrink-0 items-center justify-center rounded-lg border bg-white'>
+                    <LogoutIcon />
+                </span>
+                <span>خروج از حساب</span>
+            </button>
+        </nav>
+    );
 }
 
 function DashboardLayout({ children }: IProps) {
@@ -81,133 +169,43 @@ function DashboardLayout({ children }: IProps) {
         return pathname.startsWith(href);
     };
 
+    const handleLogout = async () => {
+        clearSession();
+        await signOutAction();
+    };
+
+    const name = sessionStore?.profile?.name;
+    const phone = sessionStore?.profile?.phone_number;
+
     return (
         <Layout>
-            <Container>
-                <section className='flex gap-5 pt-[38px] pb-16'>
-                    <div className='hidden w-3/12 max-w-[418px] rounded-[5px] bg-white pb-20 shadow-md lg:inline-block'>
-                        <div className='p-4 lg:px-[26px] lg:pt-[34px]'>
-                            <div className='bg-primary-50 flex justify-between rounded-sm p-3.5'>
-                                <div className='flex flex-wrap items-center gap-2'>
-                                    <Image
-                                        src='/images/_general/placeholder/user.png'
-                                        alt='user-profile'
-                                        width={60}
-                                        height={60}
-                                        className='ml-2.5 rounded-full border-3 border-transparent transition-colors delay-75 duration-200 hover:border-sky-600'
-                                    />
-                                    <div className='flex flex-col text-sm text-[#302F32]'>
-                                        <span className='font-bold'>{sessionStore?.profile?.name ?? 'نام کاربری'}</span>
-                                        <span className='mt-[14px] font-medium'>
-                                            {sessionStore?.profile?.phone_number}
-                                        </span>
-                                    </div>
+            <div className='bg-gray-50/70'>
+                <Container>
+                    <section className='flex gap-6 py-6 lg:gap-8 lg:py-8'>
+                        <aside className='hidden w-72.5 shrink-0 lg:block'>
+                            <div className='sticky top-6 overflow-hidden rounded-2xl border border-gray-100 bg-white shadow-sm'>
+                                <ProfileCard name={name} phone={phone} />
+                                <SidebarNav isActive={isActive} onLogout={handleLogout} />
+                            </div>
+                        </aside>
+
+                        {isMobile && (
+                            <OffCanvas onClose={close} isOpen={isOpen} width='86%' className='z-20 px-0! py-0!'>
+                                <div className='pt-12'>
+                                    <ProfileCard name={name} phone={phone} onNavigate={close} />
+                                    <SidebarNav isActive={isActive} onLogout={handleLogout} onNavigate={close} />
                                 </div>
-                                <Link href='/dashboard/profile' className='self-end'>
-                                    <span className='text-primary-500 text-sm font-semibold'>ویرایش</span>
-                                </Link>
+                            </OffCanvas>
+                        )}
+
+                        <div className='min-w-0 flex-1'>
+                            <div className='rounded-2xl border border-gray-100 bg-white p-4 shadow-sm sm:p-6 lg:p-8'>
+                                {children}
                             </div>
                         </div>
-                        <ul>
-                            {menuItems.map(({ label, icon, href }) => {
-                                const active = isActive(href);
-                                return (
-                                    <li key={label}>
-                                        <Link
-                                            href={href}
-                                            className={cn(
-                                                'hover:bg-primary-100 Lafont-normal hover:text-primary-500 flex px-4 py-3.5 text-base text-gray-400 transition ease-in-out hover:font-semibold',
-                                                active && 'bg-primary-100 text-primary-500 font-semibold'
-                                            )}
-                                        >
-                                            <span>{icon}</span>
-                                            <span className='mr-4'>{label}</span>
-                                        </Link>
-                                    </li>
-                                );
-                            })}
-                            <li
-                                onClick={async () => {
-                                    clearSession();
-                                    await signOutAction();
-                                }}
-                            >
-                                <div
-                                    className={cn(
-                                        'hover:bg-primary-100 Lafont-normal hover:text-primary-500 flex cursor-pointer px-4 py-3.5 text-base text-gray-400 transition ease-in-out hover:font-semibold',
-                                        'text-red-850'
-                                    )}
-                                >
-                                    <span>
-                                        <LogoutIcon />
-                                    </span>
-                                    <span className='mr-4'>خروج</span>
-                                </div>
-                            </li>
-                        </ul>
-                    </div>
-
-                    {isMobile && (
-                        <OffCanvas onClose={close} isOpen={isOpen} width='100%' className='z-[20] !px-0 !py-2'>
-                            <div className='mt-6 p-4 lg:px-[26px] lg:pt-[34px]'>
-                                <div className='bg-primary-50 flex justify-between rounded-sm p-3.5'>
-                                    <div className='flex flex-wrap items-center gap-2'>
-                                        <Image
-                                            src='/images/_general/placeholder/user.png'
-                                            alt='user-profile'
-                                            width={60}
-                                            height={60}
-                                            className='ml-2.5 rounded-full border-3 border-transparent transition-colors delay-75 duration-200 hover:border-sky-600'
-                                        />
-                                        <div className='flex flex-col text-sm text-[#302F32]'>
-                                            <span className='font-bold'>
-                                                {sessionStore?.profile?.name ?? 'نام کاربری'}
-                                            </span>
-
-                                            <span className='mt-[14px] font-medium'>
-                                                {sessionStore?.profile?.phone_number}
-                                            </span>
-                                        </div>
-                                    </div>
-                                    <Link
-                                        href='/dashboard/profile'
-                                        onClick={() => {
-                                            close();
-                                        }}
-                                        className='self-end'
-                                    >
-                                        <EditIcon />
-                                    </Link>
-                                </div>
-                            </div>
-                            <ul>
-                                {menuItems.map(({ label, icon, href }) => {
-                                    const active = isActive(href);
-                                    return (
-                                        <li key={label}>
-                                            <Link
-                                                onClick={() => {
-                                                    close();
-                                                }}
-                                                href={href}
-                                                className={cn(
-                                                    'hover:bg-primary-100 Lafont-normal hover:text-primary-500 flex px-4 py-3.5 text-base text-gray-400 transition ease-in-out hover:font-semibold',
-                                                    active && 'bg-primary-100 text-primary-500 font-semibold'
-                                                )}
-                                            >
-                                                <span>{icon}</span>
-                                                <span className='mr-4'>{label}</span>
-                                            </Link>
-                                        </li>
-                                    );
-                                })}
-                            </ul>
-                        </OffCanvas>
-                    )}
-
-                    <div className='w-full rounded-[5px] bg-white px-8 py-[31px] lg:w-9/12'>{children}</div>
-                </section>
-            </Container>
+                    </section>
+                </Container>
+            </div>
         </Layout>
     );
 }

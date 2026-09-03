@@ -12,6 +12,8 @@ const ROUTES = {
     Login: '/auth/sign-in',
     Verify: '/auth/verify',
     Dashboard: '/dashboard',
+    Referral: '/dashboard/referral',
+    Invite: '/invite',
     FAQ: '/faq'
 };
 export default ROUTES;

@@ -63,8 +63,8 @@ const AboutRepairTemplate = () => {
             />
 
             <Container>
-                <section className='relative pb-5 md:pb-[135px] lg:pb-[153px]'>
-                    <h2 className='text-subtitle1-bold mt-[49px] mb-5 text-center sm:mb-[39px] md:mt-[134px] md:mb-[59px] lg:mt-[164px] lg:mb-[79px]'>
+                <section className='relative pb-12 md:pb-16 lg:pb-20'>
+                    <h2 className='text-subtitle1-bold mt-12 mb-6 text-center md:mt-16 md:mb-10'>
                         مزایای تعمیر گوشی در استیو
                     </h2>
 

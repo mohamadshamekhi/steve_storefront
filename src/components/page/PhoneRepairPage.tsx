@@ -15,18 +15,18 @@ const PhoneRepairPage = ({ brands }: { brands: Brand[] }) => {
     const authImages = [
         {
             src: ImageTwo,
-            alt: 'image-two',
-            className: 'absolute -right-10 top-40 lg:top-50  max-w-[321px] -z-1'
+            alt: '',
+            className: 'absolute -right-10 top-40 lg:top-50 max-w-[321px] -z-1 hidden sm:block'
         },
         {
             src: ImageOne,
-            alt: 'image-four',
-            className: 'absolute -left-20 top-20 lg:top-50 transform rotate-90 max-w-[321px] -z-1'
+            alt: '',
+            className: 'absolute -left-20 top-20 lg:top-50 transform rotate-90 max-w-[321px] -z-1 hidden sm:block'
         }
     ];
 
     return (
-        <main className='!max-w-screen !overflow-x-hidden'>
+        <main className='w-full overflow-x-hidden'>
             <Container>
                 <h1 className='sr-only'>تعمیر تخصصی گوشی موبایل در استیو موبایل</h1>
                 <ManualBreadcrumb

@@ -2,7 +2,7 @@
 
 import { signInAction } from '@/actions/auth.action';
 import ChevronLeft from '@/components/icons/ChevronLeft';
-import Input from '@/components/ui/atoms/Input/Input';
+import NumericInput from '@/components/ui/atoms/Input/NumericInput';
 import Fieldset from '@/components/ui/molecules/Fieldset/Fieldset';
 import AuthFormWrapper from '@/components/ui/organisms/auth/AuthFormWrapper';
 import { authPhoneNumberValidationSchema } from '@/config/schema/auth';
@@ -66,22 +66,22 @@ function SignInPage() {
     });
 
     return (
-        <div>
+        <div className='text-right'>
             <h1 className='sr-only'>استیو موبایل</h1>
-            <h2 className='text-h4-bold mb-11 font-bold text-gray-800'>ورود | ثبت نام</h2>
-            <p className='text-body1-regular mb-4 text-right'>
-                سلام
-                <br /> لطفا شماره موبایل یا ایمیل خود را وارد کنید
+            <h2 className='text-xl font-bold text-gray-900'>ورود یا ثبت‌نام</h2>
+            <p className='mt-2 mb-7 text-sm leading-7 text-gray-500'>
+                سلام! برای ادامه، شماره موبایل خود را وارد کنید. کد تأیید برایتان پیامک می‌شود.
             </p>
             <AuthFormWrapper loading={isPending} onSubmit={formik.handleSubmit}>
                 <Fieldset name='phone_number' touched={formik.touched} errors={formik.errors} className='w-full'>
-                    <Input
+                    <label className='mb-1.5 block text-sm font-medium text-gray-700'>شماره موبایل</label>
+                    <NumericInput
                         name='phone_number'
                         type='tel'
                         maxLength={11}
-                        inputMode='numeric'
-                        placeholder='شماره تلفن'
-                        className={`w-full max-w-full py-2 text-left placeholder:text-right ${
+                        placeholder='09xxxxxxxxx'
+                        dir='ltr'
+                        className={`max-w-full! text-left placeholder:text-gray-400 ${
                             formik.touched.phone_number && formik.errors.phone_number ? 'border-red-500' : ''
                         }`}
                         onChange={formik.handleChange}
@@ -91,11 +91,12 @@ function SignInPage() {
                 </Fieldset>
             </AuthFormWrapper>
             <div className='mt-6'>
-                <Link href={ROUTES.Landing} className='text-body1-regular flex items-center justify-end'>
-                    بازگشت
-                    <span className='mr-2'>
-                        <ChevronLeft />
-                    </span>
+                <Link
+                    href={ROUTES.Landing}
+                    className='inline-flex items-center gap-1 text-sm font-medium text-gray-500 transition hover:text-gray-700'
+                >
+                    <ChevronLeft />
+                    بازگشت به فروشگاه
                 </Link>
             </div>
         </div>

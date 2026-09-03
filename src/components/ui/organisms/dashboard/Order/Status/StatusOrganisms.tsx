@@ -1,22 +1,49 @@
-import Image from 'next/image';
+import cn from '@/config/utilities/cn';
+import Image, { StaticImageData } from 'next/image';
+import Link from 'next/link';
+
+export type StatusTone = 'primary' | 'green' | 'red' | 'blue' | 'amber';
+
+const toneClasses: Record<StatusTone, { tile: string; count: string; hover: string }> = {
+    primary: { tile: 'bg-primary-50', count: 'text-primary-700', hover: 'lg:hover:border-primary-200' },
+    green: { tile: 'bg-green-50', count: 'text-green-700', hover: 'lg:hover:border-green-200' },
+    red: { tile: 'bg-secondary-50', count: 'text-secondary-600', hover: 'lg:hover:border-secondary-200' },
+    blue: { tile: 'bg-blue-50', count: 'text-blue-700', hover: 'lg:hover:border-blue-200' },
+    amber: { tile: 'bg-amber-50', count: 'text-amber-700', hover: 'lg:hover:border-amber-200' }
+};
 
 interface IProps {
     label: string;
-    iconSrc: string;
+    iconSrc: string | StaticImageData;
     count: number;
+    href: string;
+    unit?: string;
+    tone?: StatusTone;
 }
-function StatusOrganisms({ label, iconSrc, count }: IProps) {
+
+function StatusOrganisms({ label, iconSrc, count, href, unit = 'مورد', tone = 'primary' }: IProps) {
+    const t = toneClasses[tone];
+
     return (
-        <div key={label} className='flex w-full items-center rounded-sm bg-purple-50 p-4 xl:px-6 xl:py-8'>
-            <Image src={iconSrc} alt='current-order' width={39} height={39} />
-            <div className='text-gray-850 mr-4 flex grow flex-col'>
-                <span className='mb-2 font-medium'>
-                    <span className='ml-1.5'>{count}</span>
-                    ســفـارش
+        <Link
+            href={href}
+            className={cn(
+                'group flex h-full flex-col gap-3 rounded-2xl border border-gray-100 bg-white p-4 transition',
+                'lg:hover:-translate-y-0.5 lg:hover:shadow-md',
+                t.hover
+            )}
+        >
+            <span className={cn('flex size-11 shrink-0 items-center justify-center rounded-xl', t.tile)}>
+                <Image src={iconSrc} alt={label} width={24} height={24} />
+            </span>
+            <span className='flex flex-col'>
+                <span className='flex items-baseline gap-1'>
+                    <span className={cn('text-xl font-extrabold', t.count)}>{count}</span>
+                    <span className='text-xs text-gray-500'>{unit}</span>
                 </span>
-                <span className='font-semibold'>{label}</span>
-            </div>
-        </div>
+                <span className='text-gray-850 mt-1 text-sm font-semibold'>{label}</span>
+            </span>
+        </Link>
     );
 }
 

@@ -10,6 +10,7 @@ import { useFormik } from 'formik';
 import { useMemo, useState } from 'react';
 import Button from '@/components/ui/atoms/Button/Button';
 import Input from '@/components/ui/atoms/Input/Input';
+import NumericInput from '@/components/ui/atoms/Input/NumericInput';
 import CSelect from '@/components/ui/atoms/Select/CSelect';
 import Fieldset from '@/components/ui/molecules/Fieldset/Fieldset';
 import locationData from '../../../../../../public/all-of-cities-and-provinces.json';
@@ -156,13 +157,12 @@ const AddAddressForm = () => {
             </Fieldset>
             <Fieldset name='postcode' errors={formik.errors} touched={formik.touched}>
                 <label className='mb-1.5 block text-xs-plus font-medium text-gray-700'>کد پستی</label>
-                <Input
+                <NumericInput
                     name='postcode'
                     value={formik.values.postcode}
                     onChange={formik.handleChange}
                     onBlur={formik.handleBlur}
                     placeholder='کد پستی ۱۰ رقمی'
-                    inputMode='numeric'
                     maxLength={10}
                     className={`max-w-full! ${formik.touched.postcode && formik.errors.postcode ? 'border-red-500' : ''}`}
                 />

@@ -17,7 +17,7 @@ import { useEffect, useState } from 'react';
 import { toFormikValidationSchema } from 'zod-formik-adapter';
 import Button from '../../atoms/Button/Button';
 import Checkbox from '../../atoms/Checkbox/Checkbox';
-import Input from '../../atoms/Input/Input';
+import NumericInput from '../../atoms/Input/NumericInput';
 import SelectInput from '../../atoms/SelectInput ';
 import TextArea from '../../atoms/TextArea/TextArea';
 import Fieldset from '../../molecules/Fieldset/Fieldset';
@@ -248,12 +248,14 @@ const PhonSalesFormTemplate = ({ brands }: { brands: Brand[] }) => {
                                     errors={formik.errors}
                                     className='mb-4 lg:mb-0'
                                 >
-                                    <Input
+                                    <NumericInput
                                         name='battery_health'
                                         onChange={formik.handleChange}
                                         onBlur={formik.handleBlur}
                                         value={formik.values.battery_health}
-                                        className={`w-full max-w-full bg-primary-50 ${formik.touched.battery_health && formik.errors.battery_health ? 'border-red-500' : ''}`}
+                                        placeholder='مثلاً ۸۵'
+                                        maxLength={3}
+                                        className={`w-full max-w-full! ${formik.touched.battery_health && formik.errors.battery_health ? 'border-red-500' : ''}`}
                                     />
                                 </Fieldset>
 

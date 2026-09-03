@@ -71,16 +71,23 @@ const SteveLogo: JSX.Element = (
 
 function AuthPageLayout({ children }: IProps) {
     return (
-        <div className='relative flex h-screen w-screen flex-col items-center bg-gray-50 p-4 md:p-0'>
-            <div className='border-primary-100 z-10 mx-7 mt-40 w-full rounded-md border bg-white p-4 text-center sm:max-w-[483px] sm:p-8'>
+        <div className='relative flex min-h-svh w-full flex-col items-center justify-center overflow-hidden bg-gray-50 px-4 py-10'>
+            <div className='pointer-events-none absolute inset-0 select-none'>
+                <BlobCenter />
+                <BlobCornerLeft />
+                {authImages.map(({ src, alt, className }) => (
+                    <Image key={alt} src={src} alt='' aria-hidden className={className} />
+                ))}
+            </div>
+
+            <div className='relative z-10 w-full max-w-110 rounded-2xl border border-gray-100 bg-white p-6 text-center shadow-xl sm:p-9'>
                 <div className='mb-8 flex justify-center'>{SteveLogo}</div>
                 {children}
             </div>
-            <BlobCenter />
-            <BlobCornerLeft />
-            {authImages.map(({ src, alt, className }) => (
-                <Image key={alt} src={src} alt={alt} className={className} />
-            ))}
+
+            <p className='relative z-10 mt-6 text-xs text-gray-400'>
+                ورود شما به معنای پذیرش قوانین و مقررات استیو موبایل است.
+            </p>
         </div>
     );
 }

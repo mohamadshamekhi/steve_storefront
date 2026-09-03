@@ -8,6 +8,7 @@ import landingKeys from './landing.keys';
 import partnerKeys from './partner.keys';
 import phoneSalesKeys from './phoneSales.keys';
 import productKeys from './product.keys';
+import referralKeys from './referral.keys';
 
 const ApiKeys = {
     ...authKeys,
@@ -19,7 +20,8 @@ const ApiKeys = {
     ...commonKeys,
     ...commentKeys,
     ...dashboardKeys,
-    ...partnerKeys
+    ...partnerKeys,
+    ...referralKeys
 };
 
 export default ApiKeys;

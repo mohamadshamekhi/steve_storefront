@@ -2,8 +2,11 @@
 
 import { fetcher } from '@/api';
 import ApiKeys from '@/api/keys';
+import Button from '@/components/ui/atoms/Button/Button';
 import EmptyState from '@/components/ui/molecules/EmptyState/EmptyState';
+import DashboardListSkeleton from '@/components/ui/organisms/SkeletonOrganisms/DashboardListSkeleton/DashboardListSkeleton';
 import { formatJalali } from '@/utils/date.util';
+import Link from 'next/link';
 import { useEffect, useState } from 'react';
 
 interface SellItem {
@@ -79,15 +82,21 @@ function SellsTemplate() {
     }, []);
 
     if (loading) {
-        return (
-            <div className='flex items-center justify-center py-20'>
-                <span className='text-gray-400'>در حال بارگذاری...</span>
-            </div>
-        );
+        return <DashboardListSkeleton title='فروش دست دوم من' count={2} />;
     }
 
     if (sells.length === 0) {
-        return <EmptyState />;
+        return (
+            <div className='flex flex-col items-center'>
+                <EmptyState
+                    title='هنوز درخواست فروشی ثبت نکرده‌اید'
+                    subtitle='گوشی دست دوم خود را کارشناسی کنید و با بهترین قیمت به استیو موبایل بفروشید.'
+                />
+                <Link href='/phone-sales' className='mt-2'>
+                    <Button size='sm'>ثبت درخواست فروش</Button>
+                </Link>
+            </div>
+        );
     }
 
     return (
@@ -101,39 +110,44 @@ function SellsTemplate() {
                         color: 'bg-gray-100 text-gray-700'
                     };
 
+                    const specs = [
+                        { label: 'برند', value: sell.brand_name },
+                        { label: 'رنگ', value: colorMap[sell.color] ?? sell.color },
+                        { label: 'سلامت باتری', value: `${sell.battery_health}%` },
+                        { label: 'وضعیت رجیستر', value: sell.register_status },
+                        { label: 'وضعیت ظاهری', value: sell.physical_condition }
+                    ].filter((s) => s.value);
+
                     return (
                         <div
                             key={sell.id}
-                            className='rounded-lg border border-gray-200 p-4'
+                            className='rounded-2xl border border-gray-100 bg-white p-4 shadow-sm sm:p-5'
                         >
-                            <div className='mb-2 flex flex-wrap items-center gap-2'>
-                                <h3 className='text-sm font-semibold text-gray-800'>
-                                    {sell.product_name}
-                                </h3>
-                                <span
-                                    className={`rounded-full px-2.5 py-0.5 text-xs font-medium ${statusInfo.color}`}
-                                >
+                            <div className='mb-3 flex flex-wrap items-center gap-2'>
+                                <span className={`rounded-lg px-2.5 py-1 text-xs font-semibold ${statusInfo.color}`}>
                                     {statusInfo.label}
+                                </span>
+                                <span className='text-xs text-gray-400'>
+                                    {formatJalali(new Date(sell.created_at))}
                                 </span>
                             </div>
 
-                            <div className='mb-3 flex flex-wrap gap-x-4 gap-y-1 text-xs text-gray-500'>
-                                <span>برند: {sell.brand_name}</span>
-                                <span>رنگ: {colorMap[sell.color] ?? sell.color}</span>
-                                <span>سلامت باتری: {sell.battery_health}%</span>
-                                <span>وضعیت رجیستر: {sell.register_status}</span>
-                                <span>وضعیت ظاهری: {sell.physical_condition}</span>
+                            <h3 className='text-sm font-semibold text-gray-800'>{sell.product_name}</h3>
+
+                            <div className='mt-3 flex flex-wrap gap-2'>
+                                {specs.map((spec) => (
+                                    <span
+                                        key={spec.label}
+                                        className='rounded-lg bg-gray-50 px-2.5 py-1 text-xs text-gray-600'
+                                    >
+                                        <span className='text-gray-400'>{spec.label}:</span> {spec.value}
+                                    </span>
+                                ))}
                             </div>
 
                             {sell.description && (
-                                <p className='mb-3 text-sm leading-6 text-gray-600 line-clamp-2'>
-                                    {sell.description}
-                                </p>
+                                <p className='mt-3 line-clamp-2 text-sm leading-6 text-gray-600'>{sell.description}</p>
                             )}
-
-                            <div className='text-xs text-gray-400'>
-                                {formatJalali(new Date(sell.created_at))}
-                            </div>
                         </div>
                     );
                 })}

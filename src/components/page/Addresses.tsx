@@ -9,9 +9,9 @@ import { useModalStore } from '@/state/stores/modal';
 import { toFormikValidationSchema } from 'zod-formik-adapter';
 import { useFormik } from 'formik';
 import { useMemo, useState } from 'react';
-import EditIcon from '../icons/dashboard/EditIcon';
 import Button from '../ui/atoms/Button/Button';
 import Input from '../ui/atoms/Input/Input';
+import NumericInput from '../ui/atoms/Input/NumericInput';
 import CSelect from '../ui/atoms/Select/CSelect';
 import Fieldset from '../ui/molecules/Fieldset/Fieldset';
 import { Modal } from '../ui/organisms/Modal/CModal';
@@ -141,36 +141,65 @@ const Addresses = () => {
 
     return (
         <>
-            <div className='mb-4 flex items-center justify-between'>
-                <h2 className='text-lg font-semibold'>آدرس‌های من</h2>
+            <div className='mb-6 flex items-center justify-between gap-3'>
+                <h2 className='text-gray-850 text-base font-bold sm:text-lg'>آدرس‌های من</h2>
                 <Button onClick={handleAddClick} size='sm'>
                     افزودن آدرس جدید
                 </Button>
             </div>
 
-            <ul>
-                {addresses.length === 0 ? (
-                    <li className='py-5 text-center text-gray-400'>آدرسی ثبت نشده است</li>
-                ) : (
-                    addresses.map((address, index) => (
+            {addresses.length === 0 ? (
+                <div className='rounded-2xl border border-dashed border-gray-200 py-10 text-center text-sm text-gray-400'>
+                    هنوز آدرسی ثبت نکرده‌اید
+                </div>
+            ) : (
+                <ul className='flex flex-col gap-3'>
+                    {addresses.map((address) => (
                         <li
                             key={address.id}
-                            className={`border-b border-gray-200 py-5 ${index === addresses.length - 1 ? 'border-0' : ''}`}
+                            className='rounded-2xl border border-gray-100 bg-white p-4 shadow-sm'
                         >
-                            <div className='mb-3 flex flex-wrap items-center justify-between gap-2'>
-                                <div className='font-semibold'>{address.title}</div>
-                                <button onClick={() => handleEditClick(address)} className='cursor-pointer'>
-                                    <EditIcon />
+                            <div className='mb-2 flex flex-wrap items-start justify-between gap-2'>
+                                <div className='flex items-center gap-2 font-bold text-gray-900'>
+                                    <svg width='16' height='16' viewBox='0 0 18 18' fill='none' aria-hidden>
+                                        <path
+                                            d='M9 9.375A2.25 2.25 0 1 0 9 4.875a2.25 2.25 0 0 0 0 4.5Z'
+                                            className='stroke-primary-500'
+                                            strokeWidth='1.125'
+                                        />
+                                        <path
+                                            d='M9 16.5c1.5-3 6-4.936 6-9a6 6 0 0 0-12 0c0 4.064 4.5 6 6 9Z'
+                                            className='stroke-primary-500'
+                                            strokeWidth='1.125'
+                                            strokeLinejoin='round'
+                                        />
+                                    </svg>
+                                    {address.title}
+                                </div>
+                                <button
+                                    onClick={() => handleEditClick(address)}
+                                    className='border-primary-200 bg-primary-50 text-primary-700 hover:bg-primary-100 inline-flex cursor-pointer items-center gap-1.5 rounded-lg border px-3 py-1.5 text-xs font-semibold transition'
+                                >
+                                    <svg width='13' height='13' viewBox='0 0 24 24' fill='none' aria-hidden>
+                                        <path
+                                            d='M4 20h4L18.5 9.5a2.121 2.121 0 0 0-3-3L5 17v3Z M13.5 6.5l3 3'
+                                            className='stroke-current'
+                                            strokeWidth='2'
+                                            strokeLinecap='round'
+                                            strokeLinejoin='round'
+                                        />
+                                    </svg>
+                                    ویرایش
                                 </button>
                             </div>
-                            <div>
-                                استان {address.province} - شهر {address.city} - {address.street}
-                                {address.postcode && ` - کد پستی: ${address.postcode}`}
-                            </div>
+                            <p className='text-sm leading-7 text-gray-600'>
+                                استان {address.province} – شهر {address.city} – {address.street}
+                                {address.postcode && ` – کد پستی: ${address.postcode}`}
+                            </p>
                         </li>
-                    ))
-                )}
-            </ul>
+                    ))}
+                </ul>
+            )}
 
             <Modal modalKey='addressModal' onClose={handleCloseModal} size='sm'>
                 <Modal.Header onClose={handleCloseModal}>{isAddMode ? 'افزودن آدرس جدید' : 'ویرایش آدرس'}</Modal.Header>
@@ -235,13 +264,12 @@ const Addresses = () => {
                         </Fieldset>
                         <Fieldset name='postcode' errors={formik.errors} touched={formik.touched}>
                             <label className='mb-1 block text-sm font-medium text-gray-700'>کد پستی</label>
-                            <Input
+                            <NumericInput
                                 name='postcode'
                                 value={formik.values.postcode}
                                 onChange={formik.handleChange}
                                 onBlur={formik.handleBlur}
                                 placeholder='کد پستی ۱۰ رقمی'
-                                inputMode='numeric'
                                 maxLength={10}
                                 className={`max-w-full! ${formik.touched.postcode && formik.errors.postcode ? 'border-red-500' : ''}`}
                             />

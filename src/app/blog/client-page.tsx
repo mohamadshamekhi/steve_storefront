@@ -81,7 +81,6 @@ const ClientPage = ({ data }: { data: Blog[] }) => {
                     ]}
                 />
                 <h1 className='sr-only'>اخبار و مقالات استیو موبایل</h1>
-                {isLoading ? 'loading...' : ''}
                 <section className='pt-8 pb-20'>
                     <div className='grid grid-cols-12 gap-4 pb-8'>
                         <div className='col-span-12 lg:col-span-6'>
@@ -98,7 +97,17 @@ const ClientPage = ({ data }: { data: Blog[] }) => {
                         </div>
                     </div>
 
-                    <div className='grid grid-cols-12 gap-6'>
+                    {!isLoading && articles.length === 0 && (
+                        <div className='rounded-2xl border border-dashed border-gray-200 py-16 text-center text-sm text-gray-400'>
+                            {title ? 'مقاله‌ای با این عنوان پیدا نشد.' : 'هنوز مقاله‌ای منتشر نشده است.'}
+                        </div>
+                    )}
+
+                    <div
+                        className={`grid grid-cols-12 gap-6 transition-opacity duration-200 ${
+                            isLoading ? 'pointer-events-none opacity-50' : ''
+                        } ${!isLoading && articles.length === 0 ? 'hidden' : ''}`}
+                    >
                         {/* Slider - First Post(s) */}
                         <div className='relative col-span-12 h-[300px] overflow-hidden md:h-[400px] lg:col-span-6'>
                             <SwiperComponent
@@ -119,7 +128,7 @@ const ClientPage = ({ data }: { data: Blog[] }) => {
                                                 <RectangleIcon />
                                                 <div className='absolute flex items-center'>
                                                     <CalenderIcon className='ml-1.5 fill-gray-50 text-gray-400' />
-                                                    <span className='text-xl font-normal text-gray-700'>
+                                                    <span className='text-xs-plus font-medium text-gray-700'>
                                                         {formatJalali(new Date(article.created_at))}
                                                     </span>
                                                 </div>
@@ -173,13 +182,13 @@ const ClientPage = ({ data }: { data: Blog[] }) => {
                             </SwiperComponent>
                         </div>
 
-                        <div className='col-span-12 grid grid-cols-2 gap-8 lg:col-span-6'>
+                        <div className='col-span-12 grid grid-cols-2 gap-x-4 gap-y-6 sm:gap-x-6 lg:col-span-6'>
                             {articles.slice(1, 5).map((article) => (
                                 <BlogCardOrganisms key={article.id} article={article} />
                             ))}
                         </div>
 
-                        <div className='col-span-12 mt-6 grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4'>
+                        <div className='col-span-12 mt-6 grid grid-cols-2 gap-x-4 gap-y-8 sm:gap-x-6 lg:grid-cols-4'>
                             {articles.slice(5).map((article) => (
                                 <BlogCardOrganisms key={article.id} article={article} />
                             ))}

@@ -8,6 +8,7 @@ import { useFormik } from 'formik';
 import { toFormikValidationSchema } from 'zod-formik-adapter';
 import Button from '../../atoms/Button/Button';
 import Input from '../../atoms/Input/Input';
+import NumericInput from '../../atoms/Input/NumericInput';
 import Fieldset from '../../molecules/Fieldset/Fieldset';
 
 interface Props {
@@ -112,16 +113,13 @@ const PartnerApplyForm = ({ initialValues, submitLabel = 'ثبت درخواست 
                     <label htmlFor='partner-national_id' className='mb-1 block text-sm font-medium text-gray-700'>
                         کد ملی
                     </label>
-                    <Input
+                    <NumericInput
                         id='partner-national_id'
                         name='national_id'
                         value={formik.values.national_id}
-                        onChange={(e) =>
-                            formik.setFieldValue('national_id', toEnglishDigits(e.target.value).replace(/\D/g, ''))
-                        }
+                        onChange={formik.handleChange}
                         onBlur={formik.handleBlur}
                         placeholder='کد ملی ۱۰ رقمی'
-                        inputMode='numeric'
                         maxLength={10}
                         className={inputError(formik.touched.national_id, formik.errors.national_id)}
                     />

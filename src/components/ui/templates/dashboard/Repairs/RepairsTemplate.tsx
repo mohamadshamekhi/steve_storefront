@@ -2,9 +2,12 @@
 
 import { fetcher } from '@/api';
 import ApiKeys from '@/api/keys';
+import Button from '@/components/ui/atoms/Button/Button';
 import EmptyState from '@/components/ui/molecules/EmptyState/EmptyState';
+import DashboardListSkeleton from '@/components/ui/organisms/SkeletonOrganisms/DashboardListSkeleton/DashboardListSkeleton';
 import { formatJalali } from '@/utils/date.util';
 import OptimizedImage from '@/utils/imageLoader';
+import Link from 'next/link';
 import { useEffect, useState } from 'react';
 
 interface RepairGallery {
@@ -63,15 +66,21 @@ function RepairsTemplate() {
     }, []);
 
     if (loading) {
-        return (
-            <div className='flex items-center justify-center py-20'>
-                <span className='text-gray-400'>در حال بارگذاری...</span>
-            </div>
-        );
+        return <DashboardListSkeleton title='تعمیرات من' count={2} />;
     }
 
     if (repairs.length === 0) {
-        return <EmptyState />;
+        return (
+            <div className='flex flex-col items-center'>
+                <EmptyState
+                    title='هنوز درخواست تعمیری ثبت نکرده‌اید'
+                    subtitle='گوشی یا لوازم جانبی خود را برای تعمیر تخصصی به استیو موبایل بسپارید.'
+                />
+                <Link href='/phone-repair' className='mt-2'>
+                    <Button size='sm'>ثبت درخواست تعمیر</Button>
+                </Link>
+            </div>
+        );
     }
 
     return (
@@ -86,48 +95,45 @@ function RepairsTemplate() {
                     };
 
                     return (
-                        <div key={repair.id} className='rounded-lg border border-gray-200 p-4'>
-                            <div className='flex flex-wrap items-start justify-between gap-3'>
-                                <div className='flex-1'>
-                                    <div className='mb-2 flex flex-wrap items-center gap-2'>
-                                        <h3 className='text-sm font-semibold text-gray-800'>{repair.product_name}</h3>
-                                        <span
-                                            className={`rounded-full px-2.5 py-0.5 text-xs font-medium ${statusInfo.color}`}
-                                        >
-                                            {statusInfo.label}
-                                        </span>
-                                    </div>
-
-                                    <div className='mb-2 text-xs text-gray-500'>
-                                        <span>برند: {repair.brand_name}</span>
-                                    </div>
-
-                                    {repair.description && (
-                                        <p className='mb-3 line-clamp-2 text-sm leading-6 text-gray-600'>
-                                            {repair.description}
-                                        </p>
-                                    )}
-
-                                    <div className='text-xs text-gray-400'>
+                        <div
+                            key={repair.id}
+                            className='flex flex-col gap-4 rounded-2xl border border-gray-100 bg-white p-4 shadow-sm sm:flex-row sm:items-start sm:justify-between sm:p-5'
+                        >
+                            <div className='min-w-0 flex-1'>
+                                <div className='mb-2 flex flex-wrap items-center gap-2'>
+                                    <span className={`rounded-lg px-2.5 py-1 text-xs font-semibold ${statusInfo.color}`}>
+                                        {statusInfo.label}
+                                    </span>
+                                    <span className='text-xs text-gray-400'>
                                         {formatJalali(new Date(repair.created_at))}
-                                    </div>
+                                    </span>
                                 </div>
 
-                                {repair.galleries.length > 0 && (
-                                    <div className='flex gap-2'>
-                                        {repair.galleries.map((gallery) => (
-                                            <OptimizedImage
-                                                key={gallery.media_id}
-                                                src={gallery.url}
-                                                alt='تصویر تعمیر'
-                                                width={80}
-                                                height={80}
-                                                className='rounded-lg object-cover'
-                                            />
-                                        ))}
-                                    </div>
+                                <h3 className='text-sm font-semibold text-gray-800'>{repair.product_name}</h3>
+
+                                <div className='mt-1 text-xs text-gray-500'>برند: {repair.brand_name}</div>
+
+                                {repair.description && (
+                                    <p className='mt-2 line-clamp-2 text-sm leading-6 text-gray-600'>
+                                        {repair.description}
+                                    </p>
                                 )}
                             </div>
+
+                            {repair.galleries.length > 0 && (
+                                <div className='flex shrink-0 gap-2'>
+                                    {repair.galleries.slice(0, 3).map((gallery) => (
+                                        <OptimizedImage
+                                            key={gallery.media_id}
+                                            src={gallery.url}
+                                            alt='تصویر تعمیر'
+                                            width={80}
+                                            height={80}
+                                            className='size-20 rounded-xl border border-gray-100 object-cover'
+                                        />
+                                    ))}
+                                </div>
+                            )}
                         </div>
                     );
                 })}
@@ -137,4 +143,3 @@ function RepairsTemplate() {
 }
 
 export default RepairsTemplate;
-

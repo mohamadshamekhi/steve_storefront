@@ -12,6 +12,8 @@ import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useTransition } from 'react';
 import OtpInput from 'react-otp-input';
+import { clearStoredRef, getStoredRef } from '@/utils/referral.util';
+import { toEnglishDigits } from '@/utils/string.util';
 import z from 'zod';
 import { toFormikValidationSchema } from 'zod-formik-adapter';
 
@@ -51,8 +53,13 @@ const VerifyPage = () => {
     const submitHandler = async (data: authModel) => {
         startTransition(async () => {
             try {
-                const res = await signInVerifyAction({ phone_number: phoneNumber, ...data });
+                const res = await signInVerifyAction({
+                    phone_number: phoneNumber,
+                    ...data,
+                    ref: getStoredRef()
+                });
                 if (res.success) {
+                    clearStoredRef();
                     showToast({
                         title: 'احراز هویت | تاییدیه ورود',
                         message: res.message,
@@ -86,55 +93,65 @@ const VerifyPage = () => {
     });
 
     return (
-        <div>
+        <div className='text-right'>
             <h1 className='sr-only'>استیو موبایل</h1>
-            <h2 className='text-h4-bold mb-5 font-bold text-gray-800 lg:mb-[45px]'>تایید دو مرحله ای</h2>
-            <p className='text-body1-regular mb-4'>لطفا کد ارسال شده به شماره{phoneNumber} را وارد کنید.</p>
+            <h2 className='text-xl font-bold text-gray-900'>تأیید شماره موبایل</h2>
+            <p className='mt-2 mb-7 text-sm leading-7 text-gray-500'>
+                کد ۵ رقمی ارسال‌شده به شماره{' '}
+                <span dir='ltr' className='font-semibold text-gray-700'>
+                    {phoneNumber}
+                </span>{' '}
+                را وارد کنید.
+            </p>
             <AuthFormWrapper loading={isPending} onSubmit={formik.handleSubmit}>
                 <Fieldset name='code' touched={formik.touched} errors={formik.errors} className='w-full'>
                     <OtpInput
                         value={formik.values.code}
-                        onChange={(val) => formik.setFieldValue('code', val)}
+                        onChange={(val) => formik.setFieldValue('code', toEnglishDigits(val).replace(/\D/g, ''))}
                         numInputs={5}
                         shouldAutoFocus
                         inputStyle={{
                             direction: 'ltr',
-                            minWidth: '3rem',
+                            minWidth: '2.75rem',
                             height: '3rem',
-                            fontSize: '1.5rem',
-                            borderRadius: '8px',
-                            border: '1px solid #D2D5DA',
+                            fontSize: '1.375rem',
+                            fontWeight: 600,
+                            borderRadius: '10px',
+                            border: '1px solid #D1D5DB',
                             textAlign: 'center',
-                            backgroundColor: '#F6F6FF'
+                            backgroundColor: '#fff',
+                            outline: 'none'
                         }}
                         containerStyle={{
                             direction: 'ltr',
                             display: 'flex',
-                            justifyContent: 'center',
-                            gap: '1rem',
-                            marginBottom: '20px'
+                            justifyContent: 'space-between',
+                            gap: '0.5rem',
+                            marginBottom: '4px'
                         }}
                         renderInput={(props) => <input dir='ltr' {...props} inputMode='numeric' />}
                     />
                 </Fieldset>
             </AuthFormWrapper>
 
-            <div className='mt-6 flex items-center justify-between'>
+            <div className='mt-6 flex items-center justify-between gap-3'>
                 {isDisabled ? (
-                    <p className='mb-6 text-center text-sm font-normal text-gray-500'>ارسال مجدد ( {formatted} )</p>
+                    <p className='text-sm text-gray-400'>ارسال مجدد کد تا {formatted}</p>
                 ) : (
-                    <p
+                    <button
+                        type='button'
                         onClick={handleResendOTP}
-                        className='text-primary-500 mb-6 cursor-pointer text-center text-base font-semibold'
+                        className='text-primary-600 hover:text-primary-700 cursor-pointer text-sm font-semibold transition'
                     >
-                        ارسال مجدد
-                    </p>
+                        ارسال مجدد کد
+                    </button>
                 )}
-                <Link href='/auth/sign-in' className='text-body1-regular flex items-center justify-end'>
+                <Link
+                    href='/auth/sign-in'
+                    className='inline-flex items-center gap-1 text-sm font-medium text-gray-500 transition hover:text-gray-700'
+                >
+                    <ChevronLeft />
                     ویرایش شماره
-                    <span className='mr-2'>
-                        <ChevronLeft />
-                    </span>
                 </Link>
             </div>
         </div>

@@ -26,10 +26,16 @@ export async function signInAction(model: SignInModel) {
     }
 }
 
-export async function signInVerifyAction(authParams: { code: string; phone_number: string | null }) {
+export async function signInVerifyAction(authParams: {
+    code: string;
+    phone_number: string | null;
+    /** کد دعوت از لینک /invite?ref=… — برای کاربر تکراری روی سرور نادیده گرفته می‌شود */
+    ref?: string | null;
+}) {
     try {
+        const { ref, ...rest } = authParams;
         const response = await fetcher(ApiKeys.VERIFY_LOGIN, 'web', 'POST', {
-            body: { ...authParams }
+            body: { ...rest, ...(ref ? { ref } : {}) }
         });
 
         if (response) {

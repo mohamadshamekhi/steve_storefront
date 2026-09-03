@@ -51,8 +51,6 @@ function PaymentTemplate() {
                     }
                 });
 
-                console.log('Verify response:', response);
-
                 if (response?.success && response?.data?.status === 'successful') {
                     setStatus('success');
                     if (response?.data?.tracking_code) {
@@ -76,30 +74,77 @@ function PaymentTemplate() {
     const isSuccess = isPaymentSuccess(status);
     const PaymentImageSrc = isSuccess ? SuccessPaymentImage : FailedPaymentImage;
 
-    if (isLoading) {
-        return (
-            <div className='bg-primary-50 flex h-screen w-screen flex-col items-center justify-center'>
-                <div className='text-lg text-gray-600'>در حال بررسی وضعیت پرداخت...</div>
-            </div>
-        );
-    }
-
     return (
-        <div className='bg-primary-50 flex h-screen w-screen flex-col items-center justify-center'>
-            <Image width={301} height={301} src={PaymentImageSrc} alt='payment-result' loading='lazy' />
-            <h1 className='lg:text-h2-bold mt-14 text-xl text-gray-800'>{message}</h1>
-            {trackingCode && (
-                <h3 className='lg:text-h4-regular mt-4 flex gap-3 text-lg lg:mt-12'>
-                    کد پیگیری
-                    <span className='text-md lg:text-h4-bold'>#{trackingCode}</span>
-                </h3>
-            )}
-            <Link
-                href='/dashboard/order'
-                className='text-primary-700 hover:bg-primary-700 mt-11 inline-block w-[250px] rounded-md bg-white py-2.5 text-center text-base font-normal transition ease-linear hover:text-white md:w-[373px]'
-            >
-                بازگشت به داشبورد
-            </Link>
+        <div className='bg-primary-50 flex min-h-svh w-full items-center justify-center px-4 py-12'>
+            <div className='w-full max-w-md rounded-2xl border border-gray-100 bg-white p-6 text-center shadow-sm sm:p-8'>
+                {isLoading ? (
+                    <div className='flex flex-col items-center gap-4 py-10'>
+                        <span className='border-primary-200 border-t-primary-600 size-10 animate-spin rounded-full border-4' />
+                        <p className='text-sm text-gray-500'>در حال بررسی وضعیت پرداخت...</p>
+                    </div>
+                ) : (
+                    <>
+                        <Image
+                            width={301}
+                            height={301}
+                            src={PaymentImageSrc}
+                            alt={isSuccess ? 'پرداخت موفق' : 'پرداخت ناموفق'}
+                            className='mx-auto w-40 sm:w-48'
+                        />
+
+                        <h1
+                            className={`mt-4 text-lg font-bold sm:text-xl ${
+                                isSuccess ? 'text-green-600' : 'text-secondary-600'
+                            }`}
+                        >
+                            {message}
+                        </h1>
+
+                        {trackingCode && (
+                            <div className='mt-4 inline-flex items-center gap-2 rounded-xl bg-gray-50 px-4 py-2.5 text-sm'>
+                                <span className='text-gray-500'>کد پیگیری</span>
+                                <span dir='ltr' className='text-gray-850 font-mono font-bold'>
+                                    #{trackingCode}
+                                </span>
+                            </div>
+                        )}
+
+                        <div className='mt-8 flex flex-col gap-3'>
+                            {isSuccess ? (
+                                <>
+                                    <Link
+                                        href='/dashboard/order'
+                                        className='bg-primary-600 hover:bg-primary-700 rounded-lg py-2.5 text-center text-sm font-semibold text-white transition'
+                                    >
+                                        مشاهده سفارش‌ها
+                                    </Link>
+                                    <Link
+                                        href='/'
+                                        className='rounded-lg border border-gray-200 py-2.5 text-center text-sm font-semibold text-gray-700 transition hover:bg-gray-50'
+                                    >
+                                        ادامه خرید
+                                    </Link>
+                                </>
+                            ) : (
+                                <>
+                                    <Link
+                                        href='/checkout/cart'
+                                        className='bg-primary-600 hover:bg-primary-700 rounded-lg py-2.5 text-center text-sm font-semibold text-white transition'
+                                    >
+                                        بازگشت به سبد خرید و تلاش مجدد
+                                    </Link>
+                                    <Link
+                                        href='/contact-us'
+                                        className='rounded-lg border border-gray-200 py-2.5 text-center text-sm font-semibold text-gray-700 transition hover:bg-gray-50'
+                                    >
+                                        تماس با پشتیبانی
+                                    </Link>
+                                </>
+                            )}
+                        </div>
+                    </>
+                )}
+            </div>
         </div>
     );
 }
