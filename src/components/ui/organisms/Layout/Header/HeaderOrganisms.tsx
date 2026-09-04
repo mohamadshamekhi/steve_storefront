@@ -7,6 +7,7 @@ import FlashIcon from "@/components/icons/Menu/FlashIcon";
 import HandshakeIcon from "@/components/icons/Menu/HandshakeIcon";
 import PercentIcon from "@/components/icons/Menu/PercentIcon";
 import ToolIcon from "@/components/icons/Menu/ToolIcon";
+import MegaMenu from "@/components/ui/molecules/Nav/MegaMenu";
 import MegaMenuMobile from "@/components/ui/molecules/Nav/MegaMenuMobile";
 import OffCanvas from "@/components/ui/molecules/OffCanvas/OffCanvas";
 import ROUTES from "@/constants/routes/routes.constant";
@@ -123,7 +124,7 @@ const HeaderOrganism = () => {
         </div>
 
         <ul className="text-body1-regular mt-[16px] hidden space-x-3 text-gray-600 md:flex lg:space-x-6">
-          {/* {!isMobile && <MegaMenu />} */}
+          {!isMobile && <MegaMenu />}
 
           {MenuItems.map((item: IMenuItem) => {
             return (

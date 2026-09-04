@@ -31,6 +31,10 @@ interface ProductFilterTemplateProps {
     brands: Brand[];
     categories: Categories[];
     catSlug?: string;
+    /** set on /product/brand/[brandSlug] - that brand is implied by the page itself, so the brand accordion is hidden and this shows as a locked chip instead */
+    lockedBrand?: { id: string; name: string };
+    /** set on /product/price-range/[rangeSlug] - same idea for the price accordion */
+    lockedPriceRange?: { label: string };
 }
 
 const sortFilters = [
@@ -41,7 +45,13 @@ const sortFilters = [
     { id: 'most_sold', label: 'پر فروش ترین' }
 ];
 
-const ProductFilterTemplate = ({ brands, categories, catSlug }: ProductFilterTemplateProps) => {
+const ProductFilterTemplate = ({
+    brands,
+    categories,
+    catSlug,
+    lockedBrand,
+    lockedPriceRange
+}: ProductFilterTemplateProps) => {
     const [brandId, setBrandId] = useQueryState('brand_id', parseAsString.withDefault(''));
     const [orderBy, setOrderBy] = useQueryState('order_by', parseAsString.withDefault(''));
     const [isExist, setIsExist] = useQueryState('is_exist', parseAsString.withDefault(''));
@@ -162,8 +172,14 @@ const ProductFilterTemplate = ({ brands, categories, catSlug }: ProductFilterTem
             });
         }
 
-        if (selectedBrand) {
+        if (lockedBrand) {
+            filters.push({ label: `برند ${lockedBrand.name}`, onRemove: () => router.push(ROUTES.Products) });
+        } else if (selectedBrand) {
             filters.push({ label: `برند ${selectedBrand.name}`, onRemove: () => setBrandId(null) });
+        }
+
+        if (lockedPriceRange) {
+            filters.push({ label: `قیمت: ${lockedPriceRange.label}`, onRemove: () => router.push(ROUTES.Products) });
         }
 
         if (selectedSort) {
@@ -196,7 +212,7 @@ const ProductFilterTemplate = ({ brands, categories, catSlug }: ProductFilterTem
 
         return filters;
     }, [
-        activeCategory, catSlug, selectedBrand, selectedSort, isExist, isSecondHand,
+        activeCategory, catSlug, lockedBrand, lockedPriceRange, selectedBrand, selectedSort, isExist, isSecondHand,
         minPrice, maxPrice, dynamicFilters, getDynamicFilterValue,
         router, setCategoryIdFromQuery, setBrandId, setOrderBy, setIsExist, setIsSecondHand,
         setMinPrice, setMaxPrice, handleRemoveDynamicFilter
@@ -209,6 +225,8 @@ const ProductFilterTemplate = ({ brands, categories, catSlug }: ProductFilterTem
 
         if (catSlug) {
             router.replace(`${ROUTES.Products}/category/${catSlug}?${params.toString()}`, { scroll: false });
+        } else if (lockedBrand || lockedPriceRange) {
+            router.replace(`${ROUTES.Products}?${params.toString()}`, { scroll: false });
         } else {
             router.replace(`?${params.toString()}`, { scroll: false });
         }
@@ -221,7 +239,7 @@ const ProductFilterTemplate = ({ brands, categories, catSlug }: ProductFilterTem
         setMinPrice(null);
         setMaxPrice(null);
     }, [
-        catSlug, searchParams, router,
+        catSlug, lockedBrand, lockedPriceRange, searchParams, router,
         setBrandId, setCategoryIdFromQuery, setOrderBy, setIsExist, setIsSecondHand, setMinPrice, setMaxPrice
     ]);
 
@@ -263,42 +281,50 @@ const ProductFilterTemplate = ({ brands, categories, catSlug }: ProductFilterTem
                 showIcon: false,
                 canToggle: false
             },
-            {
-                id: 'static-brand',
-                title: 'برند',
-                content: (
-                    <div className='flex flex-col gap-2'>
-                        {brands && brands.length > 0 ? (
-                            brands.map((brand) => (
-                                <Checkbox
-                                    key={brand.id}
-                                    id={`brand-${brand.id}`}
-                                    name={`brand-${brand.id}`}
-                                    label={brand.name}
-                                    checked={brandId === brand.id}
-                                    onChange={() => handleBrandChange(brand.id)}
-                                    className='flex-row-reverse justify-between'
-                                />
-                            ))
-                        ) : (
-                            <div className='text-sm text-gray-600'>برندی موجود نیست</div>
-                        )}
-                    </div>
-                )
-            },
-            {
-                id: 'static-price',
-                title: 'محدوده قیمت',
-                content: (
-                    <ProductRangSlider
-                        minValue={minPrice}
-                        maxValue={maxPrice}
-                        onChange={handlePriceChange}
-                        rangeMin={priceRange.min}
-                        rangeMax={priceRange.max}
-                    />
-                )
-            }
+            ...(lockedBrand
+                ? []
+                : [
+                      {
+                          id: 'static-brand',
+                          title: 'برند',
+                          content: (
+                              <div className='flex flex-col gap-2'>
+                                  {brands && brands.length > 0 ? (
+                                      brands.map((brand) => (
+                                          <Checkbox
+                                              key={brand.id}
+                                              id={`brand-${brand.id}`}
+                                              name={`brand-${brand.id}`}
+                                              label={brand.name}
+                                              checked={brandId === brand.id}
+                                              onChange={() => handleBrandChange(brand.id)}
+                                              className='flex-row-reverse justify-between'
+                                          />
+                                      ))
+                                  ) : (
+                                      <div className='text-sm text-gray-600'>برندی موجود نیست</div>
+                                  )}
+                              </div>
+                          )
+                      }
+                  ]),
+            ...(lockedPriceRange
+                ? []
+                : [
+                      {
+                          id: 'static-price',
+                          title: 'محدوده قیمت',
+                          content: (
+                              <ProductRangSlider
+                                  minValue={minPrice}
+                                  maxValue={maxPrice}
+                                  onChange={handlePriceChange}
+                                  rangeMin={priceRange.min}
+                                  rangeMax={priceRange.max}
+                              />
+                          )
+                      }
+                  ])
         ];
 
         dynamicFilters.forEach((filter) => {
@@ -328,7 +354,8 @@ const ProductFilterTemplate = ({ brands, categories, catSlug }: ProductFilterTem
     }, [
         isExist, handleExistToggle, isSecondHand, handleSecondHandToggle,
         brands, brandId, handleBrandChange, minPrice, maxPrice, handlePriceChange,
-        priceRange, dynamicFilters, getDynamicFilterValue, handleDynamicFilterChange
+        priceRange, dynamicFilters, getDynamicFilterValue, handleDynamicFilterChange,
+        lockedBrand, lockedPriceRange
     ]);
 
     return (

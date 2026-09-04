@@ -26,9 +26,19 @@ type Props = {
     brands: Brand[];
     categories: Categories[];
     catSlug?: string;
+    lockedBrand?: { id: string; name: string };
+    lockedPriceRange?: { min?: number; max?: number; label: string };
 };
 
-const ProductSortTemplate = ({ activeFilter, onChange, brands, categories, catSlug }: Props) => {
+const ProductSortTemplate = ({
+    activeFilter,
+    onChange,
+    brands,
+    categories,
+    catSlug,
+    lockedBrand,
+    lockedPriceRange
+}: Props) => {
     const [menuOpen, setIsMenuOpen] = useState<boolean>(false);
     const toggleMenu = () => setIsMenuOpen(!menuOpen);
 
@@ -99,7 +109,13 @@ const ProductSortTemplate = ({ activeFilter, onChange, brands, categories, catSl
                 </button>
 
                 <OffCanvas isOpen={menuOpen} onClose={toggleMenu} position='right'>
-                    <ProductFilterTemplate brands={brands} categories={categories} catSlug={catSlug} />
+                    <ProductFilterTemplate
+                        brands={brands}
+                        categories={categories}
+                        catSlug={catSlug}
+                        lockedBrand={lockedBrand}
+                        lockedPriceRange={lockedPriceRange}
+                    />
                 </OffCanvas>
             </div>
         </>

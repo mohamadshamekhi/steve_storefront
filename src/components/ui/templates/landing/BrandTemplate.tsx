@@ -11,10 +11,19 @@ import 'swiper/css/navigation';
 import ChevronLeft from '@/components/icons/ChevronLeft';
 import ChevronRight from '@/components/icons/ChevronRight';
 import HeartIcon from '@/components/icons/HeartIcon';
+import { brandDirectory } from '@/config/data/brand-directory.data';
 import Brand from '@/config/types/brand.type';
 import OptimizedImage from '@/utils/imageLoader';
 import Button from '../../atoms/Button/Button';
 import SwiperComponent from '../../atoms/Swiper/Swiper';
+
+// a brand with a dedicated SEO landing page (see brand-directory.data.ts)
+// links there; anything else falls back to the plain filtered listing so we
+// never link out to a 404
+const brandHref = (brand: Brand) =>
+    brand.slug && brandDirectory.some((entry) => entry.slug === brand.slug)
+        ? `/product/brand/${brand.slug}`
+        : `/product?brand_id=${brand.id}`;
 
 const BrandTemplate = ({ brands }: { brands: Brand[] }) => {
     const prevRef = useRef<HTMLButtonElement | null>(null);
@@ -70,7 +79,7 @@ const BrandTemplate = ({ brands }: { brands: Brand[] }) => {
             >
                 {brands?.map((brand, index) => (
                     <SwiperSlide key={index}>
-                        <Link href={`/product?brand_id=${brand.id}`} className='flex flex-col items-center'>
+                        <Link href={brandHref(brand)} className='flex flex-col items-center'>
                             <OptimizedImage
                                 className='aspect-square w-full rounded-[3px]'
                                 width={137}

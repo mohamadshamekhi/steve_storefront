@@ -17,31 +17,54 @@ interface ProductListTemplateProps {
     brands: Brand[];
     categories: Categories[];
     catSlug?: string;
+    /** implied filters set by a dedicated landing page (/product/brand/*, /product/price-range/*) - not driven by query state, so they're injected into every fetch here directly */
+    lockedBrand?: { id: string; name: string };
+    lockedPriceRange?: { min?: number; max?: number; label: string };
 }
 
-const ProductListTemplate = ({ data: initialData, brands, categories, catSlug }: ProductListTemplateProps) => {
+const ProductListTemplate = ({
+    data: initialData,
+    brands,
+    categories,
+    catSlug,
+    lockedBrand,
+    lockedPriceRange
+}: ProductListTemplateProps) => {
     const [orderBy, setOrderBy] = useQueryState('order_by', parseAsString.withDefault(''));
     const searchParams = useSearchParams();
     const loadMoreRef = useRef<HTMLDivElement>(null);
 
-    const apiKey = useMemo(() => {
-        const base = catSlug ? `${ApiKeys.GET_Products}?category_slug=${catSlug}&` : `${ApiKeys.GET_Products}?`;
-        return `${base}${searchParams.toString()}`;
-    }, [searchParams, catSlug]);
+    const lockedParams = useMemo(() => {
+        const params: Record<string, string> = {};
+        if (catSlug) params['category_slug'] = catSlug;
+        if (lockedBrand) params['brand_id'] = lockedBrand.id;
+        if (lockedPriceRange?.min !== undefined) params['min_price'] = String(lockedPriceRange.min);
+        if (lockedPriceRange?.max !== undefined) params['max_price'] = String(lockedPriceRange.max);
+        return params;
+    }, [catSlug, lockedBrand, lockedPriceRange]);
 
-    const categoryName = catSlug ? (categories.find((c) => c.slug === catSlug)?.name ?? catSlug) : 'همه محصولات';
+    const apiKey = useMemo(() => {
+        const lockedQs = new URLSearchParams(lockedParams).toString();
+        const base = lockedQs ? `${ApiKeys.GET_Products}?${lockedQs}&` : `${ApiKeys.GET_Products}?`;
+        return `${base}${searchParams.toString()}`;
+    }, [searchParams, lockedParams]);
+
+    const categoryName = catSlug
+        ? (categories.find((c) => c.slug === catSlug)?.name ?? catSlug)
+        : lockedBrand
+          ? lockedBrand.name
+          : lockedPriceRange
+            ? lockedPriceRange.label
+            : 'همه محصولات';
 
     const { data, totalItems, isLoadingMore, isLoadingInitial, isFilterLoading, isEmpty, isReachingEnd, loadMore } = useInfiniteScroll<ProductProps>(
         apiKey,
         async ([, params]) => {
             const requestParams: Record<string, string | string[]> = {
                 page_number: params.page_number.toString(),
-                page_size: params.page_size.toString()
+                page_size: params.page_size.toString(),
+                ...lockedParams
             };
-
-            if (catSlug) {
-                requestParams['category_slug'] = catSlug;
-            }
 
             searchParams.forEach((value, key) => {
                 if (key !== 'page_number' && key !== 'page_size' && key !== 'category_id' && value) {
@@ -102,6 +125,8 @@ const ProductListTemplate = ({ data: initialData, brands, categories, catSlug }:
                     brands={brands}
                     categories={categories}
                     catSlug={catSlug}
+                    lockedBrand={lockedBrand}
+                    lockedPriceRange={lockedPriceRange}
                 />
 
                 {!isLoadingInitial && !isFilterLoading && isEmpty ? (

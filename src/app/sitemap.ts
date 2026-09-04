@@ -1,5 +1,7 @@
 import { fetcher } from '@/api';
 import ApiKeys from '@/api/keys';
+import { brandDirectory } from '@/config/data/brand-directory.data';
+import { priceRanges } from '@/config/data/price-ranges.data';
 import { SITE_URL } from '@/seo';
 import type { MetadataRoute } from 'next';
 
@@ -19,6 +21,13 @@ const staticRoutes: MetadataRoute.Sitemap = [
     { url: `${BASE_URL}/phone-sales`, changeFrequency: 'weekly', priority: 0.7 },
     { url: `${BASE_URL}/partner-sales`, changeFrequency: 'weekly', priority: 0.7 }
 ];
+
+// always-on landing pages - fully frontend-defined, no live data dependency
+const priceRangeRoutes: MetadataRoute.Sitemap = priceRanges.map((range) => ({
+    url: `${BASE_URL}/product/price-range/${range.slug}`,
+    changeFrequency: 'daily',
+    priority: 0.7
+}));
 
 // The API may silently cap page_size (we've seen this bite the sitemap before -
 // a single big-page_size request came back with far fewer products than the
@@ -53,10 +62,11 @@ const fetchAllProducts = async (): Promise<RawProduct[]> => {
 };
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-    const [categoriesRes, productsRes, articlesRes] = await Promise.allSettled([
+    const [categoriesRes, productsRes, articlesRes, brandsRes] = await Promise.allSettled([
         fetcher(ApiKeys.GET_ALL_CATEGORY, 'web', 'GET'),
         fetchAllProducts(),
-        fetcher(ApiKeys.GET_BLOG_POSTS, 'web', 'GET')
+        fetcher(ApiKeys.GET_BLOG_POSTS, 'web', 'GET'),
+        fetcher(ApiKeys.GET_ALL_BRAND, 'web', 'GET')
     ]);
 
     const categoryRoutes: MetadataRoute.Sitemap =
@@ -96,5 +106,24 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
                   }))
             : [];
 
-    return [...staticRoutes, ...categoryRoutes, ...productRoutes, ...articleRoutes];
+    // only list a brand landing page once its slug actually resolves to a real
+    // brand in the live catalog - see resolveBrand in
+    // src/app/product/brand/[brandSlug]/page.tsx
+    const apiBrands: { slug?: string }[] = brandsRes.status === 'fulfilled' ? (brandsRes.value?.data?.brands ?? []) : [];
+    const brandRoutes: MetadataRoute.Sitemap = brandDirectory
+        .filter((entry) => apiBrands.some((b) => b.slug === entry.slug))
+        .map((entry) => ({
+            url: `${BASE_URL}/product/brand/${entry.slug}`,
+            changeFrequency: 'daily' as const,
+            priority: 0.75
+        }));
+
+    return [
+        ...staticRoutes,
+        ...priceRangeRoutes,
+        ...brandRoutes,
+        ...categoryRoutes,
+        ...productRoutes,
+        ...articleRoutes
+    ];
 }

@@ -132,7 +132,7 @@ Carousels use **Swiper** (`components/ui/atoms/Swiper/Swiper.tsx`) with a `break
 - `cn()` = `twMerge(clsx(...))` from `@/config/utilities/cn`.
 - **RTL**: `<html lang="fa" dir="rtl">`, Yekan Bakh font (`src/config/fonts/YekanFont`). Physical `left`/`right` in class names are common; be deliberate about `flex-row-reverse` in RTL.
 - The IDE lints arbitrary values with a "can be written as `<canonical>`" suggestion (e.g. `min-w-[34px]` → `min-w-8.5`, `bg-gradient-to-b` → `bg-linear-to-b`). Prefer the canonical form.
-- `next.config.ts` allows images from **any host** (`remotePatterns: [{ hostname: '**' }]`) and sets `images.formats` (AVIF/WebP) + a long `minimumCacheTTL`. `OptimizedImage` (`src/utils/imageLoader.tsx`) now sends **external URLs through the Next image optimizer** (`/_next/image`) too — this depends on the running server being able to fetch `storage.c2.liara.space`. If a source host isn't reachable by the optimizer, pass `unoptimized` on that `<OptimizedImage />`.
+- `next.config.ts` allows images from **any host** (`remotePatterns: [{ hostname: '**' }]`) and sets `images.formats` (AVIF/WebP) + a long `minimumCacheTTL` — but those only affect **local `import`ed** images. `OptimizedImage` (`src/utils/imageLoader.tsx`) gives external URLs a **no-op `loader`** so they bypass the Next optimizer (`/_next/image`) entirely: the production container can't reach `storage.c2.liara.space` server-side, so optimized external images 500 in prod even though they work in `next dev`. Don't "fix" this by removing the loader. To actually optimize product images, put a CDN/proxy in front of the image host.
 
 ### Forms & validation
 
