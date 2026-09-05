@@ -148,28 +148,20 @@ const Referral = () => {
         }
     };
 
-    const handleInvite = async (e: React.FormEvent) => {
-        e.preventDefault();
-        const normalized = toEnglishDigits(phone).replace(/\D/g, '');
-        if (!/^09\d{9}$/.test(normalized)) {
-            showToast({ title: 'دعوت دوستان', message: 'شماره موبایل معتبر نیست', type: 'error' });
-            return;
-        }
-
+    const sendInvite = async (normalized: string) => {
         setInviting(true);
         const res = await inviteByPhone(normalized);
         setInviting(false);
 
         if (res.success) {
-            setPhone('');
-            loadReferrals(1);
-            refetchLink();
-
             if (res.data?.sms_sent === false) {
-                // پیامک نرفت — لینک را دستی به کاربر می‌دهیم تا خودش بفرستد
+                // پیامک نرفت و رکوردی ثبت نشده — لینک را دستی می‌دهیم و اجازه‌ی تلاش مجدد
                 setSmsFallback({ phone: normalized, url: res.data.url || link?.url || '' });
             } else {
+                setPhone('');
                 setSmsFallback(null);
+                loadReferrals(1);
+                refetchLink();
                 showToast({
                     title: 'دعوت دوستان',
                     message: 'پیامک دعوت برای این شماره ارسال شد',
@@ -179,6 +171,16 @@ const Referral = () => {
         } else {
             showToast({ title: 'دعوت دوستان', message: res.message, type: 'error' });
         }
+    };
+
+    const handleInvite = async (e: React.FormEvent) => {
+        e.preventDefault();
+        const normalized = toEnglishDigits(phone).replace(/\D/g, '');
+        if (!/^09\d{9}$/.test(normalized)) {
+            showToast({ title: 'دعوت دوستان', message: 'شماره موبایل معتبر نیست', type: 'error' });
+            return;
+        }
+        sendInvite(normalized);
     };
 
     const threshold = link?.reward_threshold ?? referralMeta?.reward_threshold ?? 5;
@@ -299,11 +301,12 @@ const Referral = () => {
                     <div className='mt-4 rounded-xl border border-yellow-200 bg-yellow-50 p-4'>
                         <p className='text-sm font-semibold text-yellow-800'>پیامک ارسال نشد</p>
                         <p className='mt-1 text-xs leading-6 text-yellow-700'>
-                            دعوت برای{' '}
+                            ارسال پیامک به{' '}
                             <span dir='ltr' className='font-semibold'>
                                 {smsFallback.phone}
                             </span>{' '}
-                            ثبت شد، اما ارسال پیامک ممکن نشد. این لینک را خودت برای دوستت بفرست:
+                            ممکن نشد و دعوتی ثبت نشد. می‌توانی این لینک را خودت برای دوستت بفرستی یا دوباره تلاش
+                            کنی:
                         </p>
                         <div className='mt-3 flex flex-col gap-2 sm:flex-row'>
                             <div
@@ -321,6 +324,14 @@ const Referral = () => {
                                 کپی لینک
                             </button>
                         </div>
+                        <button
+                            type='button'
+                            disabled={inviting}
+                            onClick={() => sendInvite(smsFallback.phone)}
+                            className='mt-3 inline-flex items-center gap-1.5 text-xs font-semibold text-yellow-800 underline transition hover:text-yellow-900 disabled:opacity-60'
+                        >
+                            {inviting ? 'در حال ارسال…' : 'تلاش مجدد برای ارسال پیامک'}
+                        </button>
                     </div>
                 )}
             </div>

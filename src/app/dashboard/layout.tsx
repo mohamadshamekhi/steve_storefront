@@ -156,7 +156,7 @@ function SidebarNav({ isActive, onLogout, onNavigate }: Omit<SidebarProps, 'name
 }
 
 function DashboardLayout({ children }: IProps) {
-    const { isOpen, close } = useDrawerStore();
+    const { isOpen, open, close } = useDrawerStore();
     const isMobile = useMediaQuery('lg');
     const sessionStore = useSessionStore((state) => state.session);
     const clearSession = useSessionStore((state) => state.clearSession);
@@ -190,7 +190,7 @@ function DashboardLayout({ children }: IProps) {
                         </aside>
 
                         {isMobile && (
-                            <OffCanvas onClose={close} isOpen={isOpen} width='86%' className='z-20 px-0! py-0!'>
+                            <OffCanvas onClose={close} isOpen={isOpen} width='86%' className='px-0! py-0!'>
                                 <div className='pt-12'>
                                     <ProfileCard name={name} phone={phone} onNavigate={close} />
                                     <SidebarNav isActive={isActive} onLogout={handleLogout} onNavigate={close} />
@@ -199,6 +199,41 @@ function DashboardLayout({ children }: IProps) {
                         )}
 
                         <div className='min-w-0 flex-1'>
+                            {isMobile && (
+                                <button
+                                    type='button'
+                                    onClick={() => open('mobile')}
+                                    aria-label='باز کردن منوی حساب کاربری'
+                                    className='mb-4 flex w-full items-center gap-3 rounded-2xl border border-gray-100 bg-white p-3 text-right shadow-sm'
+                                >
+                                    <Image
+                                        src='/images/_general/placeholder/user.png'
+                                        alt=''
+                                        width={44}
+                                        height={44}
+                                        className='size-11 shrink-0 rounded-full bg-gray-100 object-cover'
+                                    />
+                                    <span className='min-w-0 flex-1'>
+                                        <span className='block truncate text-sm font-bold text-gray-800'>
+                                            {name ?? 'کاربر استیو'}
+                                        </span>
+                                        <span className='block truncate text-caption1-regular text-gray-400'>
+                                            {phone ?? '—'}
+                                        </span>
+                                    </span>
+                                    <span className='text-primary-600 flex shrink-0 items-center gap-1 text-caption1-medium'>
+                                        منوی حساب
+                                        <svg width='18' height='18' viewBox='0 0 24 24' fill='none' aria-hidden>
+                                            <path
+                                                d='M4 6h16M4 12h16M4 18h16'
+                                                stroke='currentColor'
+                                                strokeWidth='2'
+                                                strokeLinecap='round'
+                                            />
+                                        </svg>
+                                    </span>
+                                </button>
+                            )}
                             <div className='rounded-2xl border border-gray-100 bg-white p-4 shadow-sm sm:p-6 lg:p-8'>
                                 {children}
                             </div>

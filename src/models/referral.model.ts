@@ -45,17 +45,24 @@ export interface ReferralRewardsData {
     items: ReferralReward[];
 }
 
-/** پاسخ موفق POST /referral/invite — همیشه ۲۰۰؛ باید `sms_sent` را چک کرد نه صرفِ success */
+/**
+ * پاسخ موفق POST /referral/invite (HTTP 200).
+ * حتماً `sms_sent` را چک کن؛ اگر false باشد رکوردی روی سرور ثبت نشده و
+ * شماره قفل نشده — `referral_id` خالی است، `url` پر است و باید لینک را
+ * دستی نشان داد و اجازه‌ی تلاش مجدد داد. به `referral_id` در این حالت تکیه نکن.
+ */
 export interface ReferralInviteData {
+    /** در حالت شکست پیامک خالی ('') است */
     referral_id: string;
-    /** اگر false باشد، لینک به‌صورت دستی به کاربر نشان داده می‌شود */
+    /** اگر false باشد، پیامک نرفته و لینک باید دستی به کاربر نشان داده شود */
     sms_sent: boolean;
     /** لینک دعوت مخصوص همین شماره — برای اشتراک دستی وقتی پیامک نرفت */
     url: string;
 }
 
-/** کدهای خطای اندپوینت POST /referral/invite */
+/** کدهای خطای اندپوینت POST /referral/invite (HTTP 400) */
 export type ReferralInviteErrorCode =
+    | 'referral.already_registered'
     | 'referral.already_invited'
     | 'referral.cannot_invite_self'
     | 'referral.program_disabled'

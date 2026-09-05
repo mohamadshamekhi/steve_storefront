@@ -18,7 +18,7 @@ const OffCanvas = ({
     className = ''
 }: IOffcanvasProps) => {
     const baseClass =
-        'fixed top-0 bottom-0 z-[120] h-screen overflow-auto bg-white px-8 py-5 transition-transform ease-in-out';
+        'fixed top-0 bottom-0 z-[120]  h-screen overflow-auto bg-white px-8 py-5 transition-transform ease-in-out';
 
     const positionClass = position === 'left' ? 'left-0' : 'right-0';
     // fully removed from the layout when closed — an always-mounted full-screen
@@ -48,7 +48,7 @@ const OffCanvas = ({
                 }}
             >
                 {titleSection ?? (
-                    <Button className='absolute left-5!' onClick={onClose} variant='light' color='primary'>
+                    <Button className='absolute top-2 left-5!' onClick={onClose} variant='light' color='primary'>
                         <CrossIcon />
                     </Button>
                 )}

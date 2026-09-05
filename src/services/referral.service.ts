@@ -49,7 +49,8 @@ export async function getMyRewards(): Promise<ServiceResult<ReferralRewardsData>
 }
 
 const inviteErrorMessages: Record<ReferralInviteErrorCode | 'default', string> = {
-    'referral.already_invited': 'این شماره قبلاً دعوت شده است.',
+    'referral.already_registered': 'این شماره از قبل در استیو موبایل ثبت‌نام کرده است.',
+    'referral.already_invited': 'قبلاً (توسط شما یا شخص دیگری) برای این شماره دعوت ارسال شده است.',
     'referral.cannot_invite_self': 'نمی‌توانید شماره‌ی خودتان را دعوت کنید.',
     'referral.program_disabled': 'برنامه‌ی دعوت دوستان در حال حاضر غیرفعال است.',
     'referral.sms_failed': 'ارسال پیامک با خطا مواجه شد؛ کمی بعد دوباره تلاش کنید.',
@@ -87,7 +88,8 @@ export async function inviteByPhone(phoneNumber: string): Promise<ServiceResult<
                 success: true,
                 message: json?.message,
                 data: {
-                    referral_id: json?.data?.referral_id,
+                    // در حالت شکست پیامک خالی است — به این مقدار تکیه نکنید
+                    referral_id: json?.data?.referral_id ?? '',
                     sms_sent: json?.data?.sms_sent ?? true,
                     url: json?.data?.url ?? ''
                 }
