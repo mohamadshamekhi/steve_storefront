@@ -5,7 +5,7 @@ import BlogCardOrganisms from '@/components/ui/organisms/BlogCard/BlogCardOrgani
 import Container from '@/components/ui/organisms/Container/Container';
 import Layout from '@/components/ui/organisms/Container/Layout/Layout';
 
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 
 import CalenderIcon from '@/components/icons/blog/CalenderIcon';
 import RectangleIcon from '@/components/icons/blog/RectangleIcon';
@@ -13,6 +13,7 @@ import ShapeIcon from '@/components/icons/ShapeIcon';
 import ManualBreadcrumb from '@/components/ui/molecules/Breadcrumbs/ManualBreadcrumb';
 import FilterTabs from '@/components/ui/organisms/Blog/FilterTabs';
 import SearchBox from '@/components/ui/organisms/Blog/SearchBox';
+import BlogCardSkeleton from '@/components/ui/organisms/SkeletonOrganisms/BlogCardSkeleton/BlogCardSkeleton';
 import Blog from '@/config/types/blog.types';
 import ROUTES from '@/constants/routes/routes.constant';
 import { formatJalali } from '@/utils/date.util';
@@ -26,46 +27,69 @@ import { SwiperSlide } from 'swiper/react';
 import { fetcher } from '@/api';
 import ApiKeys from '@/api/keys';
 import useDebounce from '@/hooks/useDebounce';
+import useInfiniteScroll from '@/hooks/useInfinitieScroll';
 import OptimizedImage from '@/utils/imageLoader';
 import { parseAsString, useQueryState } from 'nuqs';
 
-const ClientPage = ({ data }: { data: Blog[] }) => {
-    const [articles, setArticles] = useState<Blog[]>(data ?? []);
-
-    const isFirstRender = useRef(true);
-    const [isLoading, setLoading] = useState(false);
+const ClientPage = ({ data: initialData }: { data: Blog[] }) => {
+    const loadMoreRef = useRef<HTMLDivElement>(null);
 
     const [title, setTitle] = useQueryState('title', parseAsString.withDefault(''));
     const debouncedTitle = useDebounce(title, 300);
 
-    // TODO : use these when we added pagination with page size and page number and total page
-    // const [pageSize, setPageSize] = useQueryState('page_size', parseAsInteger.withDefault(1));
-    // const [pageNumber, setPageNumber] = useQueryState('page_number', parseAsInteger.withDefault(10));
-
     const [activeFilter, setActiveFilter] = useState('editor');
 
-    const refetchBlog = useCallback(async () => {
-        try {
-            setLoading(true);
-            const res = await fetcher(ApiKeys.GET_BLOG_POSTS, 'web', 'GET', {
-                params: { title: debouncedTitle }
-            });
-            const articles = res?.data?.articles;
-            setArticles(articles?.length ? articles : []);
-        } catch (error) {
-            console.error(error);
-        } finally {
-            setLoading(false);
-        }
-    }, [debouncedTitle]);
+    const apiKey = useMemo(
+        () => `${ApiKeys.GET_BLOG_POSTS}?title=${debouncedTitle}`,
+        [debouncedTitle]
+    );
+
+    const { data, isLoadingInitial, isFilterLoading, isLoadingMore, isEmpty, isReachingEnd, loadMore } =
+        useInfiniteScroll<Blog>(
+            apiKey,
+            async ([, params]) => {
+                const response = await fetcher(ApiKeys.GET_BLOG_POSTS, 'web', 'GET', {
+                    params: {
+                        page_number: params.page_number.toString(),
+                        page_size: params.page_size.toString(),
+                        title: debouncedTitle
+                    }
+                });
+                return {
+                    data: response.data.articles,
+                    pagination: response.data.pagination
+                };
+            },
+            { pageSize: 12, initialPageIndex: 1 }
+        );
+
+    // initialData is the SSR-fetched unfiltered list; only usable as a fallback while
+    // the unfiltered key itself is (re)loading, never for a title-filtered request.
+    const showInitialFallback = isLoadingInitial && !debouncedTitle;
+    const isSkeletonLoading = isLoadingInitial && !showInitialFallback;
+
+    const rawArticles = showInitialFallback ? initialData : isEmpty ? [] : data;
+    const articles = useMemo(
+        () => [...rawArticles].sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime()),
+        [rawArticles]
+    );
 
     useEffect(() => {
-        if (isFirstRender.current) {
-            isFirstRender.current = false;
-            return;
-        }
-        refetchBlog();
-    }, [debouncedTitle, refetchBlog]);
+        const observer = new IntersectionObserver(
+            (entries) => {
+                if (entries[0].isIntersecting && !isLoadingMore && !isReachingEnd) {
+                    loadMore();
+                }
+            },
+            { threshold: 0.1 }
+        );
+
+        const currentRef = loadMoreRef.current;
+        if (currentRef) observer.observe(currentRef);
+        return () => {
+            if (currentRef) observer.unobserve(currentRef);
+        };
+    }, [isLoadingMore, isReachingEnd, loadMore]);
 
     return (
         <Layout>
@@ -97,17 +121,22 @@ const ClientPage = ({ data }: { data: Blog[] }) => {
                         </div>
                     </div>
 
-                    {!isLoading && articles.length === 0 && (
+                    {isSkeletonLoading && (
+                        <div className='grid grid-cols-2 gap-x-4 gap-y-8 sm:gap-x-6 lg:grid-cols-4'>
+                            {Array.from({ length: 8 }).map((_, i) => (
+                                <BlogCardSkeleton key={i} />
+                            ))}
+                        </div>
+                    )}
+
+                    {!isSkeletonLoading && !isFilterLoading && articles.length === 0 && (
                         <div className='rounded-2xl border border-dashed border-gray-200 py-16 text-center text-sm text-gray-400'>
                             {title ? 'مقاله‌ای با این عنوان پیدا نشد.' : 'هنوز مقاله‌ای منتشر نشده است.'}
                         </div>
                     )}
 
-                    <div
-                        className={`grid grid-cols-12 gap-6 transition-opacity duration-200 ${
-                            isLoading ? 'pointer-events-none opacity-50' : ''
-                        } ${!isLoading && articles.length === 0 ? 'hidden' : ''}`}
-                    >
+                    {!isSkeletonLoading && articles.length > 0 && (
+                        <div className='grid grid-cols-12 gap-6'>
                         {/* Slider - First Post(s) */}
                         <div className='relative col-span-12 h-[300px] overflow-hidden md:h-[400px] lg:col-span-6'>
                             <SwiperComponent
@@ -193,7 +222,20 @@ const ClientPage = ({ data }: { data: Blog[] }) => {
                                 <BlogCardOrganisms key={article.id} article={article} />
                             ))}
                         </div>
-                    </div>
+                        </div>
+                    )}
+
+                    {!isSkeletonLoading && !isEmpty && !isReachingEnd && (
+                        <div ref={loadMoreRef} className='flex items-center justify-center py-8'>
+                            {isLoadingMore && (
+                                <span className='border-primary-200 border-t-primary-600 h-6 w-6 animate-spin rounded-full border-2' />
+                            )}
+                        </div>
+                    )}
+
+                    {!isSkeletonLoading && !isEmpty && isReachingEnd && articles.length > 0 && (
+                        <p className='py-8 text-center text-xs text-gray-400'>همه مقالات نمایش داده شد</p>
+                    )}
                 </section>
             </Container>
         </Layout>
