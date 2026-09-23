@@ -1,6 +1,6 @@
 'use client';
 
-import { createContext, useContext, useState, ReactNode } from 'react';
+import { createContext, useContext, useEffect, useState, ReactNode } from 'react';
 import { SingleProductItem, ProductDiscount } from '@/models/product.model';
 
 type Variant = SingleProductItem['variants'][0];
@@ -24,13 +24,24 @@ export const useProductVariant = () => {
 export const ProductVariantProvider = ({
     children,
     initialVariant,
+    variants,
     discount
 }: {
     children: ReactNode;
     initialVariant: Variant;
+    /** اگر داده شود، `?variant={id}` در URL (مثلاً از QR روی کالا) همان واریانت را پیش‌فرض انتخاب می‌کند */
+    variants?: Variant[];
     discount?: ProductDiscount[] | null;
 }) => {
     const [selectedVariant, setSelectedVariant] = useState<Variant>(initialVariant);
+
+    // از window خوانده می‌شود نه useSearchParams تا صفحه‌ی ISR محصول dynamic نشود / Suspense نخواهد
+    useEffect(() => {
+        if (!variants?.length) return;
+        const variantId = new URLSearchParams(window.location.search).get('variant');
+        const match = variantId ? variants.find((v) => v.id === variantId) : undefined;
+        if (match) setSelectedVariant(match);
+    }, [variants]);
 
     // Find discount for the selected variant
     const activeDiscount = discount?.find(

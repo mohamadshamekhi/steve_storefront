@@ -42,6 +42,7 @@ const SingleProductTemplate = ({
   return (
     <ProductVariantProvider
       initialVariant={product.variants[0]}
+      variants={product.variants}
       discount={product.discount}
     >
       <div className="space-y-6 pt-5 pb-[calc(var(--app-bottom-nav,0px)+var(--app-bottom-bar,0px)+1rem)] lg:space-y-8 lg:pb-0">

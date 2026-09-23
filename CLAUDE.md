@@ -78,6 +78,8 @@ Not every route is fully three-file. Common variants: `page.tsx` renders `<Clien
 - `partner-sales` — B2B "فروش همکاری" wholesale/partner application page. Part of the **partner (همکار) feature** (see also `usePartnerStatus`, partner pricing in `PriceBox`).
 - `invite` — referral landing: reads `?ref=<code>` and passes it to `<ClientPage>`; part of the referral program.
 - `blog` (list, `?` search params) + `blog/[id]` (article, `revalidate = 120`, comments) — `ApiKeys.GET_BLOG_POSTS`. `blog/[id]` files are 2-space/double-quote — match that file, not the 4-space convention.
+- `order/delivery/[token]` — landing page of the delivery QR printed on each parcel (URL comes from backend `GET /backoffice/order/:id/delivery-qrcode`). Public, no-index, no `<Layout>`. Status → phone → OTP → marks order `delivered` → shows invoice; invoice token kept in `sessionStorage` so refresh doesn't need a new OTP. Uses raw `fetch`, **not** `fetcher`: a wrong OTP returns 401 and `fetcher` hard-redirects every 401 to `/auth/sign-in` — keep that in mind for any other public endpoint that can 401.
+- `product/[slug]?variant=<variantId>` preselects that variant (variant QR stickers link here). Read client-side in `ProductVariantProvider` via `window.location` so the ISR page stays static.
 - `checkout/cart` — cart page (no-index). `payment` — post-checkout payment status (no-index, Suspense).
 
 `src/components/ui/organisms/Container/Layout/Layout.tsx` wraps page content with the global chrome: `HeaderOrganism`, `FooterOrganisms`, `BottomSheet` (mobile bottom nav, `< lg` only), `Backdrop`, `CartSyncProvider`, `AdvertiseOrganism`.
