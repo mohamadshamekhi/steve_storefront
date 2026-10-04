@@ -113,7 +113,7 @@ const VerifyPage = () => {
           clearStoredRef();
           // اگر کاربر جدید است، نام را ثبت کن
           if (isNewUser && firstName.trim()) {
-            const userId = (res as any).data?.user?._id;
+            const userId = (res as { data?: { user?: { _id?: string } } }).data?.user?._id;
             if (userId) {
               await fetcher(
                 `${ApiKeys.UPDATE_PROFILE}/${userId}/update-profile`,
