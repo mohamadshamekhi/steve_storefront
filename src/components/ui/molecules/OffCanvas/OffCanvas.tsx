@@ -18,7 +18,7 @@ const OffCanvas = ({
     className = ''
 }: IOffcanvasProps) => {
     const baseClass =
-        'fixed top-0 bottom-0 z-[120]  h-screen overflow-auto bg-white px-8 py-5 transition-transform ease-in-out';
+        'fixed top-0 bottom-0 z-[120] flex h-screen flex-col overflow-hidden bg-white px-8 py-5 transition-transform ease-in-out';
 
     const positionClass = position === 'left' ? 'left-0' : 'right-0';
     // fully removed from the layout when closed — an always-mounted full-screen
@@ -53,7 +53,7 @@ const OffCanvas = ({
                     </Button>
                 )}
 
-                <div>{children}</div>
+                <div className='min-h-0 flex-1 overflow-auto'>{children}</div>
             </div>
         </>
     );

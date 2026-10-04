@@ -71,9 +71,15 @@ const useCategories = () => {
 
   const categories = data ?? [];
 
+  const rootCategories = categories.filter((c) => !c.parent_id);
+  const getChildren = (parentId: string) => categories.filter((c) => c.parent_id === parentId);
+  const hasChildren = (categoryId: string) => categories.some((c) => c.parent_id === categoryId);
+
   return {
     categories,
-    rootCategories: categories,
+    rootCategories,
+    getChildren,
+    hasChildren,
     isLoading: isLoading && categories.length === 0,
     error,
   };

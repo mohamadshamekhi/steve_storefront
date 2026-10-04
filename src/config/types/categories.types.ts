@@ -6,6 +6,7 @@ interface Categories {
     link: string;
     level: number;
     slug: string;
+    parent_id?: string | null;
 }
 
 export default Categories;
