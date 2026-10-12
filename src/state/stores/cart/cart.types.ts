@@ -37,6 +37,7 @@ export interface CartItem {
     slug?: string;
     summary: CartSummary;
     discount_amount?: number;
+    requires_freight_shipping?: boolean;
 }
 
 export interface CartUser {

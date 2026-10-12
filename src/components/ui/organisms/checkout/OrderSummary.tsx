@@ -9,11 +9,12 @@ import { useCartStore } from "@/state/stores/cart";
 import { useModalStore } from "@/state/stores/modal";
 
 interface OrderSummaryProps {
-  selectedShipping: { id: string; cost: number } | null;
+  selectedShipping: { id: string; cost: number; name: string } | null;
+  isLargePackage: boolean;
 }
 
-function OrderSummary({ selectedShipping }: OrderSummaryProps) {
-  const shippingCost = selectedShipping?.cost ?? 0;
+function OrderSummary({ selectedShipping, isLargePackage }: OrderSummaryProps) {
+  const shippingCost = isLargePackage ? 0 : (selectedShipping?.cost ?? 0);
   const { itemCount, subtotal, finalPrice, discountCode } = useCartStore();
   const openModal = useModalStore((s) => s.openModal);
 
@@ -67,12 +68,16 @@ function OrderSummary({ selectedShipping }: OrderSummaryProps) {
           <span className="text-sm font-medium text-gray-700">هزینه ارسال</span>
           <span className="flex items-center">
             {selectedShipping ? (
-              <>
-                <span className="text-sm font-medium text-gray-700">
-                  {formatPrice(shippingCost)}
-                </span>
-                <TomanIcon className="mr-1.5" />
-              </>
+              isLargePackage ? (
+                <span className="text-sm font-medium text-amber-600">پس کرایه</span>
+              ) : (
+                <>
+                  <span className="text-sm font-medium text-gray-700">
+                    {formatPrice(shippingCost)}
+                  </span>
+                  <TomanIcon className="mr-1.5" />
+                </>
+              )
             ) : (
               <span className="text-sm text-gray-400">انتخاب نشده</span>
             )}

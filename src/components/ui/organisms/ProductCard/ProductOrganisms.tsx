@@ -66,13 +66,13 @@ const ProductOrganisms = ({
         <div
             dir='rtl'
             className={cn(
-                'relative flex h-full flex-col rounded-md bg-white',
+                'relative flex h-full flex-col rounded-2xl bg-white shadow-[0_1px_4px_rgba(16,24,40,0.07)]',
                 cardType === 'default' ? 'p-3' : 'px-4 pt-5 pb-6 sm:px-6 sm:pt-6.5 sm:pb-8'
             )}
         >
             <div className='relative'>
                 {product.is_second_hand && (
-                    <div className='text-tiny absolute right-[17px] bottom-0 flex items-center gap-[3px] font-normal'>
+                    <div className='absolute top-2 right-2 z-10 flex items-center gap-1 rounded-full border border-amber-200 bg-amber-50 px-2 py-0.5 text-[11px] font-medium text-amber-700'>
                         <UsedIcon />
                         <span>کارکرده</span>
                     </div>
@@ -139,87 +139,75 @@ const ProductOrganisms = ({
                 </h3>
             )}
 
-            <div className={cn('flex items-center justify-between', cardType === 'default' ? '' : 'mt-2 mb-5')}>
-                <div className='text-sm font-semibold text-red-500'>
-                    {product?.variant[0]?.quantity === 0 ? 'ناموجود در انبار' : ''}
-
-                    {product?.variant[0]?.quantity && product?.variant[0]?.quantity > 0
-                        ? `${product?.variant[0]?.quantity} عدد در انبار باقی مانده`
-                        : ''}
+            <div className={cn('flex items-center justify-between gap-1', cardType === 'default' ? 'mt-1' : 'mt-2 mb-5')}>
+                <div className='text-[11px] font-semibold'>
+                    {product?.variant[0]?.quantity === 0 ? (
+                        <span className='text-red-500'>ناموجود</span>
+                    ) : product?.variant[0]?.quantity && product?.variant[0]?.quantity <= 5 ? (
+                        <span className='text-orange-500'>{product.variant[0].quantity} عدد باقی مانده</span>
+                    ) : null}
                 </div>
 
                 {(product?.rating || product?.variant[0]?.rate) && (
-                    <div className='text-body1-regular flex items-center gap-2'>
-                        <span>{product?.rating || product?.variant[0]?.rate}</span>
-
-                        <StarIcon className='text-orange-500' />
+                    <div className='text-body1-regular flex items-center gap-1'>
+                        <span className='text-[12px]'>{product?.rating || product?.variant[0]?.rate}</span>
+                        <StarIcon className='text-orange-400' />
                     </div>
                 )}
             </div>
-            <div
-                className={cn(
-                    'mt-auto flex flex-wrap items-center justify-between gap-2',
-                    cardType === 'default' ? '' : ''
-                )}
-            >
-                {showAddToCartButton ? (
-                    product?.variant?.length === 1 && product?.variant[0].quantity === 1 ? (
-                        <Button
-                            disabled
-                            className='absolute right-0 bottom-0 rounded-tl-[17px] !rounded-tr-none rounded-br-[6px] !rounded-bl-none p-2! text-[13px]!'
-                            icon={<CirclePlusIcon className='h-5 w-5 text-white' />}
-                        >
-                            <span>افزودن به سبد خرید</span>
-                        </Button>
-                    ) : (
-                        <Link href={product.slug ? `${ROUTES.Products}/${product.slug}` : '/'}>
-                            <Button color='danger' size='lg'>
-                                افزودن به سبد
-                            </Button>
-                        </Link>
-                    )
-                ) : (
-                    <Link
-                        href={product.slug ? `${ROUTES.Products}/${product.slug}` : '/'}
-                        className='flex aspect-square justify-center rounded-md bg-red-50 p-2 text-red-600'
-                    >
-                        <CirclePlusIcon className='text-secondary-500' />
-                    </Link>
-                )}
-
-                <div className='grow'>
-                    <div className='flex items-center gap-2'>
-                        {hasDiscount && originalPrice && (
-                            <del className='text-body2-bold grow text-left text-gray-400'>
-                                {priceFormatter(originalPrice)}{' '}
-                            </del>
-                        )}
-                        {hasDiscount && discountPercent && (
+            <div className='mt-auto pt-2'>
+                {/* discount row */}
+                {hasDiscount && originalPrice && (
+                    <div className='mb-0.5 flex items-center gap-1.5'>
+                        <del className='text-[12px] text-gray-400'>{priceFormatter(originalPrice)}</del>
+                        {discountPercent && (
                             <Badge
                                 color='danger'
-                                className='!flex !min-w-[40px] justify-center !rounded-[3px] !px-[6px] !py-[1px] !leading-[18px]'
+                                className='flex! min-w-9! justify-center rounded-sm! px-1.5! py-0! text-[11px]! leading-4.5!'
                             >
                                 {Math.round(discountPercent)}%
                             </Badge>
                         )}
                     </div>
+                )}
 
-                    <div
-                        className={cn(
-                            'text-body1-bold flex items-center justify-baseline gap-1 text-left',
-                            cardType === 'default' ? '' : 'mt-1'
-                        )}
-                    >
+                {/* price + add button */}
+                <div className='flex items-center justify-between gap-2'>
+                    <div className='text-body1-bold flex items-center gap-1'>
                         {product?.variant.length > 0 && originalPrice && (
                             <>
-                                <span className='grow'>
+                                <span>
                                     {priceFormatter(hasDiscount && discountedPrice ? discountedPrice : originalPrice)}
                                 </span>
-
                                 <TomanIcon />
                             </>
                         )}
                     </div>
+
+                    {showAddToCartButton ? (
+                        product?.variant?.length === 1 && product?.variant[0].quantity === 1 ? (
+                            <Button
+                                disabled
+                                className='rounded-xl p-2! text-[13px]!'
+                                icon={<CirclePlusIcon className='h-5 w-5 text-white' />}
+                            >
+                                <span>افزودن به سبد</span>
+                            </Button>
+                        ) : (
+                            <Link href={product.slug ? `${ROUTES.Products}/${product.slug}` : '/'}>
+                                <Button color='danger' size='sm'>
+                                    افزودن به سبد
+                                </Button>
+                            </Link>
+                        )
+                    ) : (
+                        <Link
+                            href={product.slug ? `${ROUTES.Products}/${product.slug}` : '/'}
+                            className='flex items-center justify-center rounded-xl bg-secondary-50 p-2 text-secondary-500 transition hover:bg-secondary-100'
+                        >
+                            <CirclePlusIcon className='h-5 w-5' />
+                        </Link>
+                    )}
                 </div>
             </div>
         </div>
