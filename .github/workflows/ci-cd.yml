@@ -37,7 +37,6 @@ jobs:
           host: ${{ secrets.DEPLOY_SSH_HOST }}
           username: ${{ secrets.DEPLOY_SSH_USER }}
           key: ${{ secrets.DEPLOY_SSH_KEY }}
-          script_stop: true
           script: |
             set -exo pipefail
             DEPLOY_PATH="${{ secrets.DEPLOY_PATH }}"
