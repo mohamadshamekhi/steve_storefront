@@ -39,7 +39,7 @@ jobs:
           key: ${{ secrets.DEPLOY_SSH_KEY }}
           script_stop: true
           script: |
-            set -euo pipefail
+            set -exo pipefail
             DEPLOY_PATH="${{ secrets.DEPLOY_PATH }}"
             IMAGE_NAME="storefront:latest"
             CONTAINER_NAME="storefront"
