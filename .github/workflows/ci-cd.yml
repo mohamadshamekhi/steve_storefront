@@ -59,8 +59,12 @@ jobs:
             [ -f .env.production ] || { echo ".env.production missing"; exit 1; }
 
             docker build -t "$IMAGE_NAME" .
+
+            # stop any container using port 3000
+            OLD=$(docker ps -q --filter "publish=3000") && [ -n "$OLD" ] && docker stop $OLD && docker rm $OLD || true
             docker stop "$CONTAINER_NAME" 2>/dev/null || true
             docker rm   "$CONTAINER_NAME" 2>/dev/null || true
+
             docker run -d \
               --name "$CONTAINER_NAME" \
               --restart unless-stopped \
