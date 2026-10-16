@@ -44,6 +44,8 @@ jobs:
             IMAGE_NAME="storefront:latest"
             CONTAINER_NAME="storefront"
 
+            git config --global --add safe.directory "$DEPLOY_PATH"
+
             # clone on first deploy, pull on subsequent ones
             if [ ! -d "$DEPLOY_PATH/.git" ]; then
               git clone git@github.com:mohamadshamekhi/steve_storefront.git "$DEPLOY_PATH"
