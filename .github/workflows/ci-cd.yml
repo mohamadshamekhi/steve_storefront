@@ -45,16 +45,14 @@ jobs:
 
             git config --global --add safe.directory "$DEPLOY_PATH"
 
-            # clone on first deploy, pull on subsequent ones
+            # clone on first deploy
             if [ ! -d "$DEPLOY_PATH/.git" ]; then
               git clone git@github-storefront:mohamadshamekhi/steve_storefront.git "$DEPLOY_PATH"
-            else
-              cd "$DEPLOY_PATH"
-              git fetch --prune origin
-              git reset --hard origin/main
             fi
 
             cd "$DEPLOY_PATH"
+            git fetch --prune origin
+            git reset --hard origin/main
             [ -f .env.production ] || { echo ".env.production missing"; exit 1; }
 
             docker build -t "$IMAGE_NAME" .
