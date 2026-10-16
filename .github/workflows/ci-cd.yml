@@ -37,4 +37,40 @@ jobs:
           host: ${{ secrets.DEPLOY_SSH_HOST }}
           username: ${{ secrets.DEPLOY_SSH_USER }}
           key: ${{ secrets.DEPLOY_SSH_KEY }}
-          script: bash "${{ secrets.DEPLOY_PATH }}/deploy/server-deploy.sh" "${{ secrets.DEPLOY_PATH }}"
+          script_stop: true
+          script: |
+            set -euo pipefail
+            DEPLOY_PATH="${{ secrets.DEPLOY_PATH }}"
+            IMAGE_NAME="storefront:latest"
+            CONTAINER_NAME="storefront"
+
+            # clone on first deploy, pull on subsequent ones
+            if [ ! -d "$DEPLOY_PATH/.git" ]; then
+              git clone git@github.com:mohamadshamekhi/steve_storefront.git "$DEPLOY_PATH"
+            else
+              cd "$DEPLOY_PATH"
+              git fetch --prune origin
+              git reset --hard origin/main
+            fi
+
+            cd "$DEPLOY_PATH"
+            [ -f .env.production ] || { echo ".env.production missing"; exit 1; }
+
+            docker build -t "$IMAGE_NAME" .
+            docker stop "$CONTAINER_NAME" 2>/dev/null || true
+            docker rm   "$CONTAINER_NAME" 2>/dev/null || true
+            docker run -d \
+              --name "$CONTAINER_NAME" \
+              --restart unless-stopped \
+              -p 3000:3000 \
+              "$IMAGE_NAME"
+
+            # smoke test
+            for i in $(seq 1 30); do
+              curl -fsS -o /dev/null -m 5 http://localhost:3000/ && echo "app is up" && break || true
+              [ $i -eq 30 ] && { docker logs --tail=50 "$CONTAINER_NAME"; exit 1; }
+              sleep 2
+            done
+
+            docker image prune -f >/dev/null || true
+            echo "Deploy done"
