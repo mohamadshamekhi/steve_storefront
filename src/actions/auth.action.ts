@@ -31,6 +31,10 @@ export async function signInVerifyAction(authParams: {
     phone_number: string | null;
     /** کد دعوت از لینک /invite?ref=… — برای کاربر تکراری روی سرور نادیده گرفته می‌شود */
     ref?: string | null;
+    /** فقط برای کاربر جدید (is_new_user) — بکند برای ثبت‌نام اجباری‌شان می‌کند */
+    name?: string;
+    /** تاریخ تولد میلادی با فرمت YYYY-MM-DD */
+    birth_date?: string;
 }) {
     try {
         const { ref, ...rest } = authParams;

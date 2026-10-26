@@ -1,10 +1,11 @@
 "use client";
 import { signInAction, signInVerifyAction } from "@/actions/auth.action";
-import { fetcher } from "@/api";
-import ApiKeys from "@/api/keys";
 import ChevronLeft from "@/components/icons/ChevronLeft";
 import Input from "@/components/ui/atoms/Input/Input";
 import Fieldset from "@/components/ui/molecules/Fieldset/Fieldset";
+import BirthDateSelect, {
+  JalaliDate,
+} from "@/components/ui/molecules/BirthDateSelect/BirthDateSelect";
 import AuthFormWrapper from "@/components/ui/organisms/auth/AuthFormWrapper";
 import { authOTPValidationSchema } from "@/config/schema/auth";
 import useOtpCountdown from "@/hooks/useOtpCountdown";
@@ -22,6 +23,7 @@ import {
   setStoredRef,
 } from "@/utils/referral.util";
 import { toEnglishDigits } from "@/utils/string.util";
+import { jalaliToIsoDate } from "@/utils/date.util";
 import z from "zod";
 import { toFormikValidationSchema } from "zod-formik-adapter";
 
@@ -51,6 +53,14 @@ const VerifyPage = () => {
   // نام — اجباری فقط برای کاربر جدید
   const [firstName, setFirstName] = useState("");
   const [firstNameError, setFirstNameError] = useState("");
+
+  // تاریخ تولد (شمسی) — اجباری فقط برای کاربر جدید
+  const [birthDate, setBirthDate] = useState<JalaliDate>({
+    year: null,
+    month: null,
+    day: null,
+  });
+  const [birthDateError, setBirthDateError] = useState("");
 
   // کد دعوت (اختیاری) — toggle
   const [refCode, setRefCode] = useState("");
@@ -95,34 +105,34 @@ const VerifyPage = () => {
   };
 
   const submitHandler = async (data: authModel) => {
-    // اعتبارسنجی نام برای کاربر جدید
-    if (isNewUser && !firstName.trim()) {
-      setFirstNameError("وارد کردن نام الزامی است");
-      return;
+    // نام و تاریخ تولد برای کاربر جدید اجباری است (بکند هم همین را چک می‌کند)
+    let signup: { name: string; birth_date: string } | undefined;
+    if (isNewUser) {
+      const nameErr = validateName(firstName);
+      const birthErr = validateBirthDate(birthDate);
+      setFirstNameError(nameErr);
+      setBirthDateError(birthErr);
+      if (nameErr || birthErr) return;
+      signup = {
+        name: firstName.trim(),
+        birth_date: jalaliToIsoDate(
+          birthDate.year!,
+          birthDate.month!,
+          birthDate.day!
+        ),
+      };
     }
-    setFirstNameError("");
 
     startTransition(async () => {
       try {
         const res = await signInVerifyAction({
           phone_number: phoneNumber,
           ...data,
+          ...signup,
           ref: resolveRef(),
         });
         if (res.success) {
           clearStoredRef();
-          // اگر کاربر جدید است، نام را ثبت کن
-          if (isNewUser && firstName.trim()) {
-            const userId = (res as { data?: { user?: { _id?: string } } }).data?.user?._id;
-            if (userId) {
-              await fetcher(
-                `${ApiKeys.UPDATE_PROFILE}/${userId}/update-profile`,
-                "dashboard",
-                "PATCH",
-                { body: { name: firstName.trim(), phone_number: phoneNumber } }
-              );
-            }
-          }
           showToast({
             title: "احراز هویت | تاییدیه ورود",
             message: res.message,
@@ -133,7 +143,7 @@ const VerifyPage = () => {
         } else {
           showToast({
             title: "احراز هویت | تاییدیه ورود",
-            message: res.message,
+            message: res?.message || "کد تایید یا اطلاعات وارد شده نادرست است",
             type: "error",
           });
         }
@@ -183,8 +193,11 @@ const VerifyPage = () => {
               value={firstName}
               onChange={(e) => {
                 setFirstName(e.target.value);
-                if (e.target.value.trim()) setFirstNameError("");
+                if (firstNameError) setFirstNameError(validateName(e.target.value));
               }}
+              autoComplete="name"
+              maxLength={100}
+              aria-invalid={!!firstNameError}
               aria-describedby={firstNameError ? "first-name-error" : undefined}
             />
             {firstNameError && (
@@ -193,6 +206,19 @@ const VerifyPage = () => {
               </p>
             )}
           </div>
+        )}
+
+        {isNewUser && (
+          <BirthDateSelect
+            id="birth_date"
+            required
+            value={birthDate}
+            onChange={(v) => {
+              setBirthDate(v);
+              if (birthDateError) setBirthDateError(validateBirthDate(v));
+            }}
+            error={birthDateError}
+          />
         )}
 
         {showRefField && (
@@ -317,5 +343,19 @@ const VerifyPage = () => {
     </div>
   );
 };
+
+function validateName(name: string): string {
+  const trimmed = name.trim();
+  if (!trimmed) return "وارد کردن نام الزامی است";
+  if ([...trimmed].length < 2) return "نام باید حداقل ۲ حرف باشد";
+  return "";
+}
+
+function validateBirthDate({ year, month, day }: JalaliDate): string {
+  if (!year || !month || !day) return "روز، ماه و سال تولد را انتخاب کنید";
+  if (jalaliToIsoDate(year, month, day) > new Date().toISOString().slice(0, 10))
+    return "تاریخ تولد نمی‌تواند در آینده باشد";
+  return "";
+}
 
 export default VerifyPage;
