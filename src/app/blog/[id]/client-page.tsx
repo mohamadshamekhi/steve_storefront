@@ -16,11 +16,16 @@ import { Comment } from "@/models/common.model";
 import { calculateReadingTimeText } from "@/utils/blog.util";
 import { formatJalali } from "@/utils/date.util";
 import OptimizedImage from "@/utils/imageLoader";
+import { SearchProduct } from "@/utils/related-content.util";
 import Link from "next/link";
 
 interface IProps {
   article: Blog;
+  /** مقاله‌های مرتبط (از قبل انتخاب و مرتب‌شده، بدون خودِ مقاله) */
   blogs: Blog[];
+  relatedProducts?: SearchProduct[];
+  /** مقاله‌ی آموزشی خرابی/تعمیر است؛ انتهایش دعوت به ثبت درخواست تعمیر می‌آید */
+  showRepairCta?: boolean;
   comments: Comment[];
   all_approved_comments_count: number;
 }
@@ -28,6 +33,8 @@ interface IProps {
 function ClientPage({
   article,
   blogs,
+  relatedProducts = [],
+  showRepairCta = false,
   comments,
   all_approved_comments_count,
 }: IProps) {
@@ -82,25 +89,87 @@ function ClientPage({
     );
   };
 
-  const renderRelatedPosts = () => {
+  const renderRepairCta = () => {
+    if (!showRepairCta) return null;
     return (
-      <section className="pt-7 pb-[27px]">
+      <section className="from-primary-600 to-primary-500 flex flex-col gap-4 rounded-2xl bg-linear-to-l p-5 text-white shadow-sm sm:flex-row sm:items-center sm:justify-between sm:p-8">
+        <div>
+          <h2 className="text-lg font-bold sm:text-xl">
+            گوشی‌ات این مشکل را دارد؟
+          </h2>
+          <p className="mt-1.5 text-sm leading-7 text-white/85">
+            درخواست تعمیر ثبت کن؛ کارشناس‌های استیو بررسی می‌کنند و قبل از
+            شروع کار هزینه را اعلام می‌کنند.
+          </p>
+        </div>
+        <Link
+          href={ROUTES.PhoneRepair}
+          className="text-primary-700 shrink-0 rounded-xl bg-white px-6 py-3 text-center text-sm font-bold shadow-sm transition hover:bg-white/90"
+        >
+          ثبت درخواست تعمیر
+        </Link>
+      </section>
+    );
+  };
+
+  const renderRelatedProducts = () => {
+    if (relatedProducts.length === 0) return null;
+    return (
+      <section>
+        <h2 className="mb-5 text-lg font-semibold text-gray-800 md:text-2xl">
+          محصولات مرتبط
+        </h2>
+        <div className="no-scrollbar -mx-4 flex snap-x gap-3 overflow-x-auto px-4 pb-1 sm:mx-0 sm:grid sm:grid-cols-3 sm:gap-4 sm:overflow-visible sm:px-0 lg:grid-cols-4">
+          {relatedProducts.map((product) => {
+            const image =
+              product.gallery?.find((g) => g.is_primary) ?? product.gallery?.[0];
+            return (
+              <Link
+                key={product.id}
+                href={`${ROUTES.Products}/${product.slug}`}
+                className="flex w-40 shrink-0 snap-start flex-col rounded-2xl bg-white p-3 shadow-sm transition sm:w-auto lg:hover:-translate-y-0.5 lg:hover:shadow-md"
+              >
+                <div className="aspect-square overflow-hidden rounded-xl bg-gray-50">
+                  {image?.url && (
+                    <OptimizedImage
+                      src={image.url}
+                      alt={image.alt?.trim() || product.name}
+                      width={240}
+                      height={240}
+                      className="h-full w-full object-contain"
+                    />
+                  )}
+                </div>
+                <span className="mt-3 line-clamp-2 text-sm leading-6 font-medium text-gray-800">
+                  {product.name}
+                </span>
+                <span className="text-primary-600 mt-auto pt-2 text-xs font-semibold">
+                  مشاهده و خرید
+                </span>
+              </Link>
+            );
+          })}
+        </div>
+      </section>
+    );
+  };
+
+  const renderRelatedPosts = () => {
+    if (blogs.length === 0) return null;
+    return (
+      <section>
         <div className="mb-8 flex items-center">
           <BookIcon className="fill-secondary-50 text-secondary-500 ml-1.5" />
 
           <h2 className="text-lg font-semibold text-gray-800 md:text-2xl">
-            اخبار مرتبط
+            مقاله‌های مرتبط
           </h2>
         </div>
 
         <div className="grid gap-8 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-          {blogs.map((article, index) =>
-            index <= 3 ? (
-              <BlogCardOrganisms key={index} article={article} />
-            ) : (
-              <></>
-            )
-          )}
+          {blogs.slice(0, 4).map((related) => (
+            <BlogCardOrganisms key={related.id} article={related} />
+          ))}
         </div>
       </section>
     );
@@ -117,15 +186,17 @@ function ClientPage({
               href: ROUTES.Blog,
             },
             {
-              label: "خبر اول",
+              label: article.title,
               isCurrent: true,
             },
           ]}
         />
       </Container>
       <Container>
-        <section className="flex flex-col gap-16">
+        <section className="flex flex-col gap-10 lg:gap-16">
           {renderPost()}
+          {renderRepairCta()}
+          {renderRelatedProducts()}
           {renderRelatedPosts()}
           <CommentSection articleId={article.id} comments={comments} />
         </section>

@@ -46,6 +46,17 @@ const nextConfig: NextConfig = {
     experimental: {
         authInterrupts: true
     },
+    async redirects() {
+        return [
+            // duplicate article: competed with the guide below for «گوشی دانش‌آموزی»;
+            // unpublish it in the panel — this keeps its old links and rankings flowing to the guide
+            {
+                source: '/blog/behtarin-gooshi-daneshamoozi',
+                destination: '/blog/student-phone-buying-guide',
+                permanent: true
+            }
+        ];
+    },
     // "Use efficient cache lifetimes": the container is served directly with no
     // CDN/nginx, so Next must emit the long-lived immutable headers itself for
     // the fingerprinted build output and the static /public assets.

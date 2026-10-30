@@ -3,8 +3,18 @@ import ApiKeys from "@/api/keys";
 import type Blog from "@/config/types/blog.types";
 import { Comment } from "@/models/common.model";
 import { pageSeoGenerator, PageSeoModel } from "@/seo";
+import {
+  isRepairArticle,
+  pickRelatedArticles,
+  SearchProduct,
+} from "@/utils/related-content.util";
+import { permanentRedirect } from "next/navigation";
 import { Metadata } from "next/types";
 import ClientPage from "./client-page";
+
+// JSON for a <script> tag: escape "<" so admin-entered text can't close the tag early.
+const toJsonLd = (data: unknown) =>
+  JSON.stringify(data).replace(/</g, "\\u003c");
 
 // ISR: re-render this route at most every 2 minutes instead of on every single request
 export const revalidate = 120;
@@ -19,7 +29,8 @@ export async function generateMetadata({
     data: { article },
   } = await fetchBlogPost(id);
 
-  const canonicalUrl = `https://stevemobile.com/blog/${id}`;
+  // the API also answers for an article's old slug; canonical is always the current one
+  const canonicalUrl = `https://stevemobile.com/blog/${article?.slug ?? id}`;
 
   const data: PageSeoModel = {
     title: article?.title ?? "",
@@ -95,8 +106,37 @@ const fetchBlogPosts = async (): Promise<{
     articles: Blog[];
   };
 }> => {
-  const res = await fetcher(ApiKeys.GET_BLOG_POSTS, "web", "GET");
+  // a wider pool than the 4 shown, so related articles can be picked by shared tags
+  const res = await fetcher(ApiKeys.GET_BLOG_POSTS, "web", "GET", {
+    params: { page_size: 30 },
+  });
   return res;
+};
+
+/** محصولات مرتبط با مقاله: جستجوی سایت روی دو تگ اول (یا عنوان) */
+const fetchRelatedProducts = async (article: Blog): Promise<SearchProduct[]> => {
+  const terms = (article.tags ?? []).map((t) => t.trim()).filter(Boolean).slice(0, 2);
+  if (terms.length === 0 && article.title) terms.push(article.title);
+
+  const results = await Promise.all(
+    terms.map((term) =>
+      fetcher(ApiKeys.STOREFRONT_SEARCH, "web", "GET", {
+        params: { search: term },
+        next: { revalidate: 3600 },
+      }).catch(() => null)
+    )
+  );
+
+  const seen = new Set<string>();
+  const products: SearchProduct[] = [];
+  for (const res of results) {
+    for (const p of (res?.data?.products ?? []) as SearchProduct[]) {
+      if (!p?.slug || seen.has(p.id)) continue;
+      seen.add(p.id);
+      products.push(p);
+    }
+  }
+  return products.slice(0, 8);
 };
 
 export default async function Page({
@@ -113,6 +153,19 @@ export default async function Page({
       data: { articles },
     },
   ] = await Promise.all([fetchBlogPost(id), fetchBlogPosts()]);
+
+  // an old slug (after a rename) is answered by the API too; send it to the current URL
+  if (
+    article?.slug &&
+    article.slug !== id &&
+    article.slug !== decodeURIComponent(id)
+  ) {
+    permanentRedirect(`/blog/${encodeURIComponent(article.slug)}`);
+  }
+
+  const articleUrl = `https://stevemobile.com/blog/${article.slug ?? id}`;
+  const relatedArticles = pickRelatedArticles(article, articles ?? []);
+  const relatedProducts = await fetchRelatedProducts(article);
 
   const jsonLd = {
     "@context": "https://schema.org",
@@ -131,7 +184,7 @@ export default async function Page({
       name: "استیو موبایل",
       url: "https://stevemobile.com",
     },
-    url: `https://stevemobile.com/blog/${id}`,
+    url: articleUrl,
     keywords: article.tags?.join(", ") ?? "",
     inLanguage: "fa-IR",
     isPartOf: {
@@ -155,7 +208,7 @@ export default async function Page({
         "@type": "ListItem",
         position: 3,
         name: article.title,
-        item: `https://stevemobile.com/blog/${id}`,
+        item: articleUrl,
       },
     ],
   };
@@ -164,15 +217,17 @@ export default async function Page({
     <>
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        dangerouslySetInnerHTML={{ __html: toJsonLd(jsonLd) }}
       />
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
+        dangerouslySetInnerHTML={{ __html: toJsonLd(breadcrumbJsonLd) }}
       />
       <ClientPage
         article={article}
-        blogs={articles}
+        blogs={relatedArticles}
+        relatedProducts={relatedProducts}
+        showRepairCta={isRepairArticle(article)}
         comments={comments as unknown as Comment[]}
         all_approved_comments_count={all_approved_comments_count}
       />
