@@ -15,6 +15,7 @@ import Link from 'next/link';
 import { useEffect, useMemo, useState } from 'react';
 import noPic from '../../../../../public/images/_general/placeholder/no-pic.png';
 import Badge from '../../atoms/Badge/Badge';
+import { isVariantInStock, variantStockLeft } from '@/utils/stock.util';
 import { ProductProps } from './product.types';
 
 interface ProductCardOrganismsProps {
@@ -30,7 +31,11 @@ const ProductCardOrganisms = ({ product }: ProductCardOrganismsProps) => {
         ?.flatMap((v) => v.variant_attribute?.filter((attr) => attr.key === 'رنگ').map((attr) => attr.value))
         .filter((color): color is string => !!color);
 
-    const totalQuantity = product.variant?.reduce((sum, v) => sum + (v.quantity || 0), 0) || 0;
+    const inStockVariants = product.variant?.filter((v) => isVariantInStock(v)) ?? [];
+    // «N عدد باقی مانده» فقط وقتی همه‌ی واریانت‌های موجود، موجودی کم و مشخص دارند
+    const lowStockLeft = inStockVariants.every((v) => variantStockLeft(v) !== undefined)
+        ? inStockVariants.reduce((sum, v) => sum + (variantStockLeft(v) ?? 0), 0)
+        : undefined;
 
     // cart lives in persisted (localStorage) state — only trust it after mount to
     // avoid a hydration mismatch between the SSR HTML and the client.
@@ -80,7 +85,7 @@ const ProductCardOrganisms = ({ product }: ProductCardOrganismsProps) => {
     }
 
     const productHref = product.slug ? `${ROUTES.Products}/${product.slug}` : '/';
-    const isOutOfStock = totalQuantity === 0;
+    const isOutOfStock = inStockVariants.length === 0;
 
     return (
         <div className='group relative flex h-full flex-col overflow-hidden rounded-2xl border border-gray-100 bg-white shadow-[0_1px_2px_rgba(16,24,40,0.05)] transition-shadow duration-200 hover:border-gray-200 hover:shadow-[0_6px_16px_-6px_rgba(16,24,40,0.15)]'>
@@ -182,9 +187,10 @@ const ProductCardOrganisms = ({ product }: ProductCardOrganismsProps) => {
                 <div className='mt-2 mb-1 flex min-h-4 items-center justify-between gap-1'>
                     <span className='truncate text-[11px] font-medium text-secondary-600'>
                         {!isOutOfStock &&
-                            totalQuantity > 0 &&
-                            totalQuantity <= 5 &&
-                            `${totalQuantity} عدد باقی مانده`}
+                            lowStockLeft !== undefined &&
+                            lowStockLeft > 0 &&
+                            lowStockLeft <= 5 &&
+                            `${lowStockLeft} عدد باقی مانده`}
                     </span>
 
                     {product.rating !== undefined && product.rating > 0 && (

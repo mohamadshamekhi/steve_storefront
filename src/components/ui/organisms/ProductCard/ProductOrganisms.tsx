@@ -11,6 +11,7 @@ import UsedIcon from '@/components/icons/UsedIcon';
 import cn from '@/config/utilities/cn';
 import ROUTES from '@/constants/routes/routes.constant';
 import OptimizedImage from '@/utils/imageLoader';
+import { isVariantInStock, variantStockLeft } from '@/utils/stock.util';
 import { ProductProps } from '../ProductsOrganisms/product.types';
 
 const ProductOrganisms = ({
@@ -141,10 +142,10 @@ const ProductOrganisms = ({
 
             <div className={cn('flex items-center justify-between gap-1', cardType === 'default' ? 'mt-1' : 'mt-2 mb-5')}>
                 <div className='text-[11px] font-semibold'>
-                    {product?.variant[0]?.quantity === 0 ? (
+                    {product?.variant?.[0] && !isVariantInStock(product.variant[0]) ? (
                         <span className='text-red-500'>ناموجود</span>
-                    ) : product?.variant[0]?.quantity && product?.variant[0]?.quantity <= 5 ? (
-                        <span className='text-orange-500'>{product.variant[0].quantity} عدد باقی مانده</span>
+                    ) : (variantStockLeft(product?.variant?.[0]) ?? Infinity) <= 5 ? (
+                        <span className='text-orange-500'>{variantStockLeft(product.variant[0])} عدد باقی مانده</span>
                     ) : null}
                 </div>
 
@@ -185,7 +186,7 @@ const ProductOrganisms = ({
                     </div>
 
                     {showAddToCartButton ? (
-                        product?.variant?.length === 1 && product?.variant[0].quantity === 1 ? (
+                        product?.variant?.length === 1 && !isVariantInStock(product.variant[0]) ? (
                             <Button
                                 disabled
                                 className='rounded-xl p-2! text-[13px]!'

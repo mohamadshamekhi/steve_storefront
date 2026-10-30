@@ -47,15 +47,22 @@ export interface SingleProductItem {
         media_id: string;
         url: string;
         is_primary: boolean;
+        /** متن جایگزین تصویر؛ خالی یعنی از نام محصول استفاده شود */
+        alt?: string;
     }>;
     is_published: boolean;
     is_second_hand: boolean;
     description: string;
     rating: number;
+    /** تعداد کاربرانی که امتیاز داده‌اند (۰ برای محصولات قدیمی تا امتیاز بعدی) */
+    rating_count?: number;
     variants: Array<{
         id: string;
         price: number;
-        quantity: number;
+        /** فقط API قدیمی؛ جدیدها in_stock / stock_left دارند — از stock.util استفاده کنید */
+        quantity?: number;
+        in_stock?: boolean;
+        stock_left?: number;
         variant_attribute: Array<{
             key: string;
             value: string;
@@ -72,5 +79,14 @@ export interface SingleProductItem {
     created_at: string;
     updated_at: string;
     deleted_at: string;
+    seo_title?: string;
+    seo_description?: string;
+    focus_keyword?: string;
+    faq?: ProductFAQ[];
+}
+
+export interface ProductFAQ {
+    question: string;
+    answer: string;
 }
 

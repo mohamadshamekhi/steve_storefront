@@ -7,6 +7,7 @@ import priceFormatter from '@/helpers/formatter';
 import { SingleProductItem } from '@/models/product.model';
 import { useMemo, useState } from 'react';
 import Badge from '../../atoms/Badge/Badge';
+import { isVariantInStock, variantStockLeft } from '@/utils/stock.util';
 import Button from '../../atoms/Button/Button';
 
 type ProductPriceBoxProps = {
@@ -31,9 +32,8 @@ const ProductPriceBox = ({ product, className = '', showQuantityControls = false
         return selectedVariant?.price || 0;
     }, [selectedVariant]);
 
-    const stockQuantity = useMemo(() => {
-        return selectedVariant?.quantity || 0;
-    }, [selectedVariant]);
+    const inStock = isVariantInStock(selectedVariant);
+    const stockLeft = variantStockLeft(selectedVariant);
 
     return (
         <div className={className}>
@@ -64,8 +64,8 @@ const ProductPriceBox = ({ product, className = '', showQuantityControls = false
             </div>
 
             <div className='mt-8 mb-6'>
-                {stockQuantity > 0 ? (
-                    <>🔥{stockQuantity} عدد در انبار باقی مانده</>
+                {stockLeft !== undefined ? (
+                    <>🔥{stockLeft} عدد در انبار باقی مانده</>
                 ) : (
                     <span className='text-red-500'></span>
                 )}
@@ -99,7 +99,7 @@ const ProductPriceBox = ({ product, className = '', showQuantityControls = false
                     </Button>
                 </div>
             ) : (
-                <Button size='lg' className='w-full' disabled={stockQuantity === 0}>
+                <Button size='lg' className='w-full' disabled={!inStock}>
                     افزودن به سبد
                 </Button>
             )}
