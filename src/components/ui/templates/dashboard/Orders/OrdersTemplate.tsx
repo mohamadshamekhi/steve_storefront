@@ -62,6 +62,8 @@ interface Order {
         is_active: boolean;
     };
     status: string;
+    /** کد رهگیری مرسوله؛ وقتی سفارش «ارسال شده» می‌شود ثبت و پیامک می‌شود */
+    tracking_code?: string;
     payments: Payment[];
     created_at: string;
     updated_at: string;
@@ -125,6 +127,17 @@ function OrdersTemplate() {
     const [orders, setOrders] = useState<Order[]>([]);
     const [loading, setLoading] = useState(true);
     const [payingOrderId, setPayingOrderId] = useState<string | null>(null);
+    const [copiedCode, setCopiedCode] = useState<string | null>(null);
+
+    const handleCopyTracking = (code: string) => {
+        navigator.clipboard
+            ?.writeText(code)
+            .then(() => {
+                setCopiedCode(code);
+                setTimeout(() => setCopiedCode((c) => (c === code ? null : c)), 2000);
+            })
+            .catch(() => {});
+    };
 
     const handlePayOrder = async (orderId: string) => {
         setPayingOrderId(orderId);
@@ -263,6 +276,21 @@ function OrdersTemplate() {
                                     <div className='rounded-xl border border-gray-100 bg-gray-50/70 p-3 text-xs leading-6 text-gray-600'>
                                         <div className='mb-1 font-semibold text-gray-700'>روش ارسال</div>
                                         <div>{order.shipping.name}</div>
+                                        {order.tracking_code && (
+                                            <div className='mt-1 flex flex-wrap items-center gap-1.5'>
+                                                <span>کد رهگیری مرسوله:</span>
+                                                <span dir='ltr' className='font-mono font-semibold break-all text-gray-800'>
+                                                    {order.tracking_code}
+                                                </span>
+                                                <button
+                                                    type='button'
+                                                    onClick={() => handleCopyTracking(order.tracking_code!)}
+                                                    className='text-primary-500 hover:bg-primary-50 rounded-md px-1.5 py-0.5 font-semibold transition-colors'
+                                                >
+                                                    {copiedCode === order.tracking_code ? 'کپی شد ✓' : 'کپی'}
+                                                </button>
+                                            </div>
+                                        )}
                                     </div>
                                 </div>
 

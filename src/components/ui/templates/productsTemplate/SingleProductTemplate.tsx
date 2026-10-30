@@ -11,6 +11,7 @@ import useElementHeightVar from "@/hooks/useElementHeightVar";
 import { ScrollTabs } from "../../molecules/ScrollTabs/ScrollsTabs";
 import PriceBox from "../../organisms/SingleProductOrganisms/PriceBox";
 import ProductDetailOrganisms from "../../organisms/SingleProductOrganisms/ProductDetailOrganisms";
+import ProductFaqOrganisms from "../../organisms/SingleProductOrganisms/ProductFaqOrganisms";
 import ProductGalleryOrganisms from "../../organisms/SingleProductOrganisms/ProductGalleryOrganisms";
 import ProductIntroductionOrganisms from "../../organisms/SingleProductOrganisms/ProductIntroductionOrganisms";
 import ProductRelatedOrganisms, {
@@ -31,9 +32,11 @@ const SingleProductTemplate = ({
   comments: Comment[];
   relatedProducts: RelatedProduct[];
 }) => {
+  const hasFaq = !!product.faq?.some((f) => f.question?.trim() && f.answer?.trim());
   const filters = [
     { targetId: "introduction", label: "معرفی" },
     { targetId: "specifications", label: "مشخصات" },
+    ...(hasFaq ? [{ targetId: "faq", label: "سوالات متداول" }] : []),
     { targetId: "views", label: "دیدگاه‌ها" },
   ];
 
@@ -118,6 +121,8 @@ const SingleProductTemplate = ({
             <ProductSpecificationsOrganisms
               specifications={product.specifications}
             />
+
+            <ProductFaqOrganisms faq={product.faq} />
 
             <div
               className="grid grid-cols-12 items-start gap-4"

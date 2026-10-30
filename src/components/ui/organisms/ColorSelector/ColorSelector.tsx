@@ -3,7 +3,9 @@
 type Variant = {
   id: string
   price: number
-  quantity: number
+  quantity?: number
+  in_stock?: boolean
+  stock_left?: number
   variant_attribute: Array<{
     key: string
     value: string

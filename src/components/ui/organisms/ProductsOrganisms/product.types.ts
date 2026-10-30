@@ -51,6 +51,8 @@ interface ProductProps {
         id?: string;
         price?: number | string;
         quantity?: number;
+        in_stock?: boolean;
+        stock_left?: number;
         variant_attribute?: {
             key: string;
             value: string;

@@ -16,6 +16,7 @@ import BrandTemplate from '../ui/templates/landing/BrandTemplate';
 import CategoriesTemplate from '../ui/templates/landing/CategoriesTemplate';
 import HeroTemplate from '../ui/templates/landing/HeroTemplate';
 import PartnerCtaTemplate from '../ui/templates/landing/PartnerCtaTemplate';
+import PromoCtaTemplate from '../ui/templates/landing/PromoCtaTemplate';
 // import OfferProductTemplate from '../ui/templates/landing/OfferProductTemplate';
 import RecommendedProductsTemplate from '../ui/templates/landing/RecommendedProductsTemplate';
 import SecondHandTemplate from '../ui/templates/landing/SecondHandProductTemplate';
@@ -64,6 +65,7 @@ const Landing = ({
                 {secondHandProducts?.length > 0 && <SecondHandTemplate secondHandProducts={secondHandProducts} />}
                 <BrandTemplate brands={brands} />
                 <BestSellersTemplate products={bestSellerProduct} />
+                <PromoCtaTemplate />
                 <RepairBannerOrganisms banners={banners} />
                 <RecommendedProductsTemplate categoryProducts={categoryProducts} />
                 {/* -> AuctionTemplate */}

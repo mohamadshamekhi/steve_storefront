@@ -12,6 +12,7 @@ import { useCartStore, useSessionStore } from "@/state";
 import { useRouter } from "next/navigation";
 import ROUTES from "@/constants/routes/routes.constant";
 import Link from "next/link";
+import { isVariantInStock, variantMaxQuantity, variantStockLeft } from "@/utils/stock.util";
 
 type PriceBoxProps = {
   productId?: string;
@@ -36,7 +37,8 @@ const PriceBox = ({ productId, layout = "box" }: PriceBoxProps) => {
       : 0;
 
   const originalPrice = selectedVariant?.price || 0;
-  const stockQuantity = selectedVariant?.quantity || 0;
+  const maxQuantity = variantMaxQuantity(selectedVariant);
+  const stockLeft = variantStockLeft(selectedVariant);
   const isLoading = cartStatus === "loading";
 
   // Calculate discount
@@ -105,14 +107,14 @@ const PriceBox = ({ productId, layout = "box" }: PriceBoxProps) => {
     </div>
   );
 
-  const outOfStock = stockQuantity === 0;
+  const outOfStock = !isVariantInStock(selectedVariant);
 
   const stepper = (
     <div className="inline-flex items-center divide-x divide-gray-200 rounded-lg border border-gray-200">
       <button
         type="button"
         onClick={handleAddToCart}
-        disabled={isLoading || quantityInCart >= stockQuantity}
+        disabled={isLoading || quantityInCart >= maxQuantity}
         aria-label="افزودن یکی"
         className="text-primary-600 hover:bg-primary-50 flex h-10 w-10 items-center justify-center rounded-r-lg transition-colors disabled:opacity-40"
       >
@@ -166,14 +168,14 @@ const PriceBox = ({ productId, layout = "box" }: PriceBoxProps) => {
         {priceBlock}
       </div>
 
-      {stockQuantity > 0 && stockQuantity <= 10 && (
+      {stockLeft !== undefined && (
         <div className="mt-6 mb-5 flex items-center gap-1.5 text-sm text-secondary-600">
           <span>🔥</span>
-          <span>{stockQuantity} عدد در انبار باقی مانده</span>
+          <span>{stockLeft} عدد در انبار باقی مانده</span>
         </div>
       )}
 
-      <div className={stockQuantity > 0 && stockQuantity <= 10 ? "" : "mt-6"}>
+      <div className={stockLeft !== undefined ? "" : "mt-6"}>
         {outOfStock || quantityInCart === 0 ? (
           addButton
         ) : (

@@ -22,15 +22,19 @@ const ProductGalleryOrganisms = ({ gallery, productName }: { gallery: SingleProd
     const [open, setOpen] = useState(false);
     const [currentIndex, setCurrentIndex] = useState(0);
 
-    const mappedGallery = gallery.map((item) => {
+    const mappedGallery = gallery.map((item, index) => {
         const mediaType = getMediaType(item.url);
+        // alt ثبت‌شده در پنل؛ در غیر این صورت نام محصول (+ شماره برای تصاویر بعدی تا alt تکراری نباشد)
+        const alt =
+            item.alt?.trim() || (productName ? (index === 0 ? productName : `${productName} - تصویر ${index + 1}`) : '');
 
         if (mediaType === 'video') {
             return {
                 type: 'video' as const,
                 sources: [{ src: item.url, type: 'video/mp4' }],
                 is_primary: item.is_primary,
-                media_id: item.media_id
+                media_id: item.media_id,
+                alt
             };
         }
 
@@ -38,7 +42,8 @@ const ProductGalleryOrganisms = ({ gallery, productName }: { gallery: SingleProd
             type: 'image' as const,
             src: item.url,
             is_primary: item.is_primary,
-            media_id: item.media_id
+            media_id: item.media_id,
+            alt
         };
     });
 
@@ -59,7 +64,7 @@ const ProductGalleryOrganisms = ({ gallery, productName }: { gallery: SingleProd
                         {primaryGalleryItem.type === 'image' && primaryGalleryItem.src && (
                             <OptimizedImage
                                 src={primaryGalleryItem.src}
-                                alt={productName ?? `Slide ${primaryGalleryItem.media_id + 1}`}
+                                alt={primaryGalleryItem.alt || `Slide ${primaryGalleryItem.media_id + 1}`}
                                 width={600}
                                 height={600}
                                 priority
@@ -95,7 +100,7 @@ const ProductGalleryOrganisms = ({ gallery, productName }: { gallery: SingleProd
                         {item.type === 'image' && item.src ? (
                             <OptimizedImage
                                 src={item.src}
-                                alt={productName ?? `Thumb ${index + 1}`}
+                                alt={item.alt || `Thumb ${index + 1}`}
                                 className='block h-full w-full cursor-pointer object-cover'
                                 width={64}
                                 height={64}
@@ -106,7 +111,7 @@ const ProductGalleryOrganisms = ({ gallery, productName }: { gallery: SingleProd
                                 {item.type === 'video' && item.sources && (
                                     <OptimizedImage
                                         src={item.sources[0].src}
-                                        alt={productName ?? 'Video thumbnail'}
+                                        alt={item.alt || 'Video thumbnail'}
                                         width={64}
                                         height={64}
                                         className='w-full'

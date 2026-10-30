@@ -4,6 +4,7 @@ import ApiKeys from '@/api/keys';
 import { SingleProductItem } from '@/models/product.model';
 import { getMediaType } from '@/utils/mime.util';
 import { importSPKI, jwtVerify } from 'jose';
+import { isVariantInStock } from '@/utils/stock.util';
 import { NextRequest, NextResponse } from 'next/server';
 
 /**
@@ -154,7 +155,7 @@ const toTorobProduct = (product: SingleProductItem | null): TorobProduct | null 
         subtitle: truncate(product.en_title, 500),
         current_price,
         old_price,
-        availability: (variant?.quantity ?? 0) > 0,
+        availability: isVariantInStock(variant),
         category_name: truncate(product.category?.name, 200),
         image_links: imageLinks,
         short_desc: truncate(product.description?.replace(/<[^>]*>/g, '').trim(), 500),
