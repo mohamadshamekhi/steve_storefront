@@ -33,39 +33,39 @@ const priceRangeRoutes: MetadataRoute.Sitemap = priceRanges.map((range) => ({
 // a single big-page_size request came back with far fewer products than the
 // store actually has). Page through with `pagination.total` as the source of
 // truth instead of trusting one oversized request to return everything.
-const PRODUCT_PAGE_SIZE = 200;
-const MAX_PRODUCT_PAGES = 100; // hard ceiling (~20k products) so a bad API response can't loop forever
+const PAGE_SIZE = 200;
+const MAX_PAGES = 100; // hard ceiling (~20k items) so a bad API response can't loop forever
 
-type RawProduct = { slug?: string; updated_at?: string };
+type RawItem = { slug?: string; updated_at?: string };
 
-const fetchAllProducts = async (): Promise<RawProduct[]> => {
-    const firstPage = await fetcher(ApiKeys.GET_Products, 'web', 'GET', {
-        params: { page_number: '1', page_size: String(PRODUCT_PAGE_SIZE) }
+const fetchAllPages = async (apiKey: string, listField: 'products' | 'articles'): Promise<RawItem[]> => {
+    const firstPage = await fetcher(apiKey, 'web', 'GET', {
+        params: { page_number: '1', page_size: String(PAGE_SIZE) }
     });
 
-    const products: RawProduct[] = firstPage?.data?.products ?? [];
-    const total: number = firstPage?.data?.pagination?.total ?? products.length;
-    const totalPages = Math.min(Math.ceil(total / PRODUCT_PAGE_SIZE), MAX_PRODUCT_PAGES);
+    const items: RawItem[] = firstPage?.data?.[listField] ?? [];
+    const total: number = firstPage?.data?.pagination?.total ?? items.length;
+    const totalPages = Math.min(Math.ceil(total / PAGE_SIZE), MAX_PAGES);
 
     if (totalPages > 1) {
         const remainingPages = await Promise.all(
             Array.from({ length: totalPages - 1 }, (_, i) => i + 2).map((pageNumber) =>
-                fetcher(ApiKeys.GET_Products, 'web', 'GET', {
-                    params: { page_number: String(pageNumber), page_size: String(PRODUCT_PAGE_SIZE) }
+                fetcher(apiKey, 'web', 'GET', {
+                    params: { page_number: String(pageNumber), page_size: String(PAGE_SIZE) }
                 })
             )
         );
-        remainingPages.forEach((page) => products.push(...(page?.data?.products ?? [])));
+        remainingPages.forEach((page) => items.push(...(page?.data?.[listField] ?? [])));
     }
 
-    return products;
+    return items;
 };
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     const [categoriesRes, productsRes, articlesRes, brandsRes] = await Promise.allSettled([
         fetcher(ApiKeys.GET_ALL_CATEGORY, 'web', 'GET'),
-        fetchAllProducts(),
-        fetcher(ApiKeys.GET_BLOG_POSTS, 'web', 'GET'),
+        fetchAllPages(ApiKeys.GET_Products, 'products'),
+        fetchAllPages(ApiKeys.GET_BLOG_POSTS, 'articles'),
         fetcher(ApiKeys.GET_ALL_BRAND, 'web', 'GET')
     ]);
 
@@ -83,7 +83,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     const productRoutes: MetadataRoute.Sitemap =
         productsRes.status === 'fulfilled'
             ? productsRes.value
-                  .filter((product): product is Required<Pick<RawProduct, 'slug'>> & RawProduct =>
+                  .filter((product): product is Required<Pick<RawItem, 'slug'>> & RawItem =>
                       Boolean(product?.slug)
                   )
                   .map((product) => ({
@@ -96,9 +96,11 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
     const articleRoutes: MetadataRoute.Sitemap =
         articlesRes.status === 'fulfilled'
-            ? (articlesRes.value?.data?.articles ?? [])
-                  .filter((article: { slug?: string }) => article?.slug)
-                  .map((article: { slug: string; updated_at?: string }) => ({
+            ? articlesRes.value
+                  .filter((article): article is Required<Pick<RawItem, 'slug'>> & RawItem =>
+                      Boolean(article?.slug)
+                  )
+                  .map((article) => ({
                       url: `${BASE_URL}/blog/${article.slug}`,
                       lastModified: article.updated_at ? new Date(article.updated_at) : undefined,
                       changeFrequency: 'weekly' as const,
