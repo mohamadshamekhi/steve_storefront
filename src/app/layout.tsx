@@ -4,6 +4,7 @@ import "../styles/master.css";
 import { GoogleAnalytics } from "@/components/ui/molecules/Analytics/GoogleAnalytics";
 import { ToastContainer } from "@/components/ui/molecules/Toast/ToastContainer";
 import YekanFont from "@/config/fonts/YekanFont";
+import DefaultSeo from "@/config/utilities/seo.utils";
 import { SITE_URL } from "@/seo";
 import { NuqsAdapter } from "nuqs/adapters/next/app";
 import ClientPage from "./client-page";
@@ -16,6 +17,17 @@ export const metadata: Metadata = {
   robots: {
     index: true,
     follow: true,
+  },
+  // for pages that don't go through pageSeoGenerator; the generator sets its own
+  openGraph: {
+    siteName: DefaultSeo.og.sitename,
+    locale: "fa_IR",
+    type: "website",
+    images: DefaultSeo.image,
+  },
+  twitter: {
+    card: "summary_large_image",
+    images: DefaultSeo.twitter.images,
   },
 };
 

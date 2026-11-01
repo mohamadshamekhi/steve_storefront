@@ -73,7 +73,7 @@ export async function generateMetadata({
     },
     twitter: {
       ...baseSeo.twitter,
-      images: article?.media_url ? [article.media_url] : undefined,
+      ...(article?.media_url && { images: [article.media_url] }),
     },
   };
 }

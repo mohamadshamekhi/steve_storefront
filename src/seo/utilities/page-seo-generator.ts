@@ -30,15 +30,15 @@ const pageSeoGenerator = (pageSeo: PageSeoModel, titleRewrite?: string) => {
             siteName: seo.og_sitename ?? DefaultSeo.og.sitename,
             locale: 'fa_IR',
             type: 'website',
-            ...(image && {
-                images: {
-                    url: image.url,
-                    secureUrl: image.url,
-                    alt: image.alternativeText,
-                    width: image.width,
-                    height: image.height
-                }
-            })
+            images: image
+                ? {
+                      url: image.url,
+                      secureUrl: image.url,
+                      alt: image.alternativeText,
+                      width: image.width,
+                      height: image.height
+                  }
+                : DefaultSeo.image
         },
         twitter: {
             title: seo.title

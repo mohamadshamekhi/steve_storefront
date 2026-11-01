@@ -75,7 +75,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
         },
         twitter: {
             ...seo.twitter,
-            images: primaryImage ? [primaryImage] : undefined
+            ...(primaryImage && { images: [primaryImage] })
         },
         ...(product?._id && {
             other: {
