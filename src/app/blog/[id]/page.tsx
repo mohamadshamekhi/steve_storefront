@@ -8,7 +8,7 @@ import {
   pickRelatedArticles,
   SearchProduct,
 } from "@/utils/related-content.util";
-import { permanentRedirect } from "next/navigation";
+import { notFound, permanentRedirect } from "next/navigation";
 import { Metadata } from "next/types";
 import ClientPage from "./client-page";
 
@@ -86,6 +86,12 @@ const fetchBlogPost = async (
   };
 }> => {
   const res = await fetcher(ApiKeys.GET_BLOG_SINGLE(id), "web", "GET");
+  // the API answers a missing article with 400 ({slug: "not found"}), not 404
+  if (res?.status === 400 || res?.status === 404) notFound();
+  // any other failure is an outage, not a missing article: throw so ISR keeps serving the last good page
+  if (!res?.data?.article) {
+    throw new Error(`article "${id}": API responded with status ${res?.status}`);
+  }
   return res;
 };
 

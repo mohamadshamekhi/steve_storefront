@@ -6,7 +6,7 @@ import { truncateText } from '@/utils/string.util';
 import { discountedPrice, variantDiscount } from '@/utils/price.util';
 import { isVariantInStock } from '@/utils/stock.util';
 import { Metadata } from 'next';
-import { permanentRedirect } from 'next/navigation';
+import { notFound, permanentRedirect } from 'next/navigation';
 import ClientPage from './client-page';
 
 // API prices are in Toman; schema.org/OG need an ISO currency, so they are sent as Rial.
@@ -98,6 +98,9 @@ const fetchSingleProduct = async (
     };
 }> => {
     const res = await fetcher(ApiKeys.GET_SINGLE_PRODUCT_BY_SLUG(slug), 'web', 'GET');
+    if (res?.status === 404) notFound();
+    // any other failure is an outage, not a missing product: throw so ISR keeps serving the last good page
+    if (!res?.data?.product) throw new Error(`product "${slug}": API responded with status ${res?.status}`);
     return res;
 };
 
