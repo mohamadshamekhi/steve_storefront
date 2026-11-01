@@ -3,6 +3,7 @@ import ApiKeys from '@/api/keys';
 import { ProductProps } from '@/components/ui/organisms/ProductsOrganisms/product.types';
 import { priceRanges } from '@/config/data/price-ranges.data';
 import { pageSeoGenerator, PageSeoModel, SITE_URL } from '@/seo';
+import { paginatedCanonical } from '@/seo/utilities/paginated-canonical';
 import { Metadata } from 'next/types';
 import { notFound } from 'next/navigation';
 import ClientPage from './client-page';
@@ -12,8 +13,9 @@ interface Props {
     searchParams?: Promise<Record<string, string | string[] | undefined>>;
 }
 
-export async function generateMetadata({ params }: Props): Promise<Metadata> {
+export async function generateMetadata({ params, searchParams }: Props): Promise<Metadata> {
     const { rangeSlug } = await params;
+    const pageNumber = (await searchParams)?.page_number;
     const entry = priceRanges.find((r) => r.slug === rangeSlug);
     if (!entry) return {};
 
@@ -21,7 +23,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
         title: entry.title,
         description: entry.metaDescription,
         tags: `${entry.title}, خرید گوشی, محصولات, استیو موبایل`,
-        canonical: `${SITE_URL}/product/price-range/${rangeSlug}`,
+        canonical: paginatedCanonical(`${SITE_URL}/product/price-range/${rangeSlug}`, pageNumber),
         og_title: `${entry.title} | استیو موبایل`,
         og_url: `${SITE_URL}/product/price-range/${rangeSlug}`,
         og_description: entry.metaDescription,

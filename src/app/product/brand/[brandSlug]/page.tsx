@@ -3,6 +3,7 @@ import ApiKeys from '@/api/keys';
 import { ProductProps } from '@/components/ui/organisms/ProductsOrganisms/product.types';
 import { brandDirectory } from '@/config/data/brand-directory.data';
 import { pageSeoGenerator, PageSeoModel, SITE_URL } from '@/seo';
+import { paginatedCanonical } from '@/seo/utilities/paginated-canonical';
 import { Metadata } from 'next/types';
 import { notFound } from 'next/navigation';
 import ClientPage from './client-page';
@@ -23,8 +24,9 @@ const resolveBrand = (brandSlug: string, apiBrands: { id: string; name: string; 
     return { entry, brand };
 };
 
-export async function generateMetadata({ params }: Props): Promise<Metadata> {
+export async function generateMetadata({ params, searchParams }: Props): Promise<Metadata> {
     const { brandSlug } = await params;
+    const pageNumber = (await searchParams)?.page_number;
     const entry = brandDirectory.find((b) => b.slug === brandSlug);
     if (!entry) return {};
 
@@ -32,7 +34,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
         title: entry.title,
         description: entry.metaDescription,
         tags: `${entry.title}, محصولات, گوشی موبایل, خرید آنلاین, استیو موبایل`,
-        canonical: `${SITE_URL}/product/brand/${brandSlug}`,
+        canonical: paginatedCanonical(`${SITE_URL}/product/brand/${brandSlug}`, pageNumber),
         og_title: `${entry.title} | استیو موبایل`,
         og_url: `${SITE_URL}/product/brand/${brandSlug}`,
         og_description: entry.metaDescription,

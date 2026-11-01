@@ -45,7 +45,9 @@ const ProductDetailOrganisms = ({
                         { label: 'خانه', href: ROUTES.Landing },
                         {
                             label: product.category.name,
-                            href: ROUTES.Products
+                            href: product.category.slug
+                                ? `${ROUTES.Products}/category/${product.category.slug}`
+                                : ROUTES.Products
                         },
                         {
                             label: truncateText(product.name, 40),

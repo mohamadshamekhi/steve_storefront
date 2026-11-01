@@ -12,6 +12,9 @@ import ProductCardSkeleton from '../../organisms/SkeletonOrganisms/ProductCardSk
 import EmptyState from '../../molecules/EmptyState/EmptyState';
 import ProductSortTemplate from './ProductSortTemplate';
 
+// same as the API's default page size, which the server-rendered first page uses
+const PAGE_SIZE = 25;
+
 interface ProductListTemplateProps {
     data: ProductProps[];
     brands: Brand[];
@@ -57,7 +60,14 @@ const ProductListTemplate = ({
             ? lockedPriceRange.label
             : 'همه محصولات';
 
-    const { data, totalItems, isLoadingMore, isLoadingInitial, isFilterLoading, isEmpty, isReachingEnd, loadMore } = useInfiniteScroll<ProductProps>(
+    // `initialData` only answers the query this page was server-rendered for - filters
+    // change the URL shallowly, so any other query must not show it or its page_number
+    const initialApiKey = useRef(apiKey);
+    const isInitialQuery = apiKey === initialApiKey.current;
+    const pageParam = Number(searchParams.get('page_number'));
+    const startPage = isInitialQuery && Number.isInteger(pageParam) && pageParam > 1 ? pageParam : 1;
+
+    const { data, totalItems, currentPage, isLoadingMore, isLoadingInitial, isFilterLoading, isEmpty, isReachingEnd, loadMore } = useInfiniteScroll<ProductProps>(
         apiKey,
         async ([, params]) => {
             const requestParams: Record<string, string | string[]> = {
@@ -80,8 +90,15 @@ const ProductListTemplate = ({
                 pagination: response.data.pagination
             };
         },
-        { pageSize: 10, initialPageIndex: 1 }
+        { pageSize: PAGE_SIZE, initialPageIndex: startPage }
     );
+
+    // keep the server-fetched cards in the HTML: crawlers only follow links that are in it
+    const showingServerData = isLoadingInitial && isInitialQuery && initialData.length > 0;
+    const hasNextPage = showingServerData ? initialData.length >= PAGE_SIZE : !isReachingEnd;
+
+    const nextPageParams = new URLSearchParams(searchParams.toString());
+    nextPageParams.set('page_number', String((currentPage || startPage) + 1));
 
     const handleOrderByChange = useCallback(
         (value: string) => {
@@ -133,7 +150,7 @@ const ProductListTemplate = ({
                     <EmptyState title='محصولی یافت نشد' subtitle='فیلترهای انتخابی با هیچ محصولی مطابقت ندارد.' />
                 ) : (
                     <ul className='grid grid-cols-2 gap-3 py-4 sm:grid-cols-3 sm:gap-4 xl:grid-cols-4'>
-                        {isFilterLoading
+                        {isFilterLoading && !showingServerData
                             ? Array.from({ length: 12 }).map((_, i) => <ProductCardSkeleton key={i} />)
                             : displayData.map((product, index) => (
                                   <ProductCardOrganisms product={product} key={index} />
@@ -141,10 +158,19 @@ const ProductListTemplate = ({
                     </ul>
                 )}
 
-                {!isReachingEnd && (
-                    <div ref={loadMoreRef} className='flex items-center justify-center py-6'>
-                        {isLoadingMore && (
+                {hasNextPage && (
+                    <div ref={loadMoreRef} className='flex min-h-11 items-center justify-center py-6'>
+                        {isLoadingMore && !showingServerData ? (
                             <span className='border-primary-200 border-t-primary-600 h-6 w-6 animate-spin rounded-full border-2' />
+                        ) : (
+                            // a real link (full page load) so crawlers can reach products past the first page
+                            <a
+                                href={`?${nextPageParams.toString()}`}
+                                rel='next'
+                                className='text-primary-600 lg:hover:bg-primary-50 inline-flex min-h-11 items-center rounded-lg px-4 text-sm font-medium transition-colors'
+                            >
+                                محصولات بیشتر
+                            </a>
                         )}
                     </div>
                 )}

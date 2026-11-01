@@ -2,6 +2,7 @@ import { fetcher } from '@/api';
 import ApiKeys from '@/api/keys';
 import { ProductProps } from '@/components/ui/organisms/ProductsOrganisms/product.types';
 import { pageSeoGenerator, PageSeoModel } from '@/seo';
+import { paginatedCanonical } from '@/seo/utilities/paginated-canonical';
 import { Metadata } from 'next/types';
 import ClientPage from './client-page';
 
@@ -9,12 +10,13 @@ interface Props {
     searchParams?: Promise<Record<string, string | string[] | undefined>>;
 }
 
-export async function generateMetadata(): Promise<Metadata> {
+export async function generateMetadata({ searchParams }: Props): Promise<Metadata> {
+    const pageNumber = (await searchParams)?.page_number;
     const data: PageSeoModel = {
         title: 'محصولات',
         description: 'مشاهده و خرید آنلاین انواع گوشی موبایل، لوازم جانبی و کالای دیجیتال با بهترین قیمت از استیو موبایل.',
         tags: 'محصولات, گوشی موبایل, لوازم جانبی, کالای دیجیتال, خرید آنلاین, استیو موبایل',
-        canonical: 'https://stevemobile.com/product',
+        canonical: paginatedCanonical('https://stevemobile.com/product', pageNumber),
         og_title: 'محصولات استیو موبایل',
         og_url: 'https://stevemobile.com/product',
         og_description:

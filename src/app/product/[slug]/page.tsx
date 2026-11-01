@@ -117,12 +117,24 @@ export default async function Page({ params }: { params: Promise<{ slug: string 
     const commentsResponse = await fetcher(ApiKeys.GET_PRODUCT_COMMENTS(product?._id), 'web', 'GET');
     const comments = commentsResponse?.data?.comments || [];
 
-    const relatedProductsResponse = await fetcher(
-        `${ApiKeys.GET_Products}?brand_id=${product?.brand?.id}`,
-        'web',
-        'GET'
-    );
-    const relatedProducts = relatedProductsResponse?.data?.products || [];
+    // brand first, then same category: a small brand alone would leave its products with no link to each other
+    const [brandProductsResponse, categoryProductsResponse] = await Promise.all([
+        fetcher(`${ApiKeys.GET_Products}?brand_id=${product?.brand?.id}`, 'web', 'GET'),
+        product?.category?.slug
+            ? fetcher(ApiKeys.GET_Products, 'web', 'GET', { params: { category_slug: product.category.slug } })
+            : null
+    ]);
+    const seenSlugs = new Set<string | undefined>([product?.slug]);
+    const relatedProducts = [
+        ...(brandProductsResponse?.data?.products || []),
+        ...(categoryProductsResponse?.data?.products || [])
+    ]
+        .filter((related: { slug?: string }) => {
+            if (seenSlugs.has(related.slug)) return false;
+            seenSlugs.add(related.slug);
+            return true;
+        })
+        .slice(0, 12);
 
     const productUrl = `https://stevemobile.com/product/${product?.slug ?? slug}`;
     const prices = product?.variants?.map((v) => discountedPrice(v.price, variantDiscount(v.id, product.discount))) ?? [];

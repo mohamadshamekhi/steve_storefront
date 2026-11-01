@@ -2,6 +2,7 @@ import { fetcher } from '@/api';
 import ApiKeys from '@/api/keys';
 import { ProductProps } from '@/components/ui/organisms/ProductsOrganisms/product.types';
 import { pageSeoGenerator, PageSeoModel } from '@/seo';
+import { paginatedCanonical } from '@/seo/utilities/paginated-canonical';
 import { Metadata } from 'next/types';
 import ClientPage from './client-page';
 
@@ -10,8 +11,9 @@ interface Props {
     searchParams?: Promise<Record<string, string | string[] | undefined>>;
 }
 
-export async function generateMetadata({ params }: Props): Promise<Metadata> {
+export async function generateMetadata({ params, searchParams }: Props): Promise<Metadata> {
     const { catSlug: rawCatSlug } = await params;
+    const pageNumber = (await searchParams)?.page_number;
     const catSlug = decodeURIComponent(rawCatSlug);
 
     const categoriesResponse = await fetcher(ApiKeys.GET_ALL_CATEGORY, 'web', 'GET', { next: { revalidate: 300 } });
@@ -24,7 +26,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
         title: categoryName,
         description: `مشاهده و خرید آنلاین ${categoryName} با بهترین قیمت، ضمانت اصالت و ارسال سریع از استیو موبایل.`,
         tags: `${categoryName}, محصولات, گوشی موبایل, لوازم جانبی, خرید آنلاین, استیو موبایل`,
-        canonical: `https://stevemobile.com/product/category/${catSlug}`,
+        canonical: paginatedCanonical(`https://stevemobile.com/product/category/${catSlug}`, pageNumber),
         og_title: `${categoryName} | استیو موبایل`,
         og_url: `https://stevemobile.com/product/category/${catSlug}`,
         og_description: `مشاهده و خرید آنلاین ${categoryName} با بهترین قیمت، ضمانت اصالت و ارسال سریع از استیو موبایل.`,
