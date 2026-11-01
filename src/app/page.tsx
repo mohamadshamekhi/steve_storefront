@@ -1,5 +1,6 @@
 import { fetcher } from '@/api';
 import ApiKeys from '@/api/keys';
+import { slimBrands, slimListingProducts } from '@/utils/listing-payload.util';
 import Landing from '@/components/page/Landing';
 import Layout from '@/components/ui/organisms/Container/Layout/Layout';
 import Categories from '@/config/types/categories.types';
@@ -70,7 +71,7 @@ const page = async () => {
         return {
             title: category.name,
             subtitle: 'بر اساس سلیقه شما',
-            products: response?.data?.products || [],
+            products: slimListingProducts(response?.data?.products),
             url: category.url || category.link,
             categoryId: category.id
         };
@@ -133,14 +134,14 @@ const page = async () => {
                 dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteJsonLd) }}
             />
             <Landing
-                brands={brands?.data?.brands}
+                brands={slimBrands(brands?.data?.brands)}
                 categories={categories?.data?.categories}
                 articles={articles?.data?.articles}
                 discountProduct={discountProduct?.data?.products || []}
                 banners={banners?.data?.banners || []}
                 categoryProducts={categoryProducts}
-                secondHandProducts={secondHandProducts?.data?.products || []}
-                bestSellerProduct={bestSellerProduct?.data?.products || []}
+                secondHandProducts={slimListingProducts(secondHandProducts?.data?.products)}
+                bestSellerProduct={slimListingProducts(bestSellerProduct?.data?.products)}
                 productsWithAutoDiscount={
                     productsWithAutoDiscount?.data?.Products || productsWithAutoDiscount?.data?.products || []
                 }

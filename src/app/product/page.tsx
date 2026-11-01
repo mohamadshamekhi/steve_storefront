@@ -3,6 +3,7 @@ import ApiKeys from '@/api/keys';
 import { ProductProps } from '@/components/ui/organisms/ProductsOrganisms/product.types';
 import { pageSeoGenerator, PageSeoModel } from '@/seo';
 import { paginatedCanonical } from '@/seo/utilities/paginated-canonical';
+import { slimBrands, slimListingProducts } from '@/utils/listing-payload.util';
 import { Metadata } from 'next/types';
 import ClientPage from './client-page';
 
@@ -61,8 +62,8 @@ const Products = async ({ searchParams }: Props) => {
 
     return (
         <ClientPage
-            data={productsResponse.data?.products?.length ? productsResponse.data.products : []}
-            brands={brandsResponse.data?.brands?.length ? brandsResponse.data.brands : []}
+            data={slimListingProducts(productsResponse.data?.products)}
+            brands={slimBrands(brandsResponse.data?.brands)}
             categories={categoriesResponse.data?.categories?.length ? categoriesResponse.data.categories : []}
         />
     );

@@ -4,6 +4,7 @@ import { ProductProps } from '@/components/ui/organisms/ProductsOrganisms/produc
 import { brandDirectory } from '@/config/data/brand-directory.data';
 import { pageSeoGenerator, PageSeoModel, SITE_URL } from '@/seo';
 import { paginatedCanonical } from '@/seo/utilities/paginated-canonical';
+import { slimBrands, slimListingProducts } from '@/utils/listing-payload.util';
 import { Metadata } from 'next/types';
 import { notFound } from 'next/navigation';
 import ClientPage from './client-page';
@@ -100,8 +101,8 @@ const BrandProducts = async ({ params, searchParams }: Props) => {
                 brand={{ id: brand.id, name: brand.name }}
                 seoContent={{ title: entry.contentTitle, body: entry.contentBody }}
                 pageHeading={entry.title}
-                data={productsResponse.data?.products?.length ? productsResponse.data.products : []}
-                brands={brands}
+                data={slimListingProducts(productsResponse.data?.products)}
+                brands={slimBrands(brands)}
                 categories={categoriesResponse.data?.categories?.length ? categoriesResponse.data.categories : []}
             />
         </>
