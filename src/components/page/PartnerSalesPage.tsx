@@ -1,4 +1,5 @@
 import ROUTES from '@/constants/routes/routes.constant';
+import { Suspense } from 'react';
 import ManualBreadcrumb from '../ui/molecules/Breadcrumbs/ManualBreadcrumb';
 import Container from '../ui/organisms/Container/Container';
 import PartnerApplySection from '../ui/organisms/partner/PartnerApplySection';
@@ -37,7 +38,10 @@ const PartnerSalesPage = () => {
                             فرم زیر را تکمیل کنید تا درخواست همکاری شما ثبت و بررسی شود.
                         </p>
                     </div>
-                    <PartnerApplySection />
+                    {/* useSearchParams باعث CSR تا نزدیک‌ترین Suspense می‌شود؛ مرز جدا تا H1 و محتوا در HTML سرور بمانند */}
+                    <Suspense fallback={null}>
+                        <PartnerApplySection />
+                    </Suspense>
                 </Container>
             </div>
         </main>
