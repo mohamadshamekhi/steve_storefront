@@ -15,12 +15,12 @@ const PhoneRepairPage = ({ brands }: { brands: Brand[] }) => {
     const authImages = [
         {
             src: ImageTwo,
-            alt: '',
+            alt: 'کیف ابزار تخصصی تعمیر موبایل',
             className: 'absolute -right-10 top-40 lg:top-50 max-w-[321px] -z-1 hidden sm:block'
         },
         {
             src: ImageOne,
-            alt: '',
+            alt: 'تعمیر موبایل با کیت ابزار تخصصی',
             className: 'absolute -left-20 top-20 lg:top-50 transform rotate-90 max-w-[321px] -z-1 hidden sm:block'
         }
     ];

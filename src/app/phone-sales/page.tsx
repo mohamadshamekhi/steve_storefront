@@ -7,7 +7,7 @@ import ClientPage from './client-page';
 export async function generateMetadata(): Promise<Metadata> {
     const data: PageSeoModel = {
         title: 'فروش موبایل',
-        description: 'گوشی  کار کرده خود را در چند مرحله ساده به استیو موبایل بفروشید. ثبت درخواست آنلاین، بررسی وضعیت دستگاه، دریافت بهترین قیمت و تسویه فوری، بدون دردسر و با بالاترین امنیت.',
+        description: 'گوشی کار کرده خود را در چند مرحله ساده به استیو موبایل بفروشید؛ ثبت درخواست آنلاین، بررسی وضعیت دستگاه، دریافت بهترین قیمت و تسویه فوری، بدون دردسر.',
         tags: 'فروش موبایل, فروش گوشی, گوشی دست دوم, استیو موبایل',
         canonical: 'https://stevemobile.com/phone-sales',
         og_title: 'فروش موبایل به استیو موبایل',

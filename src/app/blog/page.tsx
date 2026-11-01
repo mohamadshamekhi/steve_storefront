@@ -12,12 +12,12 @@ interface Props {
 export async function generateMetadata(): Promise<Metadata> {
     const data: PageSeoModel = {
         title: 'وبلاگ',
-        description: 'آخرین مقالات و اخبار تکنولوژی را در وبلاگ استیو موبایل بخوانید',
+        description: 'آخرین اخبار تکنولوژی، راهنمای خرید و مقالات تخصصی موبایل و لوازم جانبی را در وبلاگ استیو موبایل بخوانید و انتخاب بهتری داشته باشید.',
         tags: 'وبلاگ, مقالات, اخبار تکنولوژی, استیو موبایل',
         canonical: 'https://stevemobile.com/blog',
         og_title: 'وبلاگ استیو موبایل',
         og_url: 'https://stevemobile.com/blog',
-        og_description: 'آخرین مقالات و اخبار تکنولوژی را در وبلاگ استیو موبایل بخوانید',
+        og_description: 'آخرین اخبار تکنولوژی، راهنمای خرید و مقالات تخصصی موبایل و لوازم جانبی را در وبلاگ استیو موبایل بخوانید و انتخاب بهتری داشته باشید.',
         og_sitename: 'استیو موبایل',
         noindex: false,
         nofollow: false
