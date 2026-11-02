@@ -11,10 +11,13 @@ import { SingleProductItem } from '@/models/product.model';
 
 // type Specifications = SpecificationGroup[];
 type ProductSpecificationsOrganismsProps = {
-    specifications: SingleProductItem['specifications'];
+    // the API omits this for a product with no specifications
+    specifications?: SingleProductItem['specifications'];
 };
 
 const ProductSpecificationsOrganisms = ({ specifications }: ProductSpecificationsOrganismsProps) => {
+    if (!specifications?.length) return null;
+
     return (
         <div
             className='rounded-2xl bg-white p-5 shadow-[0_1px_3px_rgba(16,24,40,0.06)] sm:p-6'

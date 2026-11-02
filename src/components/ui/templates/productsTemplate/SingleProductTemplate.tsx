@@ -36,7 +36,7 @@ const SingleProductTemplate = ({
   const hasFaq = !!product.faq?.some((f) => f.question?.trim() && f.answer?.trim());
   const filters = [
     { targetId: "introduction", label: "معرفی" },
-    { targetId: "specifications", label: "مشخصات" },
+    ...(product.specifications?.length ? [{ targetId: "specifications", label: "مشخصات" }] : []),
     ...(hasFaq ? [{ targetId: "faq", label: "سوالات متداول" }] : []),
     { targetId: "views", label: "دیدگاه‌ها" },
   ];

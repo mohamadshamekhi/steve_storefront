@@ -43,12 +43,14 @@ const ProductDetailOrganisms = ({
                     className='py-4! pr-0!'
                     items={[
                         { label: 'خانه', href: ROUTES.Landing },
-                        {
-                            label: product.category.name,
-                            href: product.category.slug
-                                ? `${ROUTES.Products}/category/${product.category.slug}`
-                                : ROUTES.Products
-                        },
+                        ...(product.category?.slug
+                            ? [
+                                  {
+                                      label: product.category.name,
+                                      href: `${ROUTES.Products}/category/${product.category.slug}`
+                                  }
+                              ]
+                            : []),
                         {
                             label: truncateText(product.name, 40),
                             isCurrent: true
