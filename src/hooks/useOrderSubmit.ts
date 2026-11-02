@@ -5,6 +5,7 @@ import ApiKeys from '@/api/keys';
 import { useToast } from '@/hooks/useToast';
 import { useCartStore } from '@/state/stores/cart';
 import { useUserPreferencesStore } from '@/state/stores/user-preferences';
+import { cartAnalyticsItems, rememberPurchase, trackEcommerce } from '@/utils/analytics.util';
 import { useState } from 'react';
 
 type SelectedShipping = { id: string; cost: number } | null;
@@ -33,6 +34,10 @@ export default function useOrderSubmit(selectedShipping: SelectedShipping) {
             return;
         }
 
+        const { items, finalPrice } = useCartStore.getState();
+        const analyticsItems = cartAnalyticsItems(items);
+        trackEcommerce('begin_checkout', analyticsItems, { value: finalPrice });
+
         setIsSubmitting(true);
         try {
             const response = await fetcher(ApiKeys.REGISTER_ORDER, 'dashboard', 'POST', {
@@ -53,6 +58,7 @@ export default function useOrderSubmit(selectedShipping: SelectedShipping) {
                 });
 
                 if (paymentResponse?.success && paymentResponse?.data?.payment_url) {
+                    rememberPurchase(response.data.order_id, { items: analyticsItems, value: finalPrice });
                     window.location.href = paymentResponse.data.payment_url;
                     return;
                 }

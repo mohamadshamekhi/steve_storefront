@@ -8,6 +8,7 @@ import { SingleProductItem } from "@/models/product.model";
 import { Rating, Star } from "@smastrom/react-rating";
 import Link from "next/link";
 import useElementHeightVar from "@/hooks/useElementHeightVar";
+import { ProductViewEvent } from "../../molecules/Analytics/ProductViewEvent";
 import { ScrollTabs } from "../../molecules/ScrollTabs/ScrollsTabs";
 import PriceBox from "../../organisms/SingleProductOrganisms/PriceBox";
 import ProductDetailOrganisms from "../../organisms/SingleProductOrganisms/ProductDetailOrganisms";
@@ -48,6 +49,7 @@ const SingleProductTemplate = ({
       variants={product.variants}
       discount={product.discount}
     >
+      <ProductViewEvent slug={product.slug} name={product.name} />
       <div className="space-y-6 pt-5 pb-[calc(var(--app-bottom-nav,0px)+var(--app-bottom-bar,0px)+1rem)] lg:space-y-8 lg:pb-0">
         <div className="grid grid-cols-1 gap-4 lg:grid-cols-12">
           <ProductGalleryOrganisms
@@ -63,7 +65,7 @@ const SingleProductTemplate = ({
           <div className="lg:col-span-3">
             <div className="space-y-4 lg:sticky lg:top-4">
               <div className="rounded-2xl bg-white p-5 shadow-[0_1px_3px_rgba(16,24,40,0.06)] sm:p-6">
-                <PriceBox productId={product._id} />
+                <PriceBox productId={product._id} productSlug={product.slug} productName={product.name} />
 
                 <div className="mt-8 border-t border-gray-100 pt-6">
                   <ProductTrustList warranty={product.variants[0].warranty} />
@@ -137,7 +139,7 @@ const SingleProductTemplate = ({
           </div>
           <div className="mb-3 hidden lg:col-span-3 lg:block">
             <div className="sticky top-4 w-full rounded-2xl bg-white p-6 shadow-[0_1px_3px_rgba(16,24,40,0.06)]">
-              <PriceBox productId={product._id} />
+              <PriceBox productId={product._id} productSlug={product.slug} productName={product.name} />
 
               <div className="mt-8 border-t border-gray-100 pt-6">
                 <ProductTrustList warranty={product.variants[0].warranty} />
@@ -152,7 +154,7 @@ const SingleProductTemplate = ({
         className="fixed inset-x-0 bottom-[var(--app-bottom-nav,0px)] z-30 px-4 pb-2 lg:hidden"
       >
         <div className="mx-auto max-w-md rounded-[22px] border border-black/5 bg-white/90 px-4 py-2.5 shadow-[0_12px_36px_-8px_rgba(31,41,55,0.22)] backdrop-blur-xl">
-          <PriceBox productId={product._id} layout="bar" />
+          <PriceBox productId={product._id} productSlug={product.slug} productName={product.name} layout="bar" />
         </div>
       </div>
     </ProductVariantProvider>

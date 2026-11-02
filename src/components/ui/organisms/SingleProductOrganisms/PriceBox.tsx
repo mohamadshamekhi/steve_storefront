@@ -13,14 +13,17 @@ import { useRouter } from "next/navigation";
 import ROUTES from "@/constants/routes/routes.constant";
 import Link from "next/link";
 import { isVariantInStock, variantMaxQuantity, variantStockLeft } from "@/utils/stock.util";
+import { trackEcommerce } from "@/utils/analytics.util";
 
 type PriceBoxProps = {
   productId?: string;
+  productSlug: string;
+  productName: string;
   /** "box" = the full sidebar card (default). "bar" = compact horizontal row for the mobile sticky buy bar. */
   layout?: "box" | "bar";
 };
 
-const PriceBox = ({ productId, layout = "box" }: PriceBoxProps) => {
+const PriceBox = ({ productId, productSlug, productName, layout = "box" }: PriceBoxProps) => {
   const router = useRouter();
   const { selectedVariant, discount } = useProductVariant();
   const {
@@ -70,10 +73,16 @@ const PriceBox = ({ productId, layout = "box" }: PriceBoxProps) => {
 
     if (!productId || !selectedVariant?.id) return;
 
-    await addItem({
+    const added = await addItem({
       product_id: productId,
       variant_id: selectedVariant.id,
     });
+
+    if (added) {
+      trackEcommerce("add_to_cart", [
+        { slug: productSlug, name: productName, price: currentPrice, quantity: 1 },
+      ]);
+    }
   };
 
   const handleRemoveFromCart = async () => {

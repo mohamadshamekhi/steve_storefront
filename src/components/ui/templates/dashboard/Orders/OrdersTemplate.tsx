@@ -7,6 +7,7 @@ import Button from '@/components/ui/atoms/Button/Button';
 import EmptyState from '@/components/ui/molecules/EmptyState/EmptyState';
 import DashboardListSkeleton from '@/components/ui/organisms/SkeletonOrganisms/DashboardListSkeleton/DashboardListSkeleton';
 import priceFormatter from '@/helpers/formatter';
+import { rememberPurchase } from '@/utils/analytics.util';
 import { formatJalali } from '@/utils/date.util';
 import { useEffect, useState } from 'react';
 
@@ -139,7 +140,8 @@ function OrdersTemplate() {
             .catch(() => {});
     };
 
-    const handlePayOrder = async (orderId: string) => {
+    const handlePayOrder = async (order: Order) => {
+        const orderId = order._id;
         setPayingOrderId(orderId);
         try {
             const response = await fetcher(ApiKeys.START_PAYMENT, 'dashboard', 'POST', {
@@ -150,6 +152,20 @@ function OrdersTemplate() {
             });
 
             if (response?.success && response?.data?.payment_url) {
+                // Orders don't carry the slug; ProductID is only used when this browser has no checkout snapshot
+                rememberPurchase(
+                    orderId,
+                    {
+                        items: order.items.map((item) => ({
+                            slug: item.ProductID,
+                            name: item.ProductName,
+                            price: item.PriceAtTime,
+                            quantity: item.Quantity
+                        })),
+                        value: order.final_amount - order.shipping_amount
+                    },
+                    { keepExisting: true }
+                );
                 window.location.href = response.data.payment_url;
             }
         } catch (error) {
@@ -359,7 +375,7 @@ function OrdersTemplate() {
                                                 size='sm'
                                                 color='primary'
                                                 loading={payingOrderId === order._id}
-                                                onClick={() => handlePayOrder(order._id)}
+                                                onClick={() => handlePayOrder(order)}
                                             >
                                                 پرداخت
                                             </Button>

@@ -2,6 +2,7 @@
 import { fetcher } from '@/api';
 import ApiKeys from '@/api/keys';
 import { getPaymentMessage, isPaymentSuccess } from '@/config/utilities/paymentStatus';
+import { trackRememberedPurchase } from '@/utils/analytics.util';
 import Image from 'next/image';
 import { useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
@@ -53,6 +54,7 @@ function PaymentTemplate() {
 
                 if (response?.success && response?.data?.status === 'successful') {
                     setStatus('success');
+                    trackRememberedPurchase();
                     if (response?.data?.tracking_code) {
                         setTrackingCode(response.data.tracking_code);
                     }
