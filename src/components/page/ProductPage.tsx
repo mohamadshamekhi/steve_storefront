@@ -47,7 +47,8 @@ const ProductPage = ({
     // dump every paragraph on one page.
     const matchedDescription =
         seoContent ??
-        (activeCategory?.description
+        // many categories hold just their own name here, which isn't intro copy
+        (activeCategory?.description?.trim() && activeCategory.description.trim() !== categoryName
             ? { title: categoryName!, body: activeCategory.description }
             : categoryName
               ? categoryDescriptions.find((entry) =>

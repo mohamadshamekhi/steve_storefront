@@ -17,7 +17,7 @@ const StoreContentSection = ({ title, body, as = 'h2' }: StoreContentSectionProp
     return (
         <section className='rounded-md bg-white p-6'>
             <Heading className='mb-3 text-base font-semibold text-gray-800 md:text-lg'>{title}</Heading>
-            <p className='text-sm leading-8 text-gray-600'>{body}</p>
+            <p className='text-sm leading-8 whitespace-pre-line text-gray-600'>{body}</p>
         </section>
     );
 };

@@ -1,6 +1,7 @@
 import { fetcher } from '@/api';
 import ApiKeys from '@/api/keys';
 import { ProductProps } from '@/components/ui/organisms/ProductsOrganisms/product.types';
+import Categories from '@/config/types/categories.types';
 import { pageSeoGenerator, PageSeoModel } from '@/seo';
 import { paginatedCanonical } from '@/seo/utilities/paginated-canonical';
 import { slimBrands, slimListingProducts } from '@/utils/listing-payload.util';
@@ -19,23 +20,28 @@ export async function generateMetadata({ params, searchParams }: Props): Promise
 
     const categoriesResponse = await fetcher(ApiKeys.GET_ALL_CATEGORY, 'web', 'GET', { next: { revalidate: 300 } });
     const category = categoriesResponse?.data?.categories?.find(
-        (c: { slug: string; name: string }) => c.slug === catSlug
+        (c: Categories) => c.slug === catSlug
     );
     const categoryName = category?.name ?? catSlug;
+    // the admin's own SEO copy wins; the generated pattern covers categories without it
+    const seoTitle = category?.seo_title?.trim() || `خرید ${categoryName}`;
+    const seoDescription =
+        category?.seo_description?.trim() ||
+        `مشاهده و خرید آنلاین ${categoryName} با بهترین قیمت، ضمانت اصالت و ارسال سریع از استیو موبایل.`;
 
     const data: PageSeoModel = {
         title: categoryName,
-        description: `مشاهده و خرید آنلاین ${categoryName} با بهترین قیمت، ضمانت اصالت و ارسال سریع از استیو موبایل.`,
+        description: seoDescription,
         tags: `${categoryName}, محصولات, گوشی موبایل, لوازم جانبی, خرید آنلاین, استیو موبایل`,
         canonical: paginatedCanonical(`https://stevemobile.com/product/category/${catSlug}`, pageNumber),
         og_title: `${categoryName} | استیو موبایل`,
         og_url: `https://stevemobile.com/product/category/${catSlug}`,
-        og_description: `مشاهده و خرید آنلاین ${categoryName} با بهترین قیمت، ضمانت اصالت و ارسال سریع از استیو موبایل.`,
+        og_description: seoDescription,
         og_sitename: 'استیو موبایل',
         noindex: false,
         nofollow: false
     };
-    return pageSeoGenerator(data, categoryName);
+    return pageSeoGenerator(data, seoTitle);
 }
 
 const fetchProductsByCategory = async (
