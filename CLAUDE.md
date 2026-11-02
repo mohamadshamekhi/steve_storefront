@@ -169,7 +169,7 @@ Formik + Zod (`zod-formik-adapter`). Schemas live in `src/config/schema/*.schema
 
 ### SEO
 
-`src/seo` — `pageSeoGenerator(data, titleOverride?)` builds `Metadata`; it auto-appends `" | استیو موبایل"` to titles (don't repeat the brand name). `robots.ts` and `sitemap.ts` are at `src/app/`.
+`src/seo` — `pageSeoGenerator(data, titleOverride?)` builds `Metadata`; it auto-appends `" | استیو موبایل"` to titles (don't repeat the brand name) and keeps them within 65 characters: the suffix is dropped first, then the title is cut to its first clause or at a word. `robots.ts` and `sitemap.ts` are at `src/app/`.
 
 ## Path aliases
 

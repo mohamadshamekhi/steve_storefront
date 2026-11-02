@@ -15,7 +15,7 @@ export async function generateMetadata(): Promise<Metadata> {
         noindex: false,
         nofollow: false
     };
-    return pageSeoGenerator(data, 'درباره ما');
+    return pageSeoGenerator(data, 'درباره فروشگاه ما');
 }
 
 const AboutUs = () => <ClientPage />;

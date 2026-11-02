@@ -22,7 +22,7 @@ export async function generateMetadata(): Promise<Metadata> {
         noindex: false,
         nofollow: false
     };
-    return pageSeoGenerator(data, 'وبلاگ');
+    return pageSeoGenerator(data, 'وبلاگ موبایل و تکنولوژی');
 }
 
 const fetchBlogPosts = async (

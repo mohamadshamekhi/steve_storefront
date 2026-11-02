@@ -26,7 +26,7 @@ export async function generateMetadata({ searchParams }: Props): Promise<Metadat
         noindex: false,
         nofollow: false
     };
-    return pageSeoGenerator(data, 'محصولات');
+    return pageSeoGenerator(data, 'خرید موبایل و لوازم جانبی');
 }
 
 const fetchProductsPosts = async (
