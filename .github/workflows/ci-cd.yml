@@ -55,6 +55,7 @@ jobs:
           username: ${{ secrets.DEPLOY_SSH_USER }}
           key: ${{ secrets.DEPLOY_SSH_KEY }}
           timeout: 60s
+          command_timeout: 30m
           script: |
             set -exo pipefail
             DEPLOY_PATH="${{ secrets.DEPLOY_PATH }}"
@@ -69,7 +70,14 @@ jobs:
             fi
 
             cd "$DEPLOY_PATH"
-            git fetch --prune origin
+            # server -> GitHub is flaky: a hung fetch used to eat the whole 10m action timeout
+            export GIT_SSH_COMMAND="ssh -o ConnectTimeout=20 -o ServerAliveInterval=10 -o ServerAliveCountMax=3"
+            for i in 1 2 3 4 5; do
+              timeout 120 git fetch --prune origin && break
+              [ "$i" = 5 ] && { echo "git fetch failed after 5 attempts"; exit 1; }
+              echo "git fetch attempt $i failed, retrying in 15s"
+              sleep 15
+            done
             git reset --hard origin/main
             [ -f .env.production ] || { echo ".env.production missing"; exit 1; }
 
