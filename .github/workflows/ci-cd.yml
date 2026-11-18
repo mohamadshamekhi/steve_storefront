@@ -48,6 +48,24 @@ jobs:
           echo "::error::port 22 stayed unreachable from this runner"
           exit 1
 
+      # the server can't reach github.com (Iran network), so it never pulls:
+      # the runner ships the checked-out source to it instead
+      - uses: actions/checkout@v4
+
+      - name: Pack source
+        run: git archive --format=tar.gz -o storefront-src.tgz HEAD
+
+      - name: Upload source
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.DEPLOY_SSH_HOST }}
+          username: ${{ secrets.DEPLOY_SSH_USER }}
+          key: ${{ secrets.DEPLOY_SSH_KEY }}
+          timeout: 60s
+          command_timeout: 10m
+          source: storefront-src.tgz
+          target: /tmp/storefront-deploy
+
       - name: SSH deploy
         uses: appleboy/ssh-action@v1.2.0
         with:
@@ -61,27 +79,17 @@ jobs:
             DEPLOY_PATH="${{ secrets.DEPLOY_PATH }}"
             IMAGE_NAME="storefront:latest"
             CONTAINER_NAME="storefront"
+            ARCHIVE=/tmp/storefront-deploy/storefront-src.tgz
 
-            git config --global --add safe.directory "$DEPLOY_PATH"
+            # .env.production is not in git - it lives only in $DEPLOY_PATH on the server
+            [ -f "$DEPLOY_PATH/.env.production" ] || { echo ".env.production missing in $DEPLOY_PATH"; exit 1; }
 
-            # clone on first deploy
-            if [ ! -d "$DEPLOY_PATH/.git" ]; then
-              git clone git@github-storefront:mohamadshamekhi/steve_storefront.git "$DEPLOY_PATH"
-            fi
+            BUILD_DIR=$(mktemp -d /tmp/storefront-build.XXXXXX)
+            trap 'rm -rf "$BUILD_DIR" /tmp/storefront-deploy' EXIT
+            tar -xzf "$ARCHIVE" -C "$BUILD_DIR"
+            cp "$DEPLOY_PATH/.env.production" "$BUILD_DIR/"
 
-            cd "$DEPLOY_PATH"
-            # server -> GitHub is flaky: a hung fetch used to eat the whole 10m action timeout
-            export GIT_SSH_COMMAND="ssh -o ConnectTimeout=20 -o ServerAliveInterval=10 -o ServerAliveCountMax=3"
-            for i in 1 2 3 4 5; do
-              timeout 120 git fetch --prune origin && break
-              [ "$i" = 5 ] && { echo "git fetch failed after 5 attempts"; exit 1; }
-              echo "git fetch attempt $i failed, retrying in 15s"
-              sleep 15
-            done
-            git reset --hard origin/main
-            [ -f .env.production ] || { echo ".env.production missing"; exit 1; }
-
-            docker build -t "$IMAGE_NAME" .
+            docker build -t "$IMAGE_NAME" "$BUILD_DIR"
 
             # stop any container using port 3000
             OLD=$(docker ps -q --filter "publish=3000") && [ -n "$OLD" ] && docker stop $OLD && docker rm $OLD || true
