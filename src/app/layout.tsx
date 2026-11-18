@@ -55,6 +55,7 @@ const RootLayout = ({
           name="google-site-verification"
           content="D5wmoCZmc-k2vDKH3E0RJpebU3cJ3hUUvzXlDq56yaA"
         />
+        <meta name="msvalidate.01" content="2D7D25D8251964EEFBB2B44E77475BED" />
       </head>
       <body className={`${YekanFont.variable} bg-gray-50`}>
         <GoogleAnalytics />
